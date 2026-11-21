@@ -101,7 +101,6 @@
       border-radius: 0 0 4px 4px;
     }
 
-    /* Garis Aksen CMYK */
     .cmyk-bar {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -109,7 +108,6 @@
       width: 100%;
     }
 
-    /* Hide scrollbar for horizontal nav */
     .no-scrollbar::-webkit-scrollbar {
       display: none;
     }
@@ -118,7 +116,6 @@
       scrollbar-width: none;
     }
 
-    /* Print Thermal Styling */
     @media print {
       body * {
         visibility: hidden;
@@ -147,6 +144,53 @@
   <!-- TOAST NOTIFICATION -->
   <div id="toast-box" class="fixed top-16 left-1/2 -translate-x-1/2 z-[100] pointer-events-none flex flex-col items-center gap-2 w-[92%] max-w-sm"></div>
 
+  <!-- ===================================================================== -->
+  <!-- HALAMAN LOGIN (SEBELUM MASUK APLIKASI)                                -->
+  <!-- ===================================================================== -->
+  <div id="login-screen" class="fixed inset-0 z-50 overflow-y-auto flex flex-col items-center justify-center p-4" style="background-color: var(--app-bg);">
+    <div class="w-full max-w-sm surface-card rounded-3xl border shadow-xl overflow-hidden">
+      <div class="app-header p-6 text-center space-y-2.5">
+        <div id="login-logo-wrap" class="w-16 h-16 mx-auto rounded-2xl bg-white p-1.5 flex items-center justify-center shadow-md overflow-hidden"></div>
+        <div>
+          <h2 id="login-store-name" class="text-lg font-extrabold tracking-tight text-white">PERCETAKAN AMANAH</h2>
+          <p class="text-xs text-slate-300 mt-0.5">Silakan masuk untuk memulai sesi kasir</p>
+        </div>
+      </div>
+      <div class="cmyk-bar">
+        <div class="bg-cyan-400"></div>
+        <div class="bg-pink-500"></div>
+        <div class="bg-yellow-400"></div>
+        <div class="bg-slate-950"></div>
+      </div>
+
+      <div class="p-5 space-y-4">
+        <div class="space-y-1.5">
+          <label class="block text-xs font-bold muted-text">Pilih Akun Pengguna</label>
+          <select id="login-user-select" class="app-input w-full rounded-xl px-3.5 py-3 text-sm font-bold"></select>
+        </div>
+
+        <div class="space-y-1.5">
+          <div class="flex items-center justify-between">
+            <label class="block text-xs font-bold muted-text">Masukkan PIN (4-6 Digit)</label>
+            <span class="text-[11px] muted-text">PIN bawaan: <strong class="font-mono-code">1234</strong></span>
+          </div>
+          <input type="password" inputmode="numeric" maxlength="6" id="login-pin-input" placeholder="••••"
+            class="app-input w-full rounded-xl px-3.5 py-3 text-center text-lg font-extrabold font-mono-code tracking-[0.4em]" />
+        </div>
+
+        <button type="button" data-action="submit-login"
+          class="w-full py-3.5 rounded-xl btn-accent font-extrabold text-sm shadow-sm cursor-pointer">
+          Masuk Aplikasi
+        </button>
+
+        <div class="pt-2 border-t border-slate-200 flex items-center justify-between text-[11px] muted-text">
+          <span>Kode Toko: <strong id="login-room-code" class="font-mono-code">AMANAH-01</strong></span>
+          <span id="login-cloud-status" class="font-semibold">Online</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- HEADER UTAMA -->
   <header class="app-header sticky top-0 z-30 shadow-md">
     <div class="max-w-xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
@@ -169,16 +213,27 @@
             <span id="header-room-badge" class="px-1.5 py-0.5 rounded text-[10px] font-mono-code font-bold bg-white/10 text-cyan-300">
               AMANAH-01
             </span>
+            <span id="header-user-badge" class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-200">
+              Administrator
+            </span>
           </div>
         </div>
       </div>
-      <button type="button" data-action="toggle-settings" aria-label="Pengaturan"
-        class="w-10 h-10 rounded-xl bg-white/10 hover:bg-white/20 text-white flex items-center justify-center shrink-0 transition cursor-pointer">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-          <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-        </svg>
-      </button>
+      <div class="flex items-center gap-1.5 shrink-0">
+        <button type="button" data-action="logout-app" aria-label="Keluar Akun" title="Keluar / Ganti Akun"
+          class="w-10 h-10 rounded-xl bg-white/10 hover:bg-rose-500/30 text-white flex items-center justify-center shrink-0 transition cursor-pointer">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+          </svg>
+        </button>
+        <button type="button" id="btn-header-settings" data-action="toggle-settings" aria-label="Pengaturan" title="Pengaturan Administrator"
+          class="w-10 h-10 rounded-xl bg-white/10 hover:bg-white/20 text-white flex items-center justify-center shrink-0 transition cursor-pointer">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
+        </button>
+      </div>
     </div>
     <div class="cmyk-bar">
       <div class="bg-cyan-400"></div>
@@ -294,14 +349,14 @@
             <span id="cart-grand-total" class="text-lg font-extrabold font-mono-code">Rp 0</span>
           </div>
 
-          <div class="space-y-1">
-            <label class="block text-xs font-semibold muted-text">Kasir bertugas (tercetak di invoice)</label>
-            <select id="kasir-staff-select" class="app-input w-full rounded-xl px-3 py-2.5 text-sm font-bold"></select>
+          <div class="flex items-center justify-between rounded-xl bg-slate-50 px-3 py-2 border border-slate-200">
+            <span class="text-xs font-semibold muted-text">Kasir bertugas (otomatis di invoice)</span>
+            <span id="kasir-staff-display" class="text-xs font-extrabold text-slate-800">Administrator</span>
           </div>
 
           <div class="space-y-1">
             <label class="block text-xs font-semibold muted-text">Nama pelanggan</label>
-            <input type="text" id="kasir-customer-name" value="Umum" placeholder="Nama pelanggan"
+            <input type="text" id="kasir-customer-name" value="" placeholder="Kosongkan untuk Umum"
               class="app-input w-full rounded-xl px-3 py-2.5 text-sm font-bold" />
           </div>
 
@@ -472,13 +527,16 @@
     </section>
 
     <!-- =================================================================== -->
-    <!-- PAGE 8: PENGATURAN (GEAR ICON)                                      -->
+    <!-- PAGE 8: PENGATURAN (KHUSUS ADMINISTRATOR)                           -->
     <!-- =================================================================== -->
     <section id="page-settings" class="hidden space-y-4">
       <div class="flex items-center justify-between">
-        <h2 class="text-base font-extrabold">Pengaturan Aplikasi</h2>
+        <div>
+          <h2 class="text-base font-extrabold">Pengaturan Administrator</h2>
+          <p class="text-[11px] muted-text">Hanya dapat diakses oleh akun dengan level Administrator.</p>
+        </div>
         <button type="button" data-action="close-settings"
-          class="px-3.5 py-1.5 rounded-xl bg-slate-800 text-white text-xs font-bold cursor-pointer">
+          class="px-3.5 py-1.5 rounded-xl bg-slate-800 text-white text-xs font-bold cursor-pointer shrink-0">
           ← Kembali
         </button>
       </div>
@@ -555,9 +613,14 @@
             class="app-input w-full rounded-xl px-3 py-2.5 text-sm font-bold" />
         </div>
         <div class="space-y-1">
-          <label class="block text-xs font-semibold muted-text">Slogan / Kontak di Nota</label>
-          <input type="text" id="setting-store-contact" data-action="update-store-info"
+          <label class="block text-xs font-semibold muted-text">Slogan Usaha</label>
+          <input type="text" id="setting-store-slogan" data-action="update-store-info" placeholder="Contoh: Kualitas & Kepercayaan"
             class="app-input w-full rounded-xl px-3 py-2.5 text-xs font-semibold" />
+        </div>
+        <div class="space-y-1">
+          <label class="block text-xs font-semibold muted-text">Nomor WhatsApp</label>
+          <input type="tel" id="setting-store-wa" data-action="update-store-info" placeholder="Contoh: 0812-3456-7890"
+            class="app-input w-full rounded-xl px-3 py-2.5 text-xs font-semibold font-mono-code" />
         </div>
       </div>
 
@@ -610,11 +673,17 @@
         <div id="non-cash-settings-list" class="divide-y divide-slate-200"></div>
       </div>
 
-      <!-- 4. Manajemen Pengguna (User) -->
+      <!-- 4. Manajemen Pengguna (Administrator & User Biasa) -->
       <div class="surface-card rounded-2xl border p-4 shadow-sm space-y-3.5">
-        <div>
-          <h3 class="text-sm font-extrabold">Pengguna</h3>
-          <p class="text-xs muted-text">Pengguna berjabatan Kasir dapat dipilih di layar Kasir dan tercetak di invoice.</p>
+        <div class="flex items-start justify-between gap-2">
+          <div>
+            <h3 class="text-sm font-extrabold">Pengguna, Hak Akses & PIN Login</h3>
+            <p class="text-xs muted-text">Akun <strong>Administrator</strong> dapat mengakses menu Pengaturan, sedangkan <strong>User Biasa</strong> (Kasir/Operator) tidak dapat membuka Pengaturan.</p>
+          </div>
+          <button type="button" data-action="logout-app"
+            class="px-3 py-1.5 rounded-xl bg-rose-50 text-rose-700 border border-rose-200 text-xs font-bold cursor-pointer shrink-0">
+            Keluar Akun
+          </button>
         </div>
         <div id="users-list-container" class="space-y-3"></div>
         <button type="button" data-action="add-new-user"
@@ -743,6 +812,7 @@
 
       const STORAGE_KEY = 'percetakan_amanah_pos_v3';
       const ROOM_STORAGE_KEY = 'percetakan_amanah_room_code';
+      const SESSION_USER_KEY = 'percetakan_amanah_logged_user';
       const appId = typeof __app_id !== 'undefined' ? __app_id : 'percetakan-amanah-pos';
 
       // Cloud State
@@ -779,17 +849,13 @@
             </linearGradient>
           </defs>
           <rect width="120" height="120" rx="22" fill="#ffffff"/>
-          <!-- Huruf A -->
           <path d="M22 92 L52 22 L68 22 L98 92 L82 92 L60 38 L38 92 Z" fill="url(#amanahBlue)"/>
-          <!-- Kertas Melengkung -->
           <path d="M56 54 Q84 48 102 64 L90 78 Q72 64 52 68 Z" fill="#e0f7fa" stroke="#00aeef" stroke-width="2.5"/>
-          <!-- Roller Cetak Oranye -->
           <g transform="rotate(-24 72 42)">
             <rect x="52" y="34" width="40" height="14" rx="6" fill="url(#amanahOrange)"/>
             <rect x="44" y="39" width="8" height="4" rx="2" fill="#0f2137"/>
             <rect x="92" y="39" width="8" height="4" rx="2" fill="#0f2137"/>
           </g>
-          <!-- Jabat Tangan -->
           <path d="M36 74 Q50 66 64 74 Q74 66 84 74 L74 86 Q60 92 46 86 Z" fill="#0066b2"/>
           <text x="60" y="106" text-anchor="middle" font-family="Inter, sans-serif" font-weight="800" font-size="11.5" fill="#004a8f">AMANAH</text>
         </svg>
@@ -809,11 +875,44 @@
         { key: 'E-Wallet', desc: 'DANA, OVO, GoPay, ShopeePay' }
       ];
 
+      function normalizeUser(u) {
+        return {
+          ...u,
+          accessLevel: u.accessLevel === 'ADMIN' ? 'ADMIN' : 'USER',
+          role: u.role || 'Kasir',
+          pin: u.pin || '1234'
+        };
+      }
+
+      function normalizeStoreSettings(rawSettings, defSettings) {
+        const merged = {
+          ...defSettings,
+          ...(rawSettings || {}),
+          nonCashMethods: {
+            ...defSettings.nonCashMethods,
+            ...((rawSettings && rawSettings.nonCashMethods) || {})
+          },
+          theme: {
+            ...defSettings.theme,
+            ...((rawSettings && rawSettings.theme) || {})
+          }
+        };
+
+        // Migrasi dari field lama storeContact jika storeSlogan / storeWa belum terisi terpisah
+        if (rawSettings && rawSettings.storeContact && rawSettings.storeSlogan === undefined && rawSettings.storeWa === undefined) {
+          const parts = String(rawSettings.storeContact).split('•');
+          merged.storeSlogan = (parts[0] || '').trim();
+          merged.storeWa = (parts[1] || '').replace(/^WA:\s*/i, '').trim();
+        }
+        return merged;
+      }
+
       function createDefaultState() {
         return {
           settings: {
             storeName: 'PERCETAKAN AMANAH',
-            storeContact: 'Kualitas & Kepercayaan • WA: 0812-3456-7890',
+            storeSlogan: 'Kualitas & Kepercayaan',
+            storeWa: '0812-3456-7890',
             customLogoDataUrl: '',
             nonCashMethods: {
               'Transfer Bank': true,
@@ -849,9 +948,10 @@
             { id: 'f4', name: 'Rangka kayu', costType: 'PER_ITEM', price: 25000, agentPrice: 20000 }
           ],
           users: [
-            { id: 'u1', name: 'Arman', role: 'Kasir' },
-            { id: 'u2', name: 'Siti Munaroh', role: 'Kasir' },
-            { id: 'u3', name: 'Budi Santoso', role: 'Operator' }
+            { id: 'u_admin', name: 'Administrator', role: 'Kasir', accessLevel: 'ADMIN', pin: '1234' },
+            { id: 'u1', name: 'Arman', role: 'Kasir', accessLevel: 'USER', pin: '1234' },
+            { id: 'u2', name: 'Siti Munaroh', role: 'Kasir', accessLevel: 'USER', pin: '1234' },
+            { id: 'u3', name: 'Budi Santoso', role: 'Operator', accessLevel: 'USER', pin: '1234' }
           ],
           agens: [
             { id: 'ag1', name: 'Perc. Gembira', phone: '081298765432', address: 'Jl. Merdeka No. 12' },
@@ -889,6 +989,14 @@
         };
       }
 
+      function ensureAtLeastOneAdmin(userList) {
+        const normalized = userList.map(normalizeUser);
+        if (!normalized.some(u => u.accessLevel === 'ADMIN') && normalized.length > 0) {
+          normalized[0].accessLevel = 'ADMIN';
+        }
+        return normalized;
+      }
+
       // Load State dengan Fallback Aman
       let state = createDefaultState();
       try {
@@ -897,24 +1005,14 @@
           const parsed = JSON.parse(raw);
           if (parsed && typeof parsed === 'object') {
             const def = createDefaultState();
+            const loadedUsers = Array.isArray(parsed.users) && parsed.users.length ? ensureAtLeastOneAdmin(parsed.users) : def.users;
             state = {
-              settings: {
-                ...def.settings,
-                ...(parsed.settings || {}),
-                nonCashMethods: {
-                  ...def.settings.nonCashMethods,
-                  ...((parsed.settings && parsed.settings.nonCashMethods) || {})
-                },
-                theme: {
-                  ...def.settings.theme,
-                  ...((parsed.settings && parsed.settings.theme) || {})
-                }
-              },
+              settings: normalizeStoreSettings(parsed.settings, def.settings),
               materialsM2: Array.isArray(parsed.materialsM2) && parsed.materialsM2.length ? parsed.materialsM2 : def.materialsM2,
               materialsSatuan: Array.isArray(parsed.materialsSatuan) && parsed.materialsSatuan.length ? parsed.materialsSatuan : def.materialsSatuan,
               productsAtk: Array.isArray(parsed.productsAtk) && parsed.productsAtk.length ? parsed.productsAtk : def.productsAtk,
               finishings: Array.isArray(parsed.finishings) && parsed.finishings.length ? parsed.finishings : def.finishings,
-              users: Array.isArray(parsed.users) && parsed.users.length ? parsed.users : def.users,
+              users: loadedUsers,
               agens: Array.isArray(parsed.agens) ? parsed.agens : def.agens,
               supliers: Array.isArray(parsed.supliers) ? parsed.supliers : def.supliers,
               orders: Array.isArray(parsed.orders) ? parsed.orders : def.orders
@@ -943,14 +1041,18 @@
         const roomBadge = document.getElementById('header-room-badge');
         const settingsPill = document.getElementById('settings-cloud-pill');
         const lastSyncEl = document.getElementById('settings-last-sync');
+        const loginRoomEl = document.getElementById('login-room-code');
+        const loginCloudEl = document.getElementById('login-cloud-status');
 
         if (roomBadge) roomBadge.textContent = activeRoomCode;
+        if (loginRoomEl) loginRoomEl.textContent = activeRoomCode;
         if (lastSyncEl) lastSyncEl.textContent = `Sinkronisasi terakhir: ${lastSyncTimeStr}`;
 
         if (status === 'ONLINE') {
           cloudConnected = true;
           if (badge) badge.className = 'inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-400/30';
           if (textEl) textEl.textContent = detailText || 'Online';
+          if (loginCloudEl) loginCloudEl.textContent = 'Cloud Online';
           if (settingsPill) {
             settingsPill.className = 'px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-100 text-emerald-800 shrink-0';
             settingsPill.textContent = 'Terhubung Cloud';
@@ -958,6 +1060,7 @@
         } else if (status === 'SYNCING') {
           if (badge) badge.className = 'inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-400/30';
           if (textEl) textEl.textContent = detailText || 'Menyinkronkan...';
+          if (loginCloudEl) loginCloudEl.textContent = 'Menyinkronkan...';
           if (settingsPill) {
             settingsPill.className = 'px-2.5 py-1 rounded-full text-[11px] font-bold bg-cyan-100 text-cyan-800 shrink-0';
             settingsPill.textContent = 'Menyinkronkan...';
@@ -966,6 +1069,7 @@
           cloudConnected = false;
           if (badge) badge.className = 'inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-500/20 text-rose-300 border border-rose-400/30';
           if (textEl) textEl.textContent = detailText || 'Offline (Lokal)';
+          if (loginCloudEl) loginCloudEl.textContent = 'Mode Offline';
           if (settingsPill) {
             settingsPill.className = 'px-2.5 py-1 rounded-full text-[11px] font-bold bg-rose-100 text-rose-800 shrink-0';
             settingsPill.textContent = 'Mode Offline';
@@ -1010,24 +1114,14 @@
       function mergeRemoteState(remoteObj) {
         if (!remoteObj || typeof remoteObj !== 'object') return;
         const def = createDefaultState();
+        const remoteUsers = Array.isArray(remoteObj.users) && remoteObj.users.length ? ensureAtLeastOneAdmin(remoteObj.users) : def.users;
         state = {
-          settings: {
-            ...def.settings,
-            ...(remoteObj.settings || {}),
-            nonCashMethods: {
-              ...def.settings.nonCashMethods,
-              ...((remoteObj.settings && remoteObj.settings.nonCashMethods) || {})
-            },
-            theme: {
-              ...def.settings.theme,
-              ...((remoteObj.settings && remoteObj.settings.theme) || {})
-            }
-          },
+          settings: normalizeStoreSettings(remoteObj.settings, def.settings),
           materialsM2: Array.isArray(remoteObj.materialsM2) && remoteObj.materialsM2.length ? remoteObj.materialsM2 : def.materialsM2,
           materialsSatuan: Array.isArray(remoteObj.materialsSatuan) && remoteObj.materialsSatuan.length ? remoteObj.materialsSatuan : def.materialsSatuan,
           productsAtk: Array.isArray(remoteObj.productsAtk) && remoteObj.productsAtk.length ? remoteObj.productsAtk : def.productsAtk,
           finishings: Array.isArray(remoteObj.finishings) && remoteObj.finishings.length ? remoteObj.finishings : def.finishings,
-          users: Array.isArray(remoteObj.users) && remoteObj.users.length ? remoteObj.users : def.users,
+          users: remoteUsers,
           agens: Array.isArray(remoteObj.agens) ? remoteObj.agens : def.agens,
           supliers: Array.isArray(remoteObj.supliers) ? remoteObj.supliers : def.supliers,
           orders: Array.isArray(remoteObj.orders) ? remoteObj.orders : def.orders
@@ -1067,7 +1161,12 @@
                   } catch (e) {}
                   applyTheme();
                   renderHeaderIdentity();
-                  refreshActivePageUI();
+                  renderLoginScreen();
+                  if (ui.activePage === 'settings' && !isCurrentUserAdmin()) {
+                    navigateTo('kasir');
+                  } else {
+                    refreshActivePageUI();
+                  }
                 } catch (parseErr) {
                   console.error('Error parse cloud state:', parseErr);
                 } finally {
@@ -1075,7 +1174,6 @@
                 }
               }
             } else {
-              // Room baru belum ada di cloud, unggah state lokal saat ini sebagai data awal room
               pushStateToCloud(false);
             }
           },
@@ -1132,6 +1230,7 @@
 
       // State UI Sementara
       const ui = {
+        loggedInUserId: sessionStorage.getItem(SESSION_USER_KEY) || '',
         activePage: 'kasir',
         prevPage: 'kasir',
         customerType: 'Umum',
@@ -1150,8 +1249,17 @@
         modalCallback: null
       };
 
+      function getCurrentUser() {
+        return state.users.find(u => u.id === ui.loggedInUserId) || null;
+      }
+
+      function isCurrentUserAdmin() {
+        const u = getCurrentUser();
+        return Boolean(u && u.accessLevel === 'ADMIN');
+      }
+
       // =====================================================================
-      // HELPERS ANGKA & FORMAT RUPIAH (TANDA TITIK RIBUAN OTOMATIS)
+      // HELPERS ANGKA & FORMAT RUPIAH
       // =====================================================================
       function formatRibuan(num) {
         const clean = Math.round(Number(num) || 0);
@@ -1238,23 +1346,139 @@
         const nameEl = document.getElementById('header-store-name');
         const dateEl = document.getElementById('header-date-text');
         const logoWrap = document.getElementById('header-logo-wrap');
+        const userBadge = document.getElementById('header-user-badge');
+        const settingsBtn = document.getElementById('btn-header-settings');
 
         if (nameEl) nameEl.textContent = state.settings.storeName || 'PERCETAKAN AMANAH';
         if (dateEl) dateEl.textContent = getFormattedIndoDate();
 
-        if (logoWrap) {
-          if (state.settings.customLogoDataUrl) {
-            logoWrap.innerHTML = `<img src="${state.settings.customLogoDataUrl}" alt="Logo" class="w-full h-full object-contain rounded-lg" />`;
+        const currentUser = getCurrentUser();
+        const isAdmin = isCurrentUserAdmin();
+
+        if (userBadge) {
+          if (currentUser) {
+            const levelLabel = isAdmin ? 'Administrator' : `User · ${currentUser.role}`;
+            userBadge.textContent = `${currentUser.name} (${levelLabel})`;
+            userBadge.className = isAdmin
+              ? 'px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-400/20 text-amber-200 border border-amber-300/30'
+              : 'px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-200';
           } else {
-            logoWrap.innerHTML = DEFAULT_LOGO_SVG;
+            userBadge.textContent = 'Belum Login';
           }
         }
+
+        if (settingsBtn) {
+          if (isAdmin) {
+            settingsBtn.classList.remove('hidden');
+            settingsBtn.classList.add('flex');
+          } else {
+            settingsBtn.classList.add('hidden');
+            settingsBtn.classList.remove('flex');
+          }
+        }
+
+        const logoHtml = state.settings.customLogoDataUrl
+          ? `<img src="${state.settings.customLogoDataUrl}" alt="Logo" class="w-full h-full object-contain rounded-lg" />`
+          : DEFAULT_LOGO_SVG;
+
+        if (logoWrap) logoWrap.innerHTML = logoHtml;
+        const loginLogoWrap = document.getElementById('login-logo-wrap');
+        const loginStoreName = document.getElementById('login-store-name');
+        if (loginLogoWrap) loginLogoWrap.innerHTML = logoHtml;
+        if (loginStoreName) loginStoreName.textContent = state.settings.storeName || 'PERCETAKAN AMANAH';
+      }
+
+      function renderLoginScreen() {
+        const screen = document.getElementById('login-screen');
+        const selectEl = document.getElementById('login-user-select');
+        if (!screen || !selectEl) return;
+
+        const prevVal = selectEl.value;
+        selectEl.innerHTML = state.users.map(u => {
+          const levelText = u.accessLevel === 'ADMIN' ? 'Administrator' : `User Biasa (${u.role})`;
+          return `<option value="${escapeHtml(u.id)}">${escapeHtml(u.name)} — ${escapeHtml(levelText)}</option>`;
+        }).join('');
+        if (prevVal && state.users.some(u => u.id === prevVal)) {
+          selectEl.value = prevVal;
+        }
+
+        const validUser = getCurrentUser();
+        if (validUser) {
+          screen.classList.add('hidden');
+        } else {
+          ui.loggedInUserId = '';
+          screen.classList.remove('hidden');
+        }
+      }
+
+      function handleLoginSubmit() {
+        const selectEl = document.getElementById('login-user-select');
+        const pinInput = document.getElementById('login-pin-input');
+        if (!selectEl || !pinInput) return;
+
+        const user = state.users.find(u => u.id === selectEl.value);
+        if (!user) {
+          showToast('Pilih akun pengguna terlebih dahulu', 'error');
+          return;
+        }
+
+        const expectedPin = String(user.pin || '1234').trim();
+        const enteredPin = String(pinInput.value || '').trim();
+
+        if (!enteredPin) {
+          showToast('Masukkan PIN login terlebih dahulu', 'error');
+          pinInput.focus();
+          return;
+        }
+
+        if (enteredPin !== expectedPin) {
+          showToast('PIN salah! Silakan periksa kembali PIN Anda', 'error');
+          pinInput.value = '';
+          pinInput.focus();
+          return;
+        }
+
+        ui.loggedInUserId = user.id;
+        try { sessionStorage.setItem(SESSION_USER_KEY, user.id); } catch (e) {}
+        pinInput.value = '';
+        renderHeaderIdentity();
+        renderLoginScreen();
+
+        if (ui.activePage === 'settings' && !isCurrentUserAdmin()) {
+          navigateTo('kasir');
+        } else {
+          refreshActivePageUI();
+        }
+
+        const staffDisplay = document.getElementById('kasir-staff-display');
+        if (staffDisplay) {
+          staffDisplay.textContent = user.name;
+        }
+
+        const levelInfo = user.accessLevel === 'ADMIN' ? 'Administrator' : 'User Biasa';
+        showToast(`Masuk sebagai ${user.name} (${levelInfo})`, 'success');
+      }
+
+      function handleLogout() {
+        ui.loggedInUserId = '';
+        try { sessionStorage.removeItem(SESSION_USER_KEY); } catch (e) {}
+        if (ui.activePage === 'settings') {
+          ui.activePage = 'kasir';
+        }
+        renderHeaderIdentity();
+        renderLoginScreen();
+        showToast('Anda telah keluar dari sesi', 'info');
       }
 
       // =====================================================================
       // NAVIGASI HALAMAN
       // =====================================================================
       function navigateTo(page) {
+        if (page === 'settings' && !isCurrentUserAdmin()) {
+          showToast('Akses ditolak: Pengaturan hanya untuk Administrator', 'error');
+          return;
+        }
+
         if (page !== 'settings') {
           ui.prevPage = page;
         }
@@ -1295,7 +1519,6 @@
       }
 
       function renderKasirPage() {
-        // Jenis pelanggan pills
         const btnUmum = document.getElementById('btn-cust-umum');
         const btnAgen = document.getElementById('btn-cust-agen');
         const agenWrap = document.getElementById('kasir-agen-select-wrap');
@@ -1327,7 +1550,6 @@
           }
         }
 
-        // Mode Cetak tabs
         ['M2', 'SATUAN', 'ATK'].forEach(mode => {
           const btn = document.getElementById(`btn-mode-${mode}`);
           if (!btn) return;
@@ -1338,7 +1560,6 @@
           }
         });
 
-        // Dropdown bahan sesuai mode
         const labelBahan = document.getElementById('kasir-bahan-label');
         const selectBahan = document.getElementById('kasir-bahan-select');
         const dimWrap = document.getElementById('kasir-dimensi-wrap');
@@ -1372,7 +1593,6 @@
           selectBahan.value = prevSelected;
         }
 
-        // Finishing pills
         const finPills = document.getElementById('kasir-finishing-pills');
         finPills.innerHTML = state.finishings.map(fin => {
           const active = ui.selectedFinishings.includes(fin.id);
@@ -1384,18 +1604,12 @@
             }">${escapeHtml(fin.name)}${extra}</button>`;
         }).join('');
 
-        // Dropdown Kasir Bertugas
-        const staffSelect = document.getElementById('kasir-staff-select');
-        const kasirUsers = state.users.filter(u => u.role === 'Kasir');
-        const currentStaff = staffSelect.value;
-        staffSelect.innerHTML = (kasirUsers.length ? kasirUsers : state.users).map(u =>
-          `<option value="${escapeHtml(u.name)}">${escapeHtml(u.name)}</option>`
-        ).join('');
-        if (currentStaff && Array.from(staffSelect.options).some(o => o.value === currentStaff)) {
-          staffSelect.value = currentStaff;
+        const staffDisplay = document.getElementById('kasir-staff-display');
+        const loggedUser = getCurrentUser();
+        if (staffDisplay) {
+          staffDisplay.textContent = loggedUser ? loggedUser.name : (state.users[0]?.name || 'Administrator');
         }
 
-        // Render metode pembayaran aktif
         renderPaymentMethodPills();
         recalcKasir();
         renderCart();
@@ -1605,9 +1819,9 @@
         const paidRaw = parseRibuan(document.getElementById('kasir-pay-input').value);
         const recordedPaid = paidRaw > total ? total : paidRaw;
         const custName = (document.getElementById('kasir-customer-name').value || '').trim() || 'Umum';
-        const cashierName = document.getElementById('kasir-staff-select').value || 'Arman';
+        const loggedUser = getCurrentUser();
+        const cashierName = loggedUser ? loggedUser.name : (state.users[0]?.name || 'Administrator');
 
-        // Kurangi stok ATK otomatis
         ui.cart.forEach(item => {
           if (item.mode === 'ATK') {
             const atk = state.productsAtk.find(a => a.id === item.productId);
@@ -1638,11 +1852,10 @@
         state.orders.unshift(newOrder);
         saveState();
 
-        // Reset keranjang & input bayar
         ui.cart = [];
         document.getElementById('kasir-pay-input').value = '';
         if (ui.customerType === 'Umum') {
-          document.getElementById('kasir-customer-name').value = 'Umum';
+          document.getElementById('kasir-customer-name').value = '';
         }
         renderCart();
         showToast(`Order ${invId} berhasil disimpan`, 'success');
@@ -1760,6 +1973,13 @@
           `<div class="pl-2">${escapeHtml(p.date)} ${escapeHtml(p.method)} ${formatRp(p.amount)}</div>`
         ).join('');
 
+        const sloganHtml = state.settings.storeSlogan
+          ? `<div class="text-[10px] text-slate-600">${escapeHtml(state.settings.storeSlogan)}</div>`
+          : '';
+        const waHtml = state.settings.storeWa
+          ? `<div class="text-[10px] text-slate-600">WA: ${escapeHtml(state.settings.storeWa)}</div>`
+          : '';
+
         printArea.innerHTML = `
           <div class="flex items-center gap-2.5 pb-2 mb-2 border-b border-dashed border-slate-400">
             <div class="w-10 h-10 shrink-0 bg-white rounded p-0.5 border border-slate-200">
@@ -1767,7 +1987,8 @@
             </div>
             <div>
               <div class="font-extrabold text-xs uppercase">${escapeHtml(state.settings.storeName)}</div>
-              <div class="text-[10px] text-slate-600">${escapeHtml(state.settings.storeContact)}</div>
+              ${sloganHtml}
+              ${waHtml}
             </div>
           </div>
           <div>${escapeHtml(order.id)} · ${escapeHtml(order.date)}</div>
@@ -2136,15 +2357,21 @@
       }
 
       // =====================================================================
-      // LOGIKA HALAMAN PENGATURAN (IDENTITAS, TEMA, NON-TUNAI, USER)
+      // LOGIKA HALAMAN PENGATURAN (KHUSUS ADMINISTRATOR)
       // =====================================================================
       function renderSettingsPage() {
+        if (!isCurrentUserAdmin()) {
+          navigateTo('kasir');
+          return;
+        }
+
         const roomInput = document.getElementById('setting-room-code');
         if (roomInput) roomInput.value = activeRoomCode;
         updateCloudBadgeUI(cloudConnected ? 'ONLINE' : 'OFFLINE', cloudConnected ? 'Online' : 'Offline (Lokal)');
 
         document.getElementById('setting-store-name').value = state.settings.storeName || 'PERCETAKAN AMANAH';
-        document.getElementById('setting-store-contact').value = state.settings.storeContact || '';
+        document.getElementById('setting-store-slogan').value = state.settings.storeSlogan || '';
+        document.getElementById('setting-store-wa').value = state.settings.storeWa || '';
 
         const logoPrev = document.getElementById('settings-logo-preview');
         logoPrev.innerHTML = state.settings.customLogoDataUrl
@@ -2198,26 +2425,45 @@
           `;
         }).join('');
 
-        // Users
+        // Users & Hak Akses
         const usersWrap = document.getElementById('users-list-container');
-        usersWrap.innerHTML = state.users.map((u, idx) => `
-          <div class="pb-3 border-b border-slate-200 last:border-none space-y-2">
+        usersWrap.innerHTML = state.users.map((u, idx) => {
+          const isAdminAccount = u.accessLevel === 'ADMIN';
+          return `
+          <div class="pb-3.5 border-b border-slate-200 last:border-none space-y-2.5">
             <div class="flex items-center gap-2">
               <span class="text-slate-400 font-bold">≡</span>
               <input type="text" data-user-index="${idx}" value="${escapeHtml(u.name)}"
                 class="user-name-input app-input flex-1 rounded-xl px-3 py-2 text-sm font-bold" />
+              <input type="text" inputmode="numeric" maxlength="6" data-user-pin-index="${idx}" value="${escapeHtml(u.pin || '1234')}" placeholder="PIN"
+                class="user-pin-input app-input w-24 text-center rounded-xl px-2.5 py-2 text-sm font-bold font-mono-code" title="PIN Login (4-6 digit)" />
             </div>
             <div class="pl-5 space-y-2">
-              <p class="text-xs muted-text">Jabatan</p>
-              <div class="grid grid-cols-2 rounded-xl border border-slate-200 overflow-hidden bg-slate-50 p-0.5">
-                <button type="button" data-action="set-user-role" data-index="${idx}" data-role="Kasir"
-                  class="py-2 text-xs font-bold rounded-lg cursor-pointer ${u.role === 'Kasir' ? 'btn-accent' : 'text-slate-600'}">
-                  Kasir
-                </button>
-                <button type="button" data-action="set-user-role" data-index="${idx}" data-role="Operator"
-                  class="py-2 text-xs font-bold rounded-lg cursor-pointer ${u.role === 'Operator' ? 'btn-accent' : 'text-slate-600'}">
-                  Operator
-                </button>
+              <div class="space-y-1">
+                <p class="text-xs muted-text">Level Hak Akses</p>
+                <div class="grid grid-cols-2 rounded-xl border border-slate-200 overflow-hidden bg-slate-50 p-0.5">
+                  <button type="button" data-action="set-user-access" data-index="${idx}" data-level="ADMIN"
+                    class="py-2 text-xs font-bold rounded-lg cursor-pointer ${isAdminAccount ? 'btn-accent' : 'text-slate-600'}">
+                    Administrator
+                  </button>
+                  <button type="button" data-action="set-user-access" data-index="${idx}" data-level="USER"
+                    class="py-2 text-xs font-bold rounded-lg cursor-pointer ${!isAdminAccount ? 'btn-accent' : 'text-slate-600'}">
+                    User Biasa
+                  </button>
+                </div>
+              </div>
+              <div class="space-y-1">
+                <p class="text-xs muted-text">Jabatan</p>
+                <div class="grid grid-cols-2 rounded-xl border border-slate-200 overflow-hidden bg-slate-50 p-0.5">
+                  <button type="button" data-action="set-user-role" data-index="${idx}" data-role="Kasir"
+                    class="py-2 text-xs font-bold rounded-lg cursor-pointer ${u.role === 'Kasir' ? 'btn-accent' : 'text-slate-600'}">
+                    Kasir
+                  </button>
+                  <button type="button" data-action="set-user-role" data-index="${idx}" data-role="Operator"
+                    class="py-2 text-xs font-bold rounded-lg cursor-pointer ${u.role === 'Operator' ? 'btn-accent' : 'text-slate-600'}">
+                    Operator
+                  </button>
+                </div>
               </div>
               <button type="button" data-action="delete-user" data-index="${idx}"
                 class="w-full py-2 rounded-xl border border-slate-200 bg-white text-slate-700 hover:text-rose-600 text-xs font-bold cursor-pointer">
@@ -2225,7 +2471,7 @@
               </button>
             </div>
           </div>
-        `).join('');
+        `}).join('');
       }
 
       // =====================================================================
@@ -2255,9 +2501,17 @@
         if (!target) return;
         const action = target.dataset.action;
 
-        if (action === 'nav-tab') {
+        if (action === 'submit-login') {
+          handleLoginSubmit();
+        } else if (action === 'logout-app') {
+          handleLogout();
+        } else if (action === 'nav-tab') {
           navigateTo(target.dataset.page);
         } else if (action === 'toggle-settings') {
+          if (!isCurrentUserAdmin()) {
+            showToast('Akses ditolak: Pengaturan hanya untuk Administrator', 'error');
+            return;
+          }
           if (ui.activePage === 'settings') navigateTo(ui.prevPage || 'kasir');
           else navigateTo('settings');
         } else if (action === 'close-settings') {
@@ -2265,7 +2519,7 @@
         } else if (action === 'set-cust-type') {
           ui.customerType = target.dataset.value;
           if (ui.customerType === 'Umum') {
-            document.getElementById('kasir-customer-name').value = 'Umum';
+            document.getElementById('kasir-customer-name').value = '';
           }
           renderKasirPage();
         } else if (action === 'set-prod-mode') {
@@ -2528,25 +2782,63 @@
           saveState();
           renderSettingsPage();
           showToast(`${key} ${!current ? 'ditampilkan' : 'disembunyikan'}`, 'info');
+        } else if (action === 'set-user-access') {
+          const idx = parseInt(target.dataset.index, 10);
+          const newLevel = target.dataset.level;
+          if (state.users[idx]) {
+            if (newLevel === 'USER' && state.users[idx].accessLevel === 'ADMIN') {
+              const adminCount = state.users.filter(u => u.accessLevel === 'ADMIN').length;
+              if (adminCount <= 1) {
+                showToast('Minimal harus ada 1 akun Administrator', 'error');
+                return;
+              }
+            }
+            state.users[idx].accessLevel = newLevel;
+            saveState();
+            renderHeaderIdentity();
+            renderLoginScreen();
+            if (!isCurrentUserAdmin()) {
+              navigateTo('kasir');
+            } else {
+              renderSettingsPage();
+            }
+          }
         } else if (action === 'set-user-role') {
           const idx = parseInt(target.dataset.index, 10);
           if (state.users[idx]) {
             state.users[idx].role = target.dataset.role;
             saveState();
+            renderHeaderIdentity();
+            renderLoginScreen();
             renderSettingsPage();
           }
         } else if (action === 'add-new-user') {
-          state.users.push({ id: 'u_' + Date.now(), name: 'Pengguna Baru', role: 'Kasir' });
+          state.users.push({ id: 'u_' + Date.now(), name: 'User Baru', role: 'Kasir', accessLevel: 'USER', pin: '1234' });
           saveState();
+          renderLoginScreen();
           renderSettingsPage();
         } else if (action === 'delete-user') {
           if (state.users.length <= 1) {
             showToast('Minimal harus ada 1 pengguna', 'error');
             return;
           }
-          state.users.splice(parseInt(target.dataset.index, 10), 1);
+          const delIdx = parseInt(target.dataset.index, 10);
+          const deletedUser = state.users[delIdx];
+          if (deletedUser && deletedUser.accessLevel === 'ADMIN') {
+            const adminCount = state.users.filter(u => u.accessLevel === 'ADMIN').length;
+            if (adminCount <= 1) {
+              showToast('Minimal harus tersisa 1 akun Administrator', 'error');
+              return;
+            }
+          }
+          state.users.splice(delIdx, 1);
           saveState();
-          renderSettingsPage();
+          renderLoginScreen();
+          if (deletedUser && deletedUser.id === ui.loggedInUserId) {
+            handleLogout();
+          } else {
+            renderSettingsPage();
+          }
         } else if (action === 'close-form-modal') {
           closeFormModal();
         } else if (action === 'submit-form-modal') {
@@ -2559,7 +2851,6 @@
       document.addEventListener('input', function (e) {
         const el = e.target;
 
-        // Format titik ribuan otomatis pada input nominal
         if (el.classList.contains('rupiah-input')) {
           const rawDigits = el.value.replace(/[^0-9]/g, '');
           el.value = rawDigits ? formatRibuan(parseInt(rawDigits, 10)) : '';
@@ -2574,7 +2865,8 @@
           renderOrderPage();
         } else if (el.dataset.action === 'update-store-info') {
           state.settings.storeName = document.getElementById('setting-store-name').value || 'PERCETAKAN AMANAH';
-          state.settings.storeContact = document.getElementById('setting-store-contact').value || '';
+          state.settings.storeSlogan = document.getElementById('setting-store-slogan').value || '';
+          state.settings.storeWa = document.getElementById('setting-store-wa').value || '';
           saveState();
           renderHeaderIdentity();
         } else if (el.classList.contains('bahan-edit-input')) {
@@ -2599,7 +2891,23 @@
           if (state.users[idx]) {
             state.users[idx].name = el.value;
             saveState();
+            renderHeaderIdentity();
+            renderLoginScreen();
           }
+        } else if (el.classList.contains('user-pin-input')) {
+          const idx = parseInt(el.dataset.userPinIndex, 10);
+          el.value = el.value.replace(/[^0-9]/g, '');
+          if (state.users[idx]) {
+            state.users[idx].pin = el.value || '1234';
+            saveState();
+          }
+        }
+      });
+
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' && e.target && e.target.id === 'login-pin-input') {
+          e.preventDefault();
+          handleLoginSubmit();
         }
       });
 
@@ -2632,6 +2940,7 @@
               saveState();
               applyTheme();
               renderHeaderIdentity();
+              renderLoginScreen();
               renderSettingsPage();
               showToast('Data berhasil dipulihkan dari backup', 'success');
             } catch (err) {
@@ -2661,6 +2970,7 @@
         try {
           applyTheme();
           renderHeaderIdentity();
+          renderLoginScreen();
           navigateTo('kasir');
           initFirebaseCloud();
         } catch (err) {
@@ -2669,6 +2979,7 @@
           saveState();
           applyTheme();
           renderHeaderIdentity();
+          renderLoginScreen();
           navigateTo('kasir');
         }
       }
