@@ -20,6 +20,8 @@
       --text-main: #0f172a;
       --text-muted: #64748b;
       --nav-bg: #ffffff;
+      --nav-box-bg: #f8fafc;
+      --nav-box-border: #cbd5e1;
       --nav-active: #0e7490;
       --input-bg: #f1f5f9;
     }
@@ -85,20 +87,23 @@
       border-top: 1px solid var(--card-border);
     }
 
-    .nav-tab-active {
-      color: var(--nav-active) !important;
-      font-weight: 700;
+    .nav-btn {
+      background-color: var(--nav-box-bg);
+      border: 1.5px solid var(--nav-box-border);
+      border-radius: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      white-space: nowrap;
+      flex-shrink: 0;
+      transition: all 0.15s ease;
     }
 
-    .nav-tab-active::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 16%;
-      right: 16%;
-      height: 3px;
-      background-color: var(--nav-active);
-      border-radius: 0 0 4px 4px;
+    .nav-tab-active {
+      background-color: var(--nav-active) !important;
+      border-color: var(--nav-active) !important;
+      color: #ffffff !important;
+      font-weight: 800;
+      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.12);
     }
 
     .cmyk-bar {
@@ -195,9 +200,7 @@
   <header class="app-header sticky top-0 z-30 shadow-md">
     <div class="max-w-xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
       <div class="flex items-center gap-3 min-w-0">
-        <div id="header-logo-wrap" class="w-11 h-11 rounded-xl bg-white p-1 flex items-center justify-center shrink-0 shadow-sm overflow-hidden">
-          <!-- Default Logo SVG dirender JS -->
-        </div>
+        <div id="header-logo-wrap" class="w-11 h-11 rounded-xl bg-white p-1 flex items-center justify-center shrink-0 shadow-sm overflow-hidden"></div>
         <div class="min-w-0">
           <h1 id="header-store-name" class="text-base sm:text-lg font-extrabold tracking-tight leading-tight truncate text-white">
             PERCETAKAN AMANAH
@@ -262,12 +265,6 @@
               Agen
             </button>
           </div>
-        </div>
-
-        <div id="kasir-agen-select-wrap" class="hidden space-y-1">
-          <label class="block text-xs font-semibold muted-text">Pilih Agen Terdaftar</label>
-          <select id="kasir-agen-select" data-action="select-agen"
-            class="app-input w-full rounded-xl px-3 py-2.5 text-sm font-bold"></select>
         </div>
 
         <div class="grid grid-cols-3 rounded-xl border border-slate-200 bg-slate-50 p-1">
@@ -356,6 +353,8 @@
 
           <div class="space-y-1">
             <label class="block text-xs font-semibold muted-text">Nama pelanggan</label>
+            <select id="kasir-cart-pelanggan-select" data-action="select-pelanggan"
+              class="app-input w-full rounded-xl px-3 py-2.5 text-sm font-bold mb-1.5"></select>
             <input type="text" id="kasir-customer-name" value="" placeholder="Kosongkan untuk Umum"
               class="app-input w-full rounded-xl px-3 py-2.5 text-sm font-bold" />
           </div>
@@ -440,20 +439,39 @@
     </section>
 
     <!-- =================================================================== -->
-    <!-- PAGE 4: STOK BAHAN & ATK                                            -->
+    <!-- PAGE 4: STOK BAHAN & ATK (4 SUB-TAB: M2, SATUAN, ATK, FINISHING)    -->
     <!-- =================================================================== -->
     <section id="page-stok" class="hidden space-y-3.5">
+      <div class="surface-card rounded-2xl border p-1.5 shadow-sm grid grid-cols-4 gap-1">
+        <button type="button" id="subtab-stok-M2" data-action="set-stok-tab" data-tab="M2"
+          class="py-2 text-[10px] sm:text-xs font-extrabold rounded-lg transition cursor-pointer btn-accent">
+          CETAK M²
+        </button>
+        <button type="button" id="subtab-stok-SATUAN" data-action="set-stok-tab" data-tab="SATUAN"
+          class="py-2 text-[10px] sm:text-xs font-extrabold rounded-lg transition cursor-pointer text-slate-600">
+          SATUAN
+        </button>
+        <button type="button" id="subtab-stok-ATK" data-action="set-stok-tab" data-tab="ATK"
+          class="py-2 text-[10px] sm:text-xs font-extrabold rounded-lg transition cursor-pointer text-slate-600">
+          ATK
+        </button>
+        <button type="button" id="subtab-stok-FINISHING" data-action="set-stok-tab" data-tab="FINISHING"
+          class="py-2 text-[10px] sm:text-xs font-extrabold rounded-lg transition cursor-pointer text-slate-600">
+          FINISHING
+        </button>
+      </div>
+
       <div class="surface-card rounded-2xl border p-4 shadow-sm space-y-2">
         <div>
-          <h2 class="text-base font-extrabold">Stok Bahan & ATK</h2>
-          <p class="text-xs muted-text">Pantau sisa stok roll bahan meteran dan produk ATK.</p>
+          <h2 id="stok-section-title" class="text-base font-extrabold">Stok Bahan Cetak M²</h2>
+          <p id="stok-section-desc" class="text-xs muted-text">Pantau dan tambah sisa stok bahan meteran.</p>
         </div>
         <div id="stok-list-container" class="divide-y divide-slate-200"></div>
       </div>
     </section>
 
     <!-- =================================================================== -->
-    <!-- PAGE 5: BAHAN (4 SUB-TAB: M2, SATUAN, ATK, FINISHING)               -->
+    <!-- PAGE 5: HARGA (4 SUB-TAB: M2, SATUAN, ATK, FINISHING)               -->
     <!-- =================================================================== -->
     <section id="page-bahan" class="hidden space-y-3.5">
       <div class="surface-card rounded-2xl border p-1.5 shadow-sm grid grid-cols-4 gap-1">
@@ -489,21 +507,32 @@
     </section>
 
     <!-- =================================================================== -->
-    <!-- PAGE 6: AGEN / RESELLER                                             -->
+    <!-- PAGE 6: PELANGGAN (2 SUB-TAB: AGEN & UMUM)                          -->
     <!-- =================================================================== -->
     <section id="page-agen" class="hidden space-y-3.5">
+      <div class="surface-card rounded-2xl border p-1.5 shadow-sm grid grid-cols-2 gap-1">
+        <button type="button" id="subtab-pelanggan-AGEN" data-action="set-pelanggan-tab" data-tab="AGEN"
+          class="py-2 text-xs font-extrabold rounded-lg transition cursor-pointer btn-accent">
+          Agen
+        </button>
+        <button type="button" id="subtab-pelanggan-UMUM" data-action="set-pelanggan-tab" data-tab="UMUM"
+          class="py-2 text-xs font-extrabold rounded-lg transition cursor-pointer text-slate-600">
+          Umum
+        </button>
+      </div>
+
       <div class="surface-card rounded-2xl border p-4 shadow-sm space-y-3">
-        <div class="flex items-center justify-between">
+        <div class="flex items-center justify-between gap-2">
           <div>
-            <h2 class="text-base font-extrabold">Daftar Agen / Reseller</h2>
-            <p class="text-xs muted-text">Pelanggan agen otomatis mendapat tarif khusus agen.</p>
+            <h2 id="pelanggan-section-title" class="text-base font-extrabold">Daftar Pelanggan Agen / Reseller</h2>
+            <p id="pelanggan-section-desc" class="text-xs muted-text">Pelanggan agen otomatis mendapat tarif khusus agen.</p>
           </div>
-          <button type="button" data-action="open-agen-modal"
-            class="px-3.5 py-2 rounded-xl btn-accent text-xs font-bold cursor-pointer">
+          <button type="button" id="btn-add-pelanggan" data-action="open-pelanggan-modal"
+            class="px-3.5 py-2 rounded-xl btn-accent text-xs font-bold cursor-pointer shrink-0">
             + Agen
           </button>
         </div>
-        <div id="agen-list-container" class="divide-y divide-slate-200"></div>
+        <div id="pelanggan-list-container" class="divide-y divide-slate-200"></div>
       </div>
     </section>
 
@@ -512,13 +541,13 @@
     <!-- =================================================================== -->
     <section id="page-suplier" class="hidden space-y-3.5">
       <div class="surface-card rounded-2xl border p-4 shadow-sm space-y-3">
-        <div class="flex items-center justify-between">
+        <div class="flex items-center justify-between gap-2">
           <div>
             <h2 class="text-base font-extrabold">Daftar Suplier Bahan</h2>
             <p class="text-xs muted-text">Kontak pemasok bahan flexi, tinta, dan kertas.</p>
           </div>
           <button type="button" data-action="open-suplier-modal"
-            class="px-3.5 py-2 rounded-xl btn-accent text-xs font-bold cursor-pointer">
+            class="px-3.5 py-2 rounded-xl btn-accent text-xs font-bold cursor-pointer shrink-0">
             + Suplier
           </button>
         </div>
@@ -591,6 +620,117 @@
         </div>
       </div>
 
+      <!-- 0B. Pusat Ekspor & Impor Excel (.XLS / .CSV) -->
+      <div class="surface-card rounded-2xl border p-4 shadow-sm space-y-3">
+        <div>
+          <h3 class="text-sm font-extrabold">Ekspor & Impor Data Excel</h3>
+          <p class="text-xs muted-text mt-0.5">Ekspor data masing-masing modul ke file Excel (.xls) ke folder pilihan atau impor kembali dari file Excel/CSV.</p>
+        </div>
+        <div class="divide-y divide-slate-200">
+          <div class="py-2.5 flex items-center justify-between gap-2">
+            <div>
+              <p class="text-xs font-extrabold">Data Order & Produksi</p>
+              <p class="text-[11px] muted-text">Seluruh transaksi order & status</p>
+            </div>
+            <div class="flex gap-1.5 shrink-0">
+              <button type="button" data-action="export-excel" data-type="order"
+                class="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold cursor-pointer">
+                Ekspor Excel
+              </button>
+              <label class="px-3 py-1.5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white text-xs font-extrabold cursor-pointer">
+                Impor Excel
+                <input type="file" accept=".xls,.xlsx,.csv" data-import-type="order" class="excel-import-input hidden" />
+              </label>
+            </div>
+          </div>
+
+          <div class="py-2.5 flex items-center justify-between gap-2">
+            <div>
+              <p class="text-xs font-extrabold">Laporan Keuangan</p>
+              <p class="text-[11px] muted-text">Rekap omzet, kas masuk & piutang</p>
+            </div>
+            <div class="flex gap-1.5 shrink-0">
+              <button type="button" data-action="export-excel" data-type="laporan"
+                class="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold cursor-pointer">
+                Ekspor Excel
+              </button>
+              <label class="px-3 py-1.5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white text-xs font-extrabold cursor-pointer">
+                Impor Excel
+                <input type="file" accept=".xls,.xlsx,.csv" data-import-type="laporan" class="excel-import-input hidden" />
+              </label>
+            </div>
+          </div>
+
+          <div class="py-2.5 flex items-center justify-between gap-2">
+            <div>
+              <p class="text-xs font-extrabold">Data Stok Bahan & ATK</p>
+              <p class="text-[11px] muted-text">Sisa stok Cetak M², Satuan, ATK & Finishing</p>
+            </div>
+            <div class="flex gap-1.5 shrink-0">
+              <button type="button" data-action="export-excel" data-type="stok"
+                class="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold cursor-pointer">
+                Ekspor Excel
+              </button>
+              <label class="px-3 py-1.5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white text-xs font-extrabold cursor-pointer">
+                Impor Excel
+                <input type="file" accept=".xls,.xlsx,.csv" data-import-type="stok" class="excel-import-input hidden" />
+              </label>
+            </div>
+          </div>
+
+          <div class="py-2.5 flex items-center justify-between gap-2">
+            <div>
+              <p class="text-xs font-extrabold">Daftar Harga Bahan & Finishing</p>
+              <p class="text-[11px] muted-text">Tarif umum, tarif agen & minimal m²</p>
+            </div>
+            <div class="flex gap-1.5 shrink-0">
+              <button type="button" data-action="export-excel" data-type="harga"
+                class="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold cursor-pointer">
+                Ekspor Excel
+              </button>
+              <label class="px-3 py-1.5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white text-xs font-extrabold cursor-pointer">
+                Impor Excel
+                <input type="file" accept=".xls,.xlsx,.csv" data-import-type="harga" class="excel-import-input hidden" />
+              </label>
+            </div>
+          </div>
+
+          <div class="py-2.5 flex items-center justify-between gap-2">
+            <div>
+              <p class="text-xs font-extrabold">Data Pelanggan (Agen & Umum)</p>
+              <p class="text-[11px] muted-text">Daftar nama, kontak & alamat pelanggan</p>
+            </div>
+            <div class="flex gap-1.5 shrink-0">
+              <button type="button" data-action="export-excel" data-type="agen"
+                class="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold cursor-pointer">
+                Ekspor Excel
+              </button>
+              <label class="px-3 py-1.5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white text-xs font-extrabold cursor-pointer">
+                Impor Excel
+                <input type="file" accept=".xls,.xlsx,.csv" data-import-type="agen" class="excel-import-input hidden" />
+              </label>
+            </div>
+          </div>
+
+          <div class="py-2.5 flex items-center justify-between gap-2">
+            <div>
+              <p class="text-xs font-extrabold">Data Suplier Bahan</p>
+              <p class="text-[11px] muted-text">Daftar kontak pemasok bahan & catatan</p>
+            </div>
+            <div class="flex gap-1.5 shrink-0">
+              <button type="button" data-action="export-excel" data-type="suplier"
+                class="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold cursor-pointer">
+                Ekspor Excel
+              </button>
+              <label class="px-3 py-1.5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white text-xs font-extrabold cursor-pointer">
+                Impor Excel
+                <input type="file" accept=".xls,.xlsx,.csv" data-import-type="suplier" class="excel-import-input hidden" />
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- 1. Identitas & Logo Usaha -->
       <div class="surface-card rounded-2xl border p-4 shadow-sm space-y-3.5">
         <h3 class="text-sm font-extrabold">Identitas & Logo Usaha</h3>
@@ -652,8 +792,16 @@
               <span class="text-slate-700 font-semibold">Bar Tab Bawah</span>
               <input type="color" id="custom-color-navbg" value="#ffffff" class="w-7 h-7 rounded cursor-pointer border-0" />
             </label>
+            <label class="flex items-center justify-between bg-slate-50 px-2.5 py-1.5 rounded-xl border border-slate-200">
+              <span class="text-slate-700 font-semibold">Kotak Tab</span>
+              <input type="color" id="custom-color-navboxbg" value="#f8fafc" class="w-7 h-7 rounded cursor-pointer border-0" />
+            </label>
+            <label class="flex items-center justify-between bg-slate-50 px-2.5 py-1.5 rounded-xl border border-slate-200">
+              <span class="text-slate-700 font-semibold">Garis Kotak Tab</span>
+              <input type="color" id="custom-color-navboxborder" value="#cbd5e1" class="w-7 h-7 rounded cursor-pointer border-0" />
+            </label>
             <label class="flex items-center justify-between bg-slate-50 px-2.5 py-1.5 rounded-xl border border-slate-200 col-span-2">
-              <span class="text-slate-700 font-semibold">Warna Tab Aktif</span>
+              <span class="text-slate-700 font-semibold">Kotak Tab Aktif</span>
               <input type="color" id="custom-color-navactive" value="#0e7490" class="w-7 h-7 rounded cursor-pointer border-0" />
             </label>
           </div>
@@ -696,37 +844,37 @@
   </main>
 
   <!-- ===================================================================== -->
-  <!-- NAVIGASI BAWAH (7 TAB)                                                -->
+  <!-- NAVIGASI BAWAH (7 TAB KOTAK TERPISAH - BISA DIGESER KIRI/KANAN)       -->
   <!-- ===================================================================== -->
-  <nav class="bottom-nav fixed bottom-0 left-0 right-0 z-30 shadow-[0_-2px_10px_rgba(0,0,0,0.05)]">
-    <div class="max-w-xl mx-auto grid grid-cols-7 text-center">
+  <nav class="bottom-nav fixed bottom-0 left-0 right-0 z-30 shadow-[0_-2px_10px_rgba(0,0,0,0.05)] py-2">
+    <div class="max-w-xl mx-auto flex items-center gap-1.5 overflow-x-auto no-scrollbar px-2.5 text-center">
       <button type="button" data-action="nav-tab" data-page="kasir" id="nav-kasir"
-        class="nav-btn nav-tab-active relative py-3 text-[11px] sm:text-xs font-medium text-slate-500 cursor-pointer">
-        Kasir
+        class="nav-btn nav-tab-active relative py-2.5 px-3.5 text-xs font-bold text-slate-600 cursor-pointer">
+        KASIR
       </button>
       <button type="button" data-action="nav-tab" data-page="order" id="nav-order"
-        class="nav-btn relative py-3 text-[11px] sm:text-xs font-medium text-slate-500 cursor-pointer">
-        Order
+        class="nav-btn relative py-2.5 px-3.5 text-xs font-bold text-slate-600 cursor-pointer">
+        ORDER
       </button>
       <button type="button" data-action="nav-tab" data-page="laporan" id="nav-laporan"
-        class="nav-btn relative py-3 text-[11px] sm:text-xs font-medium text-slate-500 cursor-pointer">
-        Laporan
+        class="nav-btn relative py-2.5 px-3.5 text-xs font-bold text-slate-600 cursor-pointer">
+        LAPORAN
       </button>
       <button type="button" data-action="nav-tab" data-page="stok" id="nav-stok"
-        class="nav-btn relative py-3 text-[11px] sm:text-xs font-medium text-slate-500 cursor-pointer">
-        Stok
+        class="nav-btn relative py-2.5 px-3.5 text-xs font-bold text-slate-600 cursor-pointer">
+        STOK
       </button>
       <button type="button" data-action="nav-tab" data-page="bahan" id="nav-bahan"
-        class="nav-btn relative py-3 text-[11px] sm:text-xs font-medium text-slate-500 cursor-pointer">
-        Bahan
+        class="nav-btn relative py-2.5 px-3.5 text-xs font-bold text-slate-600 cursor-pointer">
+        HARGA
       </button>
       <button type="button" data-action="nav-tab" data-page="agen" id="nav-agen"
-        class="nav-btn relative py-3 text-[11px] sm:text-xs font-medium text-slate-500 cursor-pointer">
-        Agen
+        class="nav-btn relative py-2.5 px-3.5 text-xs font-bold text-slate-600 cursor-pointer">
+        PELANGGAN
       </button>
       <button type="button" data-action="nav-tab" data-page="suplier" id="nav-suplier"
-        class="nav-btn relative py-3 text-[11px] sm:text-xs font-medium text-slate-500 cursor-pointer">
-        Suplier
+        class="nav-btn relative py-2.5 px-3.5 text-xs font-bold text-slate-600 cursor-pointer">
+        SUPLIER
       </button>
     </div>
   </nav>
@@ -736,9 +884,7 @@
   <!-- ===================================================================== -->
   <div id="modal-nota" class="fixed inset-0 z-50 bg-black/60 hidden items-end sm:items-center justify-center p-0 sm:p-4">
     <div class="bg-white text-slate-900 w-full max-w-md rounded-t-3xl sm:rounded-2xl shadow-2xl p-4 space-y-3.5 max-h-[90vh] overflow-y-auto">
-      <div id="nota-print-area" class="bg-slate-100 rounded-xl p-4 font-mono-code text-xs leading-relaxed text-slate-900 border border-slate-200">
-        <!-- Konten Nota Dirender JS -->
-      </div>
+      <div id="nota-print-area" class="bg-slate-100 rounded-xl p-4 font-mono-code text-xs leading-relaxed text-slate-900 border border-slate-200"></div>
 
       <!-- Kotak Pelunasan Jika Belum Lunas -->
       <div id="nota-settle-box" class="hidden bg-amber-50 border border-amber-200 rounded-xl p-3 space-y-2.5 no-print">
@@ -862,11 +1008,11 @@
       `;
 
       const THEME_PRESETS = [
-        { id: 'navy-teal', name: 'Navy Teal (Default)', headerBg: '#0f2137', accentColor: '#0e7490', appBg: '#eceff3', navBg: '#ffffff', navActive: '#0e7490', isDark: false },
-        { id: 'crimson-gold', name: 'Merah Emas Percetakan', headerBg: '#450a0a', accentColor: '#b91c1c', appBg: '#f5f3f0', navBg: '#ffffff', navActive: '#b91c1c', isDark: false },
-        { id: 'emerald-pro', name: 'Zamrud Hijau', headerBg: '#064e3b', accentColor: '#059669', appBg: '#ecfdf5', navBg: '#ffffff', navActive: '#059669', isDark: false },
-        { id: 'royal-purple', name: 'Ungu Royal', headerBg: '#2e1065', accentColor: '#7c3aed', appBg: '#f5f3ff', navBg: '#ffffff', navActive: '#7c3aed', isDark: false },
-        { id: 'dark-slate', name: 'Gelap (Dark Mode)', headerBg: '#020617', accentColor: '#06b6d4', appBg: '#0f172a', navBg: '#1e293b', navActive: '#22d3ee', isDark: true }
+        { id: 'navy-teal', name: 'Navy Teal (Default)', headerBg: '#0f2137', accentColor: '#0e7490', appBg: '#eceff3', navBg: '#ffffff', navBoxBg: '#f8fafc', navBoxBorder: '#cbd5e1', navActive: '#0e7490', isDark: false },
+        { id: 'crimson-gold', name: 'Merah Emas Percetakan', headerBg: '#450a0a', accentColor: '#b91c1c', appBg: '#f5f3f0', navBg: '#ffffff', navBoxBg: '#fef2f2', navBoxBorder: '#fecaca', navActive: '#b91c1c', isDark: false },
+        { id: 'emerald-pro', name: 'Zamrud Hijau', headerBg: '#064e3b', accentColor: '#059669', appBg: '#ecfdf5', navBg: '#ffffff', navBoxBg: '#f0fdf4', navBoxBorder: '#bbf7d0', navActive: '#059669', isDark: false },
+        { id: 'royal-purple', name: 'Ungu Royal', headerBg: '#2e1065', accentColor: '#7c3aed', appBg: '#f5f3ff', navBg: '#ffffff', navBoxBg: '#faf5ff', navBoxBorder: '#ddd6fe', navActive: '#7c3aed', isDark: false },
+        { id: 'dark-slate', name: 'Gelap (Dark Mode)', headerBg: '#020617', accentColor: '#06b6d4', appBg: '#0f172a', navBg: '#1e293b', navBoxBg: '#0f172a', navBoxBorder: '#334155', navActive: '#06b6d4', isDark: true }
       ];
 
       const NON_CASH_OPTIONS = [
@@ -898,7 +1044,6 @@
           }
         };
 
-        // Migrasi dari field lama storeContact jika storeSlogan / storeWa belum terisi terpisah
         if (rawSettings && rawSettings.storeContact && rawSettings.storeSlogan === undefined && rawSettings.storeWa === undefined) {
           const parts = String(rawSettings.storeContact).split('•');
           merged.storeSlogan = (parts[0] || '').trim();
@@ -942,10 +1087,10 @@
             { id: 'a4', name: 'Id Card + Tali Lanyard', unit: 'set', price: 15000, agentPrice: 12000, stock: 80 }
           ],
           finishings: [
-            { id: 'f1', name: 'Mata ayam', costType: 'PER_ITEM', price: 0, agentPrice: 0 },
-            { id: 'f2', name: 'Lipat dan jahit pinggir', costType: 'PER_ITEM', price: 0, agentPrice: 0 },
-            { id: 'f3', name: 'Laminasi', costType: 'PER_M2', price: 15000, agentPrice: 12000 },
-            { id: 'f4', name: 'Rangka kayu', costType: 'PER_ITEM', price: 25000, agentPrice: 20000 }
+            { id: 'f1', name: 'Mata ayam', costType: 'PER_ITEM', price: 0, agentPrice: 0, stock: 500 },
+            { id: 'f2', name: 'Lipat dan jahit pinggir', costType: 'PER_ITEM', price: 0, agentPrice: 0, stock: 999 },
+            { id: 'f3', name: 'Laminasi', costType: 'PER_M2', price: 15000, agentPrice: 12000, stock: 60 },
+            { id: 'f4', name: 'Rangka kayu', costType: 'PER_ITEM', price: 25000, agentPrice: 20000, stock: 30 }
           ],
           users: [
             { id: 'u_admin', name: 'Administrator', role: 'Kasir', accessLevel: 'ADMIN', pin: '1234' },
@@ -956,6 +1101,10 @@
           agens: [
             { id: 'ag1', name: 'Perc. Gembira', phone: '081298765432', address: 'Jl. Merdeka No. 12' },
             { id: 'ag2', name: 'CV Kreatif Mandiri', phone: '085711223344', address: 'Jl. Sudirman No. 45' }
+          ],
+          pelangganUmum: [
+            { id: 'pu1', name: 'Doni', phone: '081344556677', address: 'Jl. Melati No. 5' },
+            { id: 'pu2', name: 'Ibu Sari (Warung Makan)', phone: '085299887766', address: 'Pasar Baru Blok B' }
           ],
           supliers: [
             { id: 'sup1', name: 'PT Sumber Bahan Digital', category: 'Flexi & Tinta Solvent', phone: '081122334455', notes: 'Pengiriman setiap Selasa & Jumat' },
@@ -973,11 +1122,14 @@
               items: [
                 {
                   mode: 'M2',
+                  productId: 'm1',
                   name: 'Flexi 280',
                   dimText: '1×5,2 m (5,2 m²)',
+                  billedArea: 5.2,
                   qty: 1,
                   unitPrice: 25000,
                   finishingNames: [],
+                  finishingDetails: [],
                   subtotal: 130000
                 }
               ],
@@ -997,7 +1149,6 @@
         return normalized;
       }
 
-      // Load State dengan Fallback Aman
       let state = createDefaultState();
       try {
         const raw = localStorage.getItem(STORAGE_KEY);
@@ -1014,22 +1165,20 @@
               finishings: Array.isArray(parsed.finishings) && parsed.finishings.length ? parsed.finishings : def.finishings,
               users: loadedUsers,
               agens: Array.isArray(parsed.agens) ? parsed.agens : def.agens,
+              pelangganUmum: Array.isArray(parsed.pelangganUmum) ? parsed.pelangganUmum : def.pelangganUmum,
               supliers: Array.isArray(parsed.supliers) ? parsed.supliers : def.supliers,
               orders: Array.isArray(parsed.orders) ? parsed.orders : def.orders
             };
           }
         }
       } catch (err) {
-        console.warn('Reset state karena localStorage tidak valid:', err);
         state = createDefaultState();
       }
 
       function saveState() {
         try {
           localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-        } catch (e) {
-          console.error('Gagal menyimpan ke localStorage:', e);
-        }
+        } catch (e) {}
         if (!isApplyingRemote) {
           scheduleCloudPush();
         }
@@ -1098,7 +1247,6 @@
           updateCloudBadgeUI('ONLINE', 'Online');
           if (immediate) showToast(`Data tersinkron ke Cloud (${activeRoomCode})`, 'success');
         } catch (err) {
-          console.error('Gagal sync ke Firestore:', err);
           updateCloudBadgeUI('OFFLINE', 'Offline (Lokal)');
         }
       }
@@ -1123,6 +1271,7 @@
           finishings: Array.isArray(remoteObj.finishings) && remoteObj.finishings.length ? remoteObj.finishings : def.finishings,
           users: remoteUsers,
           agens: Array.isArray(remoteObj.agens) ? remoteObj.agens : def.agens,
+          pelangganUmum: Array.isArray(remoteObj.pelangganUmum) ? remoteObj.pelangganUmum : def.pelangganUmum,
           supliers: Array.isArray(remoteObj.supliers) ? remoteObj.supliers : def.supliers,
           orders: Array.isArray(remoteObj.orders) ? remoteObj.orders : def.orders
         };
@@ -1178,7 +1327,6 @@
             }
           },
           (error) => {
-            console.error('Firestore listener error:', error);
             updateCloudBadgeUI('OFFLINE', 'Offline (Lokal)');
           }
         );
@@ -1197,15 +1345,6 @@
         else if (ui.activePage === 'suplier') renderSuplierPage();
         else if (ui.activePage === 'settings' && !isTypingInInput) renderSettingsPage();
       }
-const __firebase_config = JSON.stringify({
-  apiKey: "AIzaSyA3yWPf312q2hPn8jQU7WQ9pdOAA3NHM8I",
-  authDomain: "kasir-amanah-pos.firebaseapp.com",
-  projectId: "kasir-amanah-pos",
-  storageBucket: "kasir-amanah-pos.firebasestorage.app",
-  messagingSenderId: "234878771362",
-  appId: "1:234878771362:web:fae6c26a314ae3d084f7fb",
-  measurementId: "G-EMJ324XB7N"
-});
 
       async function initFirebaseCloud() {
         try {
@@ -1232,7 +1371,6 @@ const __firebase_config = JSON.stringify({
             updateCloudBadgeUI('OFFLINE', 'Offline (Lokal)');
           }
         } catch (err) {
-          console.error('Firebase init gagal, fallback ke mode offline:', err);
           updateCloudBadgeUI('OFFLINE', 'Offline (Lokal)');
         }
       }
@@ -1243,15 +1381,17 @@ const __firebase_config = JSON.stringify({
         activePage: 'kasir',
         prevPage: 'kasir',
         customerType: 'Umum',
-        selectedAgenId: '',
+        selectedPelangganId: '',
+        pelangganSubTab: 'AGEN',
         prodMode: 'M2',
-        selectedFinishings: [],
+        selectedFinishings: {},
         cart: [],
         paymentMethod: 'Tunai',
         orderFilter: 'Semua',
         orderSearch: '',
         lapPeriod: 'ALL',
         lapDate: '',
+        stokSubTab: 'M2',
         bahanSubTab: 'M2',
         activeNotaId: null,
         notaSettleMethod: 'Tunai',
@@ -1267,12 +1407,15 @@ const __firebase_config = JSON.stringify({
         return Boolean(u && u.accessLevel === 'ADMIN');
       }
 
-      // =====================================================================
-      // HELPERS ANGKA & FORMAT RUPIAH
-      // =====================================================================
       function formatRibuan(num) {
         const clean = Math.round(Number(num) || 0);
         return clean.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+      }
+
+      function formatStockQty(num) {
+        const val = Math.round((Number(num) || 0) * 100) / 100;
+        if (Number.isInteger(val)) return formatRibuan(val);
+        return val.toFixed(2).replace(/\.00$/, '').replace(/(\.\d)0$/, '$1').replace('.', ',');
       }
 
       function parseRibuan(str) {
@@ -1325,8 +1468,71 @@ const __firebase_config = JSON.stringify({
       }
 
       // =====================================================================
-      // TEMA & IDENTITAS USAHA
+      // HELPER PENGURANGAN / PENGEMBALIAN STOK OTOMATIS SEMUA KATEGORI
       // =====================================================================
+      function extractItemBilledArea(item) {
+        if (Number(item.billedArea) > 0) return Number(item.billedArea);
+        const dimStr = String(item.dimText || '');
+        const areaMatch = dimStr.match(/\(([\d.,]+)\s*m²?\)/i);
+        if (areaMatch) {
+          const parsed = parseFloat(areaMatch[1].replace(',', '.'));
+          if (parsed > 0) return parsed;
+        }
+        const dimMxM = dimStr.match(/([\d.,]+)\s*[×x]\s*([\d.,]+)\s*(cm|m)?/i);
+        if (dimMxM) {
+          const pVal = parseFloat(dimMxM[1].replace(',', '.')) || 0;
+          const lVal = parseFloat(dimMxM[2].replace(',', '.')) || 0;
+          const unitStr = (dimMxM[3] || 'm').toLowerCase();
+          const areaCalc = unitStr === 'cm' ? (pVal / 100) * (lVal / 100) : pVal * lVal;
+          if (areaCalc > 0) return areaCalc;
+        }
+        return 1;
+      }
+
+      function adjustStockForItem(item, direction = -1) {
+        if (!item) return;
+        const qty = Math.max(1, Number(item.qty) || 1);
+        const mode = item.mode || 'SATUAN';
+        const area = mode === 'M2' ? extractItemBilledArea(item) : 1;
+
+        let targetList = state.materialsSatuan;
+        if (mode === 'M2') targetList = state.materialsM2;
+        else if (mode === 'ATK') targetList = state.productsAtk;
+
+        let foundItem = item.productId
+          ? targetList.find(p => p.id === item.productId)
+          : targetList.find(p => (p.name || '').trim().toLowerCase() === (item.name || '').trim().toLowerCase());
+
+        if (foundItem) {
+          const usage = mode === 'M2' ? (area * qty) : qty;
+          const nextStock = (Number(foundItem.stock) || 0) + (direction * usage);
+          foundItem.stock = Math.max(0, Math.round(nextStock * 100) / 100);
+        }
+
+        if (mode !== 'ATK') {
+          const finDetails = Array.isArray(item.finishingDetails) && item.finishingDetails.length > 0
+            ? item.finishingDetails
+            : (Array.isArray(item.finishingNames) ? item.finishingNames.map(fn => {
+                const m = String(fn).match(/^(.*?)\s*\([×x](\d+)\)$/i);
+                return m ? { name: m[1].trim(), qty: parseInt(m[2], 10) || 1 } : { name: String(fn).trim(), qty: 1 };
+              }) : []);
+
+          finDetails.forEach(fd => {
+            const finObj = fd.id
+              ? state.finishings.find(f => f.id === fd.id)
+              : state.finishings.find(f => (f.name || '').trim().toLowerCase() === (fd.name || '').trim().toLowerCase());
+            if (finObj) {
+              const fQty = Math.max(1, Number(fd.qty) || 1);
+              const finUsage = (mode === 'M2' && finObj.costType === 'PER_M2')
+                ? (area * fQty * qty)
+                : (fQty * qty);
+              const nextFinStock = (Number(finObj.stock) || 0) + (direction * finUsage);
+              finObj.stock = Math.max(0, Math.round(nextFinStock * 100) / 100);
+            }
+          });
+        }
+      }
+
       function applyTheme() {
         const t = state.settings.theme || THEME_PRESETS[0];
         const root = document.documentElement.style;
@@ -1334,6 +1540,8 @@ const __firebase_config = JSON.stringify({
         root.setProperty('--accent-color', t.accentColor || '#0e7490');
         root.setProperty('--app-bg', t.appBg || '#eceff3');
         root.setProperty('--nav-bg', t.navBg || '#ffffff');
+        root.setProperty('--nav-box-bg', t.navBoxBg || (t.isDark ? '#0f172a' : '#f8fafc'));
+        root.setProperty('--nav-box-border', t.navBoxBorder || (t.isDark ? '#334155' : '#cbd5e1'));
         root.setProperty('--nav-active', t.navActive || t.accentColor || '#0e7490');
 
         if (t.isDark) {
@@ -1474,9 +1682,6 @@ const __firebase_config = JSON.stringify({
         showToast('Anda telah keluar dari sesi', 'info');
       }
 
-      // =====================================================================
-      // NAVIGASI HALAMAN
-      // =====================================================================
       function navigateTo(page) {
         if (page === 'settings' && !isCurrentUserAdmin()) {
           showToast('Akses ditolak: Pengaturan hanya untuk Administrator', 'error');
@@ -1498,8 +1703,12 @@ const __firebase_config = JSON.stringify({
         });
 
         document.querySelectorAll('.nav-btn').forEach(btn => {
-          if (btn.dataset.page === page) btn.classList.add('nav-tab-active');
-          else btn.classList.remove('nav-tab-active');
+          if (btn.dataset.page === page) {
+            btn.classList.add('nav-tab-active');
+            btn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+          } else {
+            btn.classList.remove('nav-tab-active');
+          }
         });
 
         if (page === 'kasir') renderKasirPage();
@@ -1512,9 +1721,6 @@ const __firebase_config = JSON.stringify({
         else if (page === 'settings') renderSettingsPage();
       }
 
-      // =====================================================================
-      // LOGIKA TAB KASIR
-      // =====================================================================
       function getEffectivePrice(item) {
         if (ui.customerType === 'Agen' && Number(item.agentPrice) > 0) {
           return Number(item.agentPrice);
@@ -1525,33 +1731,39 @@ const __firebase_config = JSON.stringify({
       function renderKasirPage() {
         const btnUmum = document.getElementById('btn-cust-umum');
         const btnAgen = document.getElementById('btn-cust-agen');
-        const agenWrap = document.getElementById('kasir-agen-select-wrap');
-        const agenSelect = document.getElementById('kasir-agen-select');
+        const pelangganSelect = document.getElementById('kasir-cart-pelanggan-select');
         const custNameInput = document.getElementById('kasir-customer-name');
 
-        if (!btnUmum || !btnAgen || !agenWrap || !agenSelect) return;
+        if (!btnUmum || !btnAgen || !pelangganSelect) return;
 
         if (ui.customerType === 'Umum') {
           btnUmum.className = 'py-2 text-xs font-bold rounded-lg transition cursor-pointer btn-accent';
           btnAgen.className = 'py-2 text-xs font-bold rounded-lg transition cursor-pointer text-slate-600';
-          agenWrap.classList.add('hidden');
+          if (custNameInput) custNameInput.placeholder = 'Kosongkan untuk Umum atau ketik nama baru...';
+
+          if (ui.selectedPelangganId && !state.pelangganUmum.some(p => p.id === ui.selectedPelangganId)) {
+            ui.selectedPelangganId = '';
+          }
+
+          pelangganSelect.innerHTML = `<option value="">-- Pilih Pelanggan Umum (Opsional) --</option>` +
+            state.pelangganUmum.map(p =>
+              `<option value="${escapeHtml(p.id)}" ${ui.selectedPelangganId === p.id ? 'selected' : ''}>${escapeHtml(p.name)}</option>`
+            ).join('');
+          pelangganSelect.value = ui.selectedPelangganId || '';
         } else {
           btnAgen.className = 'py-2 text-xs font-bold rounded-lg transition cursor-pointer btn-accent';
           btnUmum.className = 'py-2 text-xs font-bold rounded-lg transition cursor-pointer text-slate-600';
-          agenWrap.classList.remove('hidden');
+          if (custNameInput) custNameInput.placeholder = 'Ketik nama agen baru atau pilih di atas...';
 
-          if (state.agens.length === 0) {
-            agenSelect.innerHTML = `<option value="">-- Belum ada data agen --</option>`;
-          } else {
-            agenSelect.innerHTML = state.agens.map(ag =>
-              `<option value="${escapeHtml(ag.id)}" ${ui.selectedAgenId === ag.id ? 'selected' : ''}>${escapeHtml(ag.name)}</option>`
-            ).join('');
-            if (!ui.selectedAgenId && state.agens[0]) {
-              ui.selectedAgenId = state.agens[0].id;
-            }
-            const chosen = state.agens.find(a => a.id === ui.selectedAgenId);
-            if (chosen && custNameInput) custNameInput.value = chosen.name;
+          if (ui.selectedPelangganId && !state.agens.some(a => a.id === ui.selectedPelangganId)) {
+            ui.selectedPelangganId = '';
           }
+
+          pelangganSelect.innerHTML = `<option value="">-- Pilih Agen Terdaftar (Opsional) --</option>` +
+            state.agens.map(ag =>
+              `<option value="${escapeHtml(ag.id)}" ${ui.selectedPelangganId === ag.id ? 'selected' : ''}>${escapeHtml(ag.name)}</option>`
+            ).join('');
+          pelangganSelect.value = ui.selectedPelangganId || '';
         }
 
         ['M2', 'SATUAN', 'ATK'].forEach(mode => {
@@ -1599,13 +1811,19 @@ const __firebase_config = JSON.stringify({
 
         const finPills = document.getElementById('kasir-finishing-pills');
         finPills.innerHTML = state.finishings.map(fin => {
-          const active = ui.selectedFinishings.includes(fin.id);
+          const finQty = Number(ui.selectedFinishings[fin.id]) || 0;
+          const active = finQty > 0;
           const fPrice = getEffectivePrice(fin);
           const extra = fPrice > 0 ? ` (+${formatRibuan(fPrice)})` : '';
-          return `<button type="button" data-action="toggle-finishing" data-id="${escapeHtml(fin.id)}"
-            class="px-3.5 py-2 rounded-full text-xs font-semibold border transition cursor-pointer ${
-              active ? 'btn-accent' : 'bg-white text-slate-700 border-slate-200'
-            }">${escapeHtml(fin.name)}${extra}</button>`;
+          return `<div class="inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-semibold transition ${
+            active ? 'btn-accent' : 'bg-white text-slate-700 border-slate-200'
+          }">
+            <button type="button" data-action="toggle-finishing" data-id="${escapeHtml(fin.id)}" class="cursor-pointer">
+              ${escapeHtml(fin.name)}${extra}
+            </button>
+            ${active ? `<input type="number" min="1" value="${finQty}" data-action="change-finishing-qty" data-id="${escapeHtml(fin.id)}"
+              class="w-12 rounded-md bg-white text-slate-900 px-1.5 py-0.5 text-center text-[11px] font-extrabold font-mono-code border border-black/15" title="Jumlah finishing" />` : ''}
+          </div>`;
         }).join('');
 
         const staffDisplay = document.getElementById('kasir-staff-display');
@@ -1653,7 +1871,11 @@ const __firebase_config = JSON.stringify({
         }
 
         const effPrice = getEffectivePrice(item);
-        const activeFins = ui.prodMode === 'ATK' ? [] : state.finishings.filter(f => ui.selectedFinishings.includes(f.id));
+        const activeFins = ui.prodMode === 'ATK'
+          ? []
+          : state.finishings
+              .filter(f => (Number(ui.selectedFinishings[f.id]) || 0) > 0)
+              .map(f => ({ ...f, finQty: Math.max(1, parseInt(ui.selectedFinishings[f.id], 10) || 1) }));
 
         if (ui.prodMode === 'M2') {
           const pRaw = parseFloat(document.getElementById('kasir-panjang').value) || 0;
@@ -1675,8 +1897,8 @@ const __firebase_config = JSON.stringify({
           let finCostPerPcs = 0;
           activeFins.forEach(f => {
             const fp = getEffectivePrice(f);
-            if (f.costType === 'PER_M2') finCostPerPcs += fp * billedArea;
-            else finCostPerPcs += fp;
+            if (f.costType === 'PER_M2') finCostPerPcs += fp * billedArea * f.finQty;
+            else finCostPerPcs += fp * f.finQty;
           });
 
           const total = Math.round((billedArea * effPrice + finCostPerPcs) * qty);
@@ -1689,15 +1911,17 @@ const __firebase_config = JSON.stringify({
             productId: item.id,
             name: item.name,
             dimText: `${formatDecimalComma(pMeter)}×${formatDecimalComma(lMeter)} m (${formatDecimalComma(billedArea)} m²)`,
+            billedArea,
             qty,
             unitPrice: effPrice,
-            finishingNames: activeFins.map(f => f.name),
+            finishingNames: activeFins.map(f => `${f.name} (×${f.finQty})`),
+            finishingDetails: activeFins.map(f => ({ id: f.id, name: f.name, qty: f.finQty })),
             subtotal: total
           };
         } else {
           let finCostPerPcs = 0;
           activeFins.forEach(f => {
-            finCostPerPcs += getEffectivePrice(f);
+            finCostPerPcs += getEffectivePrice(f) * f.finQty;
           });
           const total = Math.round((effPrice + finCostPerPcs) * qty);
           const unitLbl = item.unit || 'pcs';
@@ -1711,7 +1935,8 @@ const __firebase_config = JSON.stringify({
             dimText: `${qty} ${unitLbl}`,
             qty,
             unitPrice: effPrice,
-            finishingNames: activeFins.map(f => f.name),
+            finishingNames: activeFins.map(f => `${f.name} (×${f.finQty})`),
+            finishingDetails: activeFins.map(f => ({ id: f.id, name: f.name, qty: f.finQty })),
             subtotal: total
           };
         }
@@ -1729,7 +1954,7 @@ const __firebase_config = JSON.stringify({
           document.getElementById('kasir-lebar').value = '';
         }
         document.getElementById('kasir-qty').value = '1';
-        ui.selectedFinishings = [];
+        ui.selectedFinishings = {};
         renderKasirPage();
         showToast('Ditambahkan ke keranjang', 'success');
       }
@@ -1822,17 +2047,38 @@ const __firebase_config = JSON.stringify({
         const total = ui.cart.reduce((sum, it) => sum + (Number(it.subtotal) || 0), 0);
         const paidRaw = parseRibuan(document.getElementById('kasir-pay-input').value);
         const recordedPaid = paidRaw > total ? total : paidRaw;
-        const custName = (document.getElementById('kasir-customer-name').value || '').trim() || 'Umum';
+        const rawCustInput = (document.getElementById('kasir-customer-name').value || '').trim();
+        const custName = rawCustInput || 'Umum';
         const loggedUser = getCurrentUser();
         const cashierName = loggedUser ? loggedUser.name : (state.users[0]?.name || 'Administrator');
 
-        ui.cart.forEach(item => {
-          if (item.mode === 'ATK') {
-            const atk = state.productsAtk.find(a => a.id === item.productId);
-            if (atk) {
-              atk.stock = Math.max(0, (Number(atk.stock) || 0) - (Number(item.qty) || 1));
+        if (rawCustInput && rawCustInput.toLowerCase() !== 'umum') {
+          if (ui.customerType === 'Agen') {
+            const existsAgen = state.agens.some(a => (a.name || '').trim().toLowerCase() === rawCustInput.toLowerCase());
+            if (!existsAgen) {
+              state.agens.push({
+                id: 'ag_' + Date.now(),
+                name: rawCustInput,
+                phone: '',
+                address: ''
+              });
+            }
+          } else {
+            const existsUmum = state.pelangganUmum.some(p => (p.name || '').trim().toLowerCase() === rawCustInput.toLowerCase());
+            if (!existsUmum) {
+              state.pelangganUmum.push({
+                id: 'pu_' + Date.now(),
+                name: rawCustInput,
+                phone: '',
+                address: ''
+              });
             }
           }
+        }
+
+        // Kurangi stok otomatis untuk semua item keranjang (Cetak M2, Satuan, ATK & Finishing)
+        ui.cart.forEach(item => {
+          adjustStockForItem(item, -1);
         });
 
         const nextNum = state.orders.length + 1;
@@ -1857,19 +2103,22 @@ const __firebase_config = JSON.stringify({
         saveState();
 
         ui.cart = [];
+        ui.selectedPelangganId = '';
         document.getElementById('kasir-pay-input').value = '';
-        if (ui.customerType === 'Umum') {
-          document.getElementById('kasir-customer-name').value = '';
+        const custInputEl = document.getElementById('kasir-customer-name');
+        if (custInputEl) {
+          delete custInputEl.dataset.manualEdited;
+          custInputEl.value = '';
         }
-        renderCart();
-        showToast(`Order ${invId} berhasil disimpan`, 'success');
+        renderKasirPage();
+        showToast(`Order ${invId} disimpan & stok terpotong otomatis`, 'success');
         openNotaModal(invId);
       }
 
       // =====================================================================
       // LOGIKA TAB ORDER & NOTA MODAL
       // =====================================================================
-      const ORDER_STATUSES = ['Antri', 'Cetak', 'Finishing', 'Selesai', 'Diambil'];
+      const ORDER_STATUSES = ['Antri', 'Cetak', 'Finishing', 'Selesai', 'Diambil', 'Dibatalkan'];
 
       function renderOrderPage() {
         const filterWrap = document.getElementById('order-filter-pills');
@@ -1897,52 +2146,108 @@ const __firebase_config = JSON.stringify({
         }
 
         listWrap.innerHTML = filtered.map(o => {
+          const isCancelled = o.status === 'Dibatalkan';
           const sisa = Math.max(0, (Number(o.total) || 0) - (Number(o.paid) || 0));
-          const payBadge = sisa === 0
-            ? `<span class="text-xs font-extrabold text-emerald-600">Lunas</span>`
-            : `<span class="text-xs font-extrabold text-rose-600">DP • Sisa ${formatRp(sisa)}</span>`;
+          const payBadge = isCancelled
+            ? `<span class="text-xs font-extrabold text-rose-600">Dibatalkan</span>`
+            : (sisa === 0
+              ? `<span class="text-xs font-extrabold text-emerald-600">Lunas</span>`
+              : `<span class="text-xs font-extrabold text-rose-600">DP • Sisa ${formatRp(sisa)}</span>`);
 
           const agenBadge = o.customerType === 'Agen'
             ? `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800">Agen</span>`
             : '';
 
-          const currIdx = ORDER_STATUSES.indexOf(o.status);
-          const nextStatus = currIdx >= 0 && currIdx < ORDER_STATUSES.length - 1 ? ORDER_STATUSES[currIdx + 1] : null;
+          const activeStatuses = ['Antri', 'Cetak', 'Finishing', 'Selesai', 'Diambil'];
+          const currIdx = activeStatuses.indexOf(o.status);
+          const nextStatus = (!isCancelled && currIdx >= 0 && currIdx < activeStatuses.length - 1) ? activeStatuses[currIdx + 1] : null;
+          const isTodayOrder = !isCancelled && o.date === getTodayISO();
 
-          const itemsSummary = (o.items || []).map(it =>
-            `${escapeHtml(it.name)} ${it.mode === 'M2' ? escapeHtml(it.dimText) : ''} × ${it.qty}`
-          ).join(', ');
+          const statusPillClass = isCancelled
+            ? 'bg-rose-100 text-rose-700'
+            : 'bg-slate-200 text-slate-800';
+
+          const itemsListHtml = (o.items || []).map((it, itemIdx) => {
+            const label = `${escapeHtml(it.name)} ${it.mode === 'M2' ? escapeHtml(it.dimText) : ''} × ${it.qty}`;
+            const finLabel = it.finishingNames && it.finishingNames.length
+              ? ` <span class="text-[11px] text-cyan-700 font-semibold">(+ ${escapeHtml(it.finishingNames.join(', '))})</span>`
+              : '';
+            return `
+              <div class="flex items-center justify-between gap-2 py-1 border-b border-slate-100 last:border-none">
+                <div class="text-xs font-medium leading-snug min-w-0 ${isCancelled ? 'line-through text-slate-400' : ''}">
+                  <span>${label}</span>${finLabel}
+                  <span class="block text-[11px] font-bold font-mono-code text-slate-600">${formatRp(it.subtotal)}</span>
+                </div>
+                ${isTodayOrder ? `
+                  <button type="button" data-action="edit-order-item" data-id="${escapeHtml(o.id)}" data-item-index="${itemIdx}"
+                    class="px-2.5 py-1 rounded-lg border border-slate-200 bg-white text-cyan-700 hover:bg-cyan-50 text-[11px] font-bold cursor-pointer shrink-0">
+                    Edit
+                  </button>
+                ` : ''}
+              </div>
+            `;
+          }).join('');
+
+          const actionBtns = [
+            `<button type="button" data-action="open-nota" data-id="${escapeHtml(o.id)}"
+              class="py-2.5 rounded-xl border border-slate-300 bg-white text-slate-800 text-xs font-extrabold cursor-pointer">
+              Nota
+            </button>`
+          ];
+
+          if (isTodayOrder) {
+            actionBtns.push(`
+              <button type="button" data-action="add-order-item" data-id="${escapeHtml(o.id)}"
+                class="py-2.5 rounded-xl border border-slate-300 bg-white text-cyan-700 hover:bg-cyan-50 text-xs font-extrabold cursor-pointer">
+                + Item
+              </button>
+            `);
+          }
+
+          if (nextStatus) {
+            actionBtns.push(`
+              <button type="button" data-action="advance-order-status" data-id="${escapeHtml(o.id)}" data-next="${escapeHtml(nextStatus)}"
+                class="py-2.5 rounded-xl btn-accent text-xs font-extrabold cursor-pointer">
+                Ke: ${escapeHtml(nextStatus)}
+              </button>
+            `);
+          }
+
+          if (!isCancelled) {
+            actionBtns.push(`
+              <button type="button" data-action="cancel-order" data-id="${escapeHtml(o.id)}"
+                class="py-2.5 rounded-xl border border-rose-200 bg-rose-50 text-rose-600 hover:bg-rose-100 text-xs font-extrabold cursor-pointer">
+                Batalkan
+              </button>
+            `);
+          }
+
+          const gridColsClass = actionBtns.length >= 4
+            ? 'grid-cols-2 sm:grid-cols-4'
+            : (actionBtns.length === 3 ? 'grid-cols-3' : (actionBtns.length === 2 ? 'grid-cols-2' : 'grid-cols-1'));
 
           return `
-            <div class="surface-card rounded-2xl border p-4 shadow-sm space-y-3">
+            <div class="surface-card rounded-2xl border p-4 shadow-sm space-y-3 ${isCancelled ? 'opacity-80 border-rose-200' : ''}">
               <div class="flex items-start justify-between gap-2">
                 <div>
                   <div class="flex items-center gap-1.5 flex-wrap">
-                    <span class="text-sm font-extrabold font-mono-code">${escapeHtml(o.id)}</span>
-                    <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-slate-200 text-slate-800">${escapeHtml(o.status)}</span>
+                    <span class="text-sm font-extrabold font-mono-code ${isCancelled ? 'line-through text-slate-400' : ''}">${escapeHtml(o.id)}</span>
+                    <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold ${statusPillClass}">${escapeHtml(o.status)}</span>
                     ${agenBadge}
                   </div>
                   <p class="text-xs muted-text mt-1">${escapeHtml(o.customerName)} · ${escapeHtml(o.date)} · Kasir ${escapeHtml(o.cashierName)}</p>
+                  ${isCancelled && o.cancelReason ? `<p class="text-[11px] font-semibold text-rose-600 mt-0.5">Alasan batal: ${escapeHtml(o.cancelReason)}</p>` : ''}
                 </div>
                 <div class="text-right shrink-0">
-                  <p class="text-sm font-extrabold font-mono-code">${formatRp(o.total)}</p>
+                  <p class="text-sm font-extrabold font-mono-code ${isCancelled ? 'line-through text-slate-400' : ''}">${formatRp(o.total)}</p>
                   ${payBadge}
                 </div>
               </div>
 
-              <p class="text-xs font-medium leading-relaxed">${itemsSummary}</p>
+              <div class="space-y-0.5">${itemsListHtml}</div>
 
-              <div class="grid ${nextStatus ? 'grid-cols-2' : 'grid-cols-1'} gap-2 pt-1">
-                <button type="button" data-action="open-nota" data-id="${escapeHtml(o.id)}"
-                  class="py-2.5 rounded-xl border border-slate-300 bg-white text-slate-800 text-xs font-extrabold cursor-pointer">
-                  Nota
-                </button>
-                ${nextStatus ? `
-                  <button type="button" data-action="advance-order-status" data-id="${escapeHtml(o.id)}" data-next="${escapeHtml(nextStatus)}"
-                    class="py-2.5 rounded-xl btn-accent text-xs font-extrabold cursor-pointer">
-                    Ke: ${escapeHtml(nextStatus)}
-                  </button>
-                ` : ''}
+              <div class="grid ${gridColsClass} gap-2 pt-1">
+                ${actionBtns.join('')}
               </div>
             </div>
           `;
@@ -2003,14 +2308,14 @@ const __firebase_config = JSON.stringify({
           <div class="my-1.5 text-slate-400">--------------------------</div>
           <div>Total  : ${formatRp(order.total)}</div>
           <div>Dibayar: ${formatRp(order.paid)}</div>
-          <div>Sisa   : ${formatRp(sisa)}</div>
-          <div>Status : ${escapeHtml(order.status)}</div>
+          <div>Sisa   : ${order.status === 'Dibatalkan' ? 'Rp 0 (Dibatalkan)' : formatRp(sisa)}</div>
+          <div>Status : ${escapeHtml(order.status)}${order.status === 'Dibatalkan' && order.cancelReason ? ` (${escapeHtml(order.cancelReason)})` : ''}</div>
           ${payHistoryLines ? `<div class="mt-1">Pembayaran:${payHistoryLines}</div>` : ''}
           <div class="mt-2">Terima kasih.</div>
         `;
 
         const settleBox = document.getElementById('nota-settle-box');
-        if (sisa > 0) {
+        if (sisa > 0 && order.status !== 'Dibatalkan') {
           settleBox.classList.remove('hidden');
           document.getElementById('nota-sisa-label').textContent = `Sisa: ${formatRp(sisa)}`;
           document.getElementById('nota-settle-input').value = '';
@@ -2081,9 +2386,6 @@ const __firebase_config = JSON.stringify({
         window.open(`https://wa.me/?text=${msg}`, '_blank');
       }
 
-      // =====================================================================
-      // LOGIKA TAB LAPORAN & STOK
-      // =====================================================================
       function renderLaporanPage() {
         ['ALL', 'TODAY', 'MONTH'].forEach(p => {
           const btn = document.getElementById(`lap-period-${p}`);
@@ -2099,6 +2401,7 @@ const __firebase_config = JSON.stringify({
         const currentMonth = today.slice(0, 7);
 
         const filteredOrders = state.orders.filter(o => {
+          if (o.status === 'Dibatalkan') return false;
           if (ui.lapDate) return o.date === ui.lapDate;
           if (ui.lapPeriod === 'TODAY') return o.date === today;
           if (ui.lapPeriod === 'MONTH') return (o.date || '').startsWith(currentMonth);
@@ -2140,24 +2443,67 @@ const __firebase_config = JSON.stringify({
       }
 
       function renderStokPage() {
-        const wrap = document.getElementById('stok-list-container');
-        const allItems = [
-          ...state.materialsM2.map(m => ({ ...m, cat: 'M2', unitLabel: 'm²' })),
-          ...state.productsAtk.map(a => ({ ...a, cat: 'ATK', unitLabel: a.unit || 'pcs' }))
-        ];
+        ['M2', 'SATUAN', 'ATK', 'FINISHING'].forEach(tab => {
+          const btn = document.getElementById(`subtab-stok-${tab}`);
+          if (!btn) return;
+          if (ui.stokSubTab === tab) {
+            btn.className = 'py-2 text-[10px] sm:text-xs font-extrabold rounded-lg transition cursor-pointer btn-accent';
+          } else {
+            btn.className = 'py-2 text-[10px] sm:text-xs font-extrabold rounded-lg transition cursor-pointer text-slate-600';
+          }
+        });
 
-        wrap.innerHTML = allItems.map(it => {
-          const low = (Number(it.stock) || 0) <= 10;
+        const titleEl = document.getElementById('stok-section-title');
+        const descEl = document.getElementById('stok-section-desc');
+        const wrap = document.getElementById('stok-list-container');
+
+        let items = [];
+        let defaultUnit = 'pcs';
+
+        if (ui.stokSubTab === 'M2') {
+          if (titleEl) titleEl.textContent = 'Stok Bahan Cetak M²';
+          if (descEl) descEl.textContent = 'Pantau dan tambah sisa stok bahan meteran (m²).';
+          items = state.materialsM2;
+          defaultUnit = 'm²';
+        } else if (ui.stokSubTab === 'SATUAN') {
+          if (titleEl) titleEl.textContent = 'Stok Cetak Satuan';
+          if (descEl) descEl.textContent = 'Pantau dan tambah sisa stok kertas / bahan cetak satuan.';
+          items = state.materialsSatuan;
+          defaultUnit = 'lembar';
+        } else if (ui.stokSubTab === 'ATK') {
+          if (titleEl) titleEl.textContent = 'Stok Produk ATK';
+          if (descEl) descEl.textContent = 'Pantau dan tambah sisa stok barang ATK.';
+          items = state.productsAtk;
+          defaultUnit = 'pcs';
+        } else {
+          if (titleEl) titleEl.textContent = 'Stok Perlengkapan Finishing';
+          if (descEl) descEl.textContent = 'Pantau dan tambah sisa stok mata ayam, laminasi, rangka kayu, dll.';
+          items = state.finishings;
+          defaultUnit = 'pcs';
+        }
+
+        if (!items || items.length === 0) {
+          wrap.innerHTML = `<p class="py-6 text-center text-xs muted-text">Belum ada item pada kategori ini.</p>`;
+          return;
+        }
+
+        wrap.innerHTML = items.map(it => {
+          const currentStock = Number(it.stock) || 0;
+          const low = currentStock <= 10;
+          const unitLabel = ui.stokSubTab === 'M2'
+            ? 'm²'
+            : (ui.stokSubTab === 'FINISHING' ? (it.costType === 'PER_M2' ? 'm²' : 'pcs') : (it.unit || defaultUnit));
+
           return `
             <div class="py-3 flex items-center justify-between gap-2">
               <div>
                 <p class="text-sm font-bold">${escapeHtml(it.name)}</p>
                 <p class="text-xs ${low ? 'text-rose-600 font-bold' : 'muted-text'}">
-                  Sisa stok: ${formatRibuan(it.stock)} ${escapeHtml(it.unitLabel)} ${low ? '(Menipis!)' : ''}
+                  Sisa stok: ${formatStockQty(currentStock)} ${escapeHtml(unitLabel)} ${low ? '(Menipis!)' : ''}
                 </p>
               </div>
-              <button type="button" data-action="open-stok-modal" data-cat="${it.cat}" data-id="${escapeHtml(it.id)}"
-                class="px-3 py-1.5 rounded-xl btn-accent text-xs font-bold cursor-pointer">
+              <button type="button" data-action="open-stok-modal" data-cat="${ui.stokSubTab}" data-id="${escapeHtml(it.id)}"
+                class="px-3 py-1.5 rounded-xl btn-accent text-xs font-bold cursor-pointer shrink-0">
                 + Tambah Stok
               </button>
             </div>
@@ -2165,9 +2511,6 @@ const __firebase_config = JSON.stringify({
         }).join('');
       }
 
-      // =====================================================================
-      // LOGIKA TAB BAHAN (4 SUB-TAB: M2, SATUAN, ATK, FINISHING)
-      // =====================================================================
       function renderBahanPage() {
         ['M2', 'SATUAN', 'ATK', 'FINISHING'].forEach(tab => {
           const btn = document.getElementById(`subtab-bahan-${tab}`);
@@ -2309,30 +2652,62 @@ const __firebase_config = JSON.stringify({
         } else if (ui.bahanSubTab === 'ATK') {
           state.productsAtk.push({ id: uid, name: 'Produk ATK Baru', unit: 'pcs', price: 10000, agentPrice: 8000, stock: 25 });
         } else {
-          state.finishings.push({ id: uid, name: 'Finishing Baru', costType: 'PER_ITEM', price: 5000, agentPrice: 4000 });
+          state.finishings.push({ id: uid, name: 'Finishing Baru', costType: 'PER_ITEM', price: 5000, agentPrice: 4000, stock: 50 });
         }
         saveState();
         renderBahanPage();
         showToast('Item baru ditambahkan', 'success');
       }
 
-      // =====================================================================
-      // LOGIKA TAB AGEN & SUPLIER
-      // =====================================================================
       function renderAgenPage() {
-        const wrap = document.getElementById('agen-list-container');
-        if (state.agens.length === 0) {
-          wrap.innerHTML = `<p class="py-6 text-center text-xs muted-text">Belum ada data agen.</p>`;
+        ['AGEN', 'UMUM'].forEach(tab => {
+          const btn = document.getElementById(`subtab-pelanggan-${tab}`);
+          if (!btn) return;
+          if (ui.pelangganSubTab === tab) {
+            btn.className = 'py-2 text-xs font-extrabold rounded-lg transition cursor-pointer btn-accent';
+          } else {
+            btn.className = 'py-2 text-xs font-extrabold rounded-lg transition cursor-pointer text-slate-600';
+          }
+        });
+
+        const titleEl = document.getElementById('pelanggan-section-title');
+        const descEl = document.getElementById('pelanggan-section-desc');
+        const addBtn = document.getElementById('btn-add-pelanggan');
+        const wrap = document.getElementById('pelanggan-list-container');
+
+        const isAgenTab = ui.pelangganSubTab === 'AGEN';
+        const list = isAgenTab ? state.agens : state.pelangganUmum;
+
+        if (titleEl) {
+          titleEl.textContent = isAgenTab ? 'Daftar Pelanggan Agen / Reseller' : 'Daftar Pelanggan Umum';
+        }
+        if (descEl) {
+          descEl.textContent = isAgenTab
+            ? 'Pelanggan agen otomatis mendapat tarif khusus agen.'
+            : 'Data pelanggan umum untuk pilihan cepat di kasir.';
+        }
+        if (addBtn) {
+          addBtn.textContent = isAgenTab ? '+ Agen' : '+ Pelanggan';
+        }
+
+        if (!list || list.length === 0) {
+          wrap.innerHTML = `<p class="py-6 text-center text-xs muted-text">Belum ada data pelanggan ${isAgenTab ? 'agen' : 'umum'}.</p>`;
           return;
         }
-        wrap.innerHTML = state.agens.map((ag, idx) => `
-          <div class="py-3 flex items-center justify-between gap-2">
-            <div>
-              <p class="text-sm font-extrabold">${escapeHtml(ag.name)}</p>
-              <p class="text-xs muted-text">${escapeHtml(ag.phone || '-')} · ${escapeHtml(ag.address || '-')}</p>
+        wrap.innerHTML = list.map((p, idx) => `
+          <div class="py-3 flex items-center justify-between gap-2.5">
+            <div class="flex items-center gap-2.5 min-w-0">
+              <button type="button" data-action="edit-pelanggan" data-cat="${ui.pelangganSubTab}" data-index="${idx}"
+                class="px-2.5 py-1.5 rounded-xl border border-slate-200 bg-white text-cyan-700 hover:bg-cyan-50 text-xs font-bold cursor-pointer shrink-0">
+                Edit
+              </button>
+              <div class="min-w-0">
+                <p class="text-sm font-extrabold truncate">${escapeHtml(p.name)}</p>
+                <p class="text-xs muted-text truncate">${escapeHtml(p.phone || '-')} · ${escapeHtml(p.address || '-')}</p>
+              </div>
             </div>
-            <button type="button" data-action="delete-agen" data-index="${idx}"
-              class="px-3 py-1.5 rounded-xl border border-slate-200 text-rose-600 text-xs font-bold cursor-pointer">
+            <button type="button" data-action="delete-pelanggan" data-cat="${ui.pelangganSubTab}" data-index="${idx}"
+              class="px-3 py-1.5 rounded-xl border border-slate-200 text-rose-600 text-xs font-bold cursor-pointer shrink-0">
               Hapus
             </button>
           </div>
@@ -2346,23 +2721,26 @@ const __firebase_config = JSON.stringify({
           return;
         }
         wrap.innerHTML = state.supliers.map((sup, idx) => `
-          <div class="py-3 flex items-center justify-between gap-2">
-            <div>
-              <p class="text-sm font-extrabold">${escapeHtml(sup.name)}</p>
-              <p class="text-xs font-semibold text-cyan-700">${escapeHtml(sup.category || 'Umum')}</p>
-              <p class="text-xs muted-text">${escapeHtml(sup.phone || '-')} · ${escapeHtml(sup.notes || '')}</p>
+          <div class="py-3 flex items-center justify-between gap-2.5">
+            <div class="flex items-center gap-2.5 min-w-0">
+              <button type="button" data-action="edit-suplier" data-index="${idx}"
+                class="px-2.5 py-1.5 rounded-xl border border-slate-200 bg-white text-cyan-700 hover:bg-cyan-50 text-xs font-bold cursor-pointer shrink-0">
+                Edit
+              </button>
+              <div class="min-w-0">
+                <p class="text-sm font-extrabold truncate">${escapeHtml(sup.name)}</p>
+                <p class="text-xs font-semibold text-cyan-700 truncate">${escapeHtml(sup.category || 'Umum')}</p>
+                <p class="text-xs muted-text truncate">${escapeHtml(sup.phone || '-')} · ${escapeHtml(sup.notes || '')}</p>
+              </div>
             </div>
             <button type="button" data-action="delete-suplier" data-index="${idx}"
-              class="px-3 py-1.5 rounded-xl border border-slate-200 text-rose-600 text-xs font-bold cursor-pointer">
+              class="px-3 py-1.5 rounded-xl border border-slate-200 text-rose-600 text-xs font-bold cursor-pointer shrink-0">
               Hapus
             </button>
           </div>
         `).join('');
       }
 
-      // =====================================================================
-      // LOGIKA HALAMAN PENGATURAN (KHUSUS ADMINISTRATOR)
-      // =====================================================================
       function renderSettingsPage() {
         if (!isCurrentUserAdmin()) {
           navigateTo('kasir');
@@ -2382,7 +2760,6 @@ const __firebase_config = JSON.stringify({
           ? `<img src="${state.settings.customLogoDataUrl}" class="w-full h-full object-contain rounded-lg" />`
           : DEFAULT_LOGO_SVG;
 
-        // Tema Presets
         const t = state.settings.theme || THEME_PRESETS[0];
         const presetGrid = document.getElementById('theme-presets-grid');
         presetGrid.innerHTML = THEME_PRESETS.map(p => {
@@ -2406,9 +2783,10 @@ const __firebase_config = JSON.stringify({
         document.getElementById('custom-color-accent').value = t.accentColor || '#0e7490';
         document.getElementById('custom-color-bg').value = t.appBg || '#eceff3';
         document.getElementById('custom-color-navbg').value = t.navBg || '#ffffff';
+        document.getElementById('custom-color-navboxbg').value = t.navBoxBg || (t.isDark ? '#0f172a' : '#f8fafc');
+        document.getElementById('custom-color-navboxborder').value = t.navBoxBorder || (t.isDark ? '#334155' : '#cbd5e1');
         document.getElementById('custom-color-navactive').value = t.navActive || t.accentColor || '#0e7490';
 
-        // Pembayaran Non-Tunai
         const nc = state.settings.nonCashMethods || {};
         const ncWrap = document.getElementById('non-cash-settings-list');
         ncWrap.innerHTML = NON_CASH_OPTIONS.map(opt => {
@@ -2429,7 +2807,6 @@ const __firebase_config = JSON.stringify({
           `;
         }).join('');
 
-        // Users & Hak Akses
         const usersWrap = document.getElementById('users-list-container');
         usersWrap.innerHTML = state.users.map((u, idx) => {
           const isAdminAccount = u.accessLevel === 'ADMIN';
@@ -2478,9 +2855,6 @@ const __firebase_config = JSON.stringify({
         `}).join('');
       }
 
-      // =====================================================================
-      // MODAL FORM SERBAGUNA
-      // =====================================================================
       function openFormModal(title, bodyHtml, onSave) {
         document.getElementById('modal-form-title').textContent = title;
         document.getElementById('modal-form-body').innerHTML = bodyHtml;
@@ -2498,14 +2872,402 @@ const __firebase_config = JSON.stringify({
       }
 
       // =====================================================================
-      // GLOBAL EVENT DELEGATION (CLICK & INPUT)
+      // EKSPOR DATA KE EXCEL (.XLS) DENGAN PILIH FOLDER PENYIMPANAN
       // =====================================================================
+      function saveBlobWithFolderPicker(blob, suggestedName, mimeType, fileExt) {
+        if (typeof window.showSaveFilePicker === 'function') {
+          try {
+            const pickerPromise = window.showSaveFilePicker({
+              id: 'percetakan-amanah-export',
+              suggestedName,
+              startIn: 'documents',
+              types: [
+                {
+                  description: fileExt === '.json' ? 'File Backup JSON (*.json)' : 'Microsoft Excel Spreadsheet (*.xls)',
+                  accept: { [mimeType]: [fileExt] }
+                }
+              ]
+            });
+
+            return pickerPromise
+              .then(async (handle) => {
+                const writable = await handle.createWritable();
+                await writable.write(blob);
+                await writable.close();
+                return 'SAVED_PICKER';
+              })
+              .catch((err) => {
+                if (err && err.name === 'AbortError') {
+                  return 'CANCELLED';
+                }
+                fallbackDownloadBlob(blob, suggestedName);
+                return 'SAVED_FALLBACK';
+              });
+          } catch (syncErr) {
+            fallbackDownloadBlob(blob, suggestedName);
+            return Promise.resolve('SAVED_FALLBACK');
+          }
+        }
+
+        fallbackDownloadBlob(blob, suggestedName);
+        return Promise.resolve('SAVED_FALLBACK');
+      }
+
+      function fallbackDownloadBlob(blob, suggestedName) {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = suggestedName;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+      }
+
+      function downloadExcelTable(filename, sheetTitle, headers, rows) {
+        if (!rows || rows.length === 0) {
+          showToast('Tidak ada data untuk diekspor', 'error');
+          return;
+        }
+        const thHtml = headers.map(h =>
+          `<th style="background:#0f2137;color:#ffffff;font-weight:bold;padding:8px;border:1px solid #cbd5e1;text-align:left;">${escapeHtml(h)}</th>`
+        ).join('');
+
+        const trHtml = rows.map(row =>
+          `<tr>${row.map(cell => {
+            const isNum = typeof cell === 'number' && !Number.isNaN(cell);
+            return `<td style="padding:6px 8px;border:1px solid #cbd5e1;${isNum ? 'mso-number-format:\\#\\,\\#\\#0;' : 'mso-number-format:\\@;'}">${escapeHtml(cell)}</td>`;
+          }).join('')}</tr>`
+        ).join('');
+
+        const html = `
+          <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
+          <head><meta charset="UTF-8" /></head>
+          <body>
+            <table>
+              <tr><td colspan="${headers.length}" style="font-size:14pt;font-weight:bold;">${escapeHtml(state.settings.storeName || 'PERCETAKAN AMANAH')} - ${escapeHtml(sheetTitle)}</td></tr>
+              <tr><td colspan="${headers.length}" style="font-size:10pt;color:#475569;">Tanggal Ekspor: ${escapeHtml(getFormattedIndoDate())}</td></tr>
+              <tr></tr>
+              <thead><tr>${thHtml}</tr></thead>
+              <tbody>${trHtml}</tbody>
+            </table>
+          </body>
+          </html>
+        `;
+
+        const blob = new Blob(['\ufeff', html], { type: 'application/vnd.ms-excel;charset=utf-8;' });
+        const suggestedName = `${filename}-${getTodayISO()}.xls`;
+
+        saveBlobWithFolderPicker(blob, suggestedName, 'application/vnd.ms-excel', '.xls').then((res) => {
+          if (res === 'CANCELLED') {
+            showToast('Ekspor dibatalkan', 'info');
+          } else if (res === 'SAVED_PICKER') {
+            showToast(`File ${sheetTitle} tersimpan ke folder pilihan`, 'success');
+          } else {
+            showToast(`File ${sheetTitle} diunduh (Folder Download browser)`, 'success');
+          }
+        });
+      }
+
+      function exportTabToExcel(type) {
+        if (type === 'order') {
+          const q = (ui.orderSearch || '').toLowerCase();
+          const filtered = state.orders.filter(o => {
+            const matchStatus = ui.orderFilter === 'Semua' || o.status === ui.orderFilter;
+            const matchSearch = !q || o.id.toLowerCase().includes(q) || (o.customerName || '').toLowerCase().includes(q);
+            return matchStatus && matchSearch;
+          });
+          const headers = ['No Invoice', 'Tanggal', 'Jenis Pelanggan', 'Nama Pelanggan', 'Kasir', 'Rincian Item', 'Status Produksi', 'Metode Bayar', 'Total Tagihan', 'Sudah Dibayar', 'Sisa Tagihan'];
+          const rows = filtered.map(o => {
+            const itemsDesc = (o.items || []).map(it => `${it.name} ${it.mode === 'M2' ? it.dimText : ''} x${it.qty}`).join('; ');
+            const sisa = Math.max(0, (Number(o.total) || 0) - (Number(o.paid) || 0));
+            return [o.id, o.date, o.customerType || 'Umum', o.customerName, o.cashierName, itemsDesc, o.status, o.paymentMethod, Number(o.total) || 0, Number(o.paid) || 0, sisa];
+          });
+          downloadExcelTable('Data-Order', 'Data Order & Produksi', headers, rows);
+        } else if (type === 'laporan') {
+          const today = getTodayISO();
+          const currentMonth = today.slice(0, 7);
+          const filtered = state.orders.filter(o => {
+            if (ui.lapDate) return o.date === ui.lapDate;
+            if (ui.lapPeriod === 'TODAY') return o.date === today;
+            if (ui.lapPeriod === 'MONTH') return (o.date || '').startsWith(currentMonth);
+            return true;
+          });
+          const headers = ['No Invoice', 'Tanggal', 'Pelanggan', 'Kasir', 'Metode Bayar', 'Status', 'Total Omzet', 'Uang Masuk', 'Sisa Piutang'];
+          const rows = filtered.map(o => {
+            const sisa = Math.max(0, (Number(o.total) || 0) - (Number(o.paid) || 0));
+            return [o.id, o.date, o.customerName, o.cashierName, o.paymentMethod, sisa === 0 ? 'Lunas' : 'Belum Lunas', Number(o.total) || 0, Number(o.paid) || 0, sisa];
+          });
+          downloadExcelTable('Laporan-Keuangan', 'Laporan Keuangan', headers, rows);
+        } else if (type === 'stok') {
+          const headers = ['Kategori', 'Nama Bahan / Produk', 'Satuan', 'Sisa Stok'];
+          const rows = [
+            ...state.materialsM2.map(m => ['CETAK M2', m.name, 'm²', Number(m.stock) || 0]),
+            ...state.materialsSatuan.map(s => ['SATUAN', s.name, s.unit || 'lembar', Number(s.stock) || 0]),
+            ...state.productsAtk.map(a => ['ATK', a.name, a.unit || 'pcs', Number(a.stock) || 0]),
+            ...state.finishings.map(f => ['FINISHING', f.name, f.costType === 'PER_M2' ? 'm²' : 'pcs', Number(f.stock) || 0])
+          ];
+          downloadExcelTable('Data-Stok', 'Data Stok Bahan & ATK', headers, rows);
+        } else if (type === 'harga') {
+          const headers = ['Kategori', 'Nama Item', 'Satuan / Hitung', 'Min. Luas (m²)', 'Harga Umum', 'Harga Agen'];
+          const rows = [
+            ...state.materialsM2.map(m => ['CETAK M2', m.name, 'm²', Number(m.minArea) || 0, Number(m.price) || 0, Number(m.agentPrice) || 0]),
+            ...state.materialsSatuan.map(s => ['SATUAN', s.name, s.unit || 'lembar', 0, Number(s.price) || 0, Number(s.agentPrice) || 0]),
+            ...state.productsAtk.map(a => ['ATK', a.name, a.unit || 'pcs', 0, Number(a.price) || 0, Number(a.agentPrice) || 0]),
+            ...state.finishings.map(f => ['FINISHING', f.name, f.costType === 'PER_M2' ? 'Per m2' : 'Per item', 0, Number(f.price) || 0, Number(f.agentPrice) || 0])
+          ];
+          downloadExcelTable('Daftar-Harga', 'Daftar Harga Bahan & Finishing', headers, rows);
+        } else if (type === 'agen') {
+          const headers = ['Jenis Pelanggan', 'Nama Pelanggan', 'No. WhatsApp', 'Alamat'];
+          const rows = [
+            ...state.agens.map(ag => ['Agen', ag.name, ag.phone || '-', ag.address || '-']),
+            ...state.pelangganUmum.map(pu => ['Umum', pu.name, pu.phone || '-', pu.address || '-'])
+          ];
+          downloadExcelTable('Data-Pelanggan', 'Daftar Pelanggan Agen & Umum', headers, rows);
+        } else if (type === 'suplier') {
+          const headers = ['No', 'Nama Suplier', 'Kategori Bahan', 'No. WhatsApp', 'Catatan'];
+          const rows = state.supliers.map((sup, idx) => [idx + 1, sup.name, sup.category || '-', sup.phone || '-', sup.notes || '-']);
+          downloadExcelTable('Data-Suplier', 'Daftar Suplier Bahan', headers, rows);
+        }
+      }
+
+      // =====================================================================
+      // IMPOR DATA DARI FILE EXCEL (.XLS HTML TABLE) ATAU CSV
+      // =====================================================================
+      function parseSpreadsheetText(text) {
+        const trimmed = String(text || '').trim();
+        if (!trimmed) return [];
+
+        if (/<table[\s>]/i.test(trimmed)) {
+          const parser = new DOMParser();
+          const docHtml = parser.parseFromString(trimmed, 'text/html');
+          const trs = Array.from(docHtml.querySelectorAll('tr'));
+          let headerIdx = -1;
+          for (let i = 0; i < trs.length; i++) {
+            if (trs[i].querySelectorAll('th').length > 0) {
+              headerIdx = i;
+              break;
+            }
+          }
+          const dataRows = headerIdx >= 0 ? trs.slice(headerIdx + 1) : trs;
+          return dataRows
+            .map(tr => Array.from(tr.querySelectorAll('td, th')).map(td => td.textContent.trim()))
+            .filter(r => r.length > 0 && r.some(cell => cell !== ''));
+        }
+
+        const lines = trimmed.split(/\r?\n/).filter(l => l.trim() !== '');
+        if (lines.length === 0) return [];
+        const delim = lines[0].includes(';') ? ';' : (lines[0].includes('\t') ? '\t' : ',');
+        const rows = lines.map(line => line.split(delim).map(c => c.replace(/^"|"$/g, '').trim()));
+        return rows.length > 1 ? rows.slice(1) : rows;
+      }
+
+      function importExcelData(type, rows) {
+        if (!rows || rows.length === 0) {
+          showToast('File kosong atau format kolom tidak terbaca', 'error');
+          return;
+        }
+        let count = 0;
+
+        if (type === 'order' || type === 'laporan') {
+          rows.forEach(r => {
+            if (type === 'order' && r.length >= 9) {
+              const invId = r[0] || `INV-${String(state.orders.length + 1).padStart(4, '0')}`;
+              const total = parseRibuan(r[8]);
+              const paid = parseRibuan(r[9]);
+              const existing = state.orders.find(o => o.id === invId);
+              if (existing) {
+                existing.date = r[1] || existing.date;
+                existing.customerType = r[2] || existing.customerType;
+                existing.customerName = r[3] || existing.customerName;
+                existing.cashierName = r[4] || existing.cashierName;
+                existing.status = r[6] || existing.status;
+                existing.paymentMethod = r[7] || existing.paymentMethod;
+                existing.total = total;
+                existing.paid = paid;
+              } else {
+                state.orders.unshift({
+                  id: invId,
+                  date: r[1] || getTodayISO(),
+                  customerType: r[2] || 'Umum',
+                  customerName: r[3] || 'Umum',
+                  cashierName: r[4] || 'Administrator',
+                  status: r[6] || 'Antri',
+                  paymentMethod: r[7] || 'Tunai',
+                  items: [{ mode: 'SATUAN', name: r[5] || 'Item Impor Excel', dimText: '1 pcs', qty: 1, unitPrice: total, finishingNames: [], subtotal: total }],
+                  total,
+                  paid,
+                  payments: paid > 0 ? [{ date: r[1] || getTodayISO(), method: r[7] || 'Tunai', amount: paid }] : []
+                });
+              }
+              count++;
+            } else if (type === 'laporan' && r.length >= 8) {
+              const invId = r[0] || `INV-${String(state.orders.length + 1).padStart(4, '0')}`;
+              const total = parseRibuan(r[6]);
+              const paid = parseRibuan(r[7]);
+              const existing = state.orders.find(o => o.id === invId);
+              if (existing) {
+                existing.date = r[1] || existing.date;
+                existing.customerName = r[2] || existing.customerName;
+                existing.cashierName = r[3] || existing.cashierName;
+                existing.paymentMethod = r[4] || existing.paymentMethod;
+                existing.total = total;
+                existing.paid = paid;
+              } else {
+                state.orders.unshift({
+                  id: invId,
+                  date: r[1] || getTodayISO(),
+                  customerType: 'Umum',
+                  customerName: r[2] || 'Umum',
+                  cashierName: r[3] || 'Administrator',
+                  status: 'Selesai',
+                  paymentMethod: r[4] || 'Tunai',
+                  items: [{ mode: 'SATUAN', name: 'Transaksi Impor Excel', dimText: '1 pcs', qty: 1, unitPrice: total, finishingNames: [], subtotal: total }],
+                  total,
+                  paid,
+                  payments: paid > 0 ? [{ date: r[1] || getTodayISO(), method: r[4] || 'Tunai', amount: paid }] : []
+                });
+              }
+              count++;
+            }
+          });
+          saveState();
+          if (type === 'order') renderOrderPage();
+          else renderLaporanPage();
+        } else if (type === 'stok') {
+          rows.forEach(r => {
+            if (r.length < 4) return;
+            const cat = (r[0] || '').toUpperCase();
+            const name = (r[1] || '').trim();
+            const stockVal = parseFloat(String(r[3] || '0').replace(',', '.')) || 0;
+            if (!name) return;
+
+            let targetList = state.materialsM2;
+            if (cat.includes('SATUAN')) targetList = state.materialsSatuan;
+            else if (cat.includes('ATK')) targetList = state.productsAtk;
+            else if (cat.includes('FINISHING')) targetList = state.finishings;
+
+            const found = targetList.find(it => it.name.toLowerCase() === name.toLowerCase());
+            if (found) {
+              found.stock = stockVal;
+              count++;
+            }
+          });
+          saveState();
+          renderStokPage();
+        } else if (type === 'harga') {
+          rows.forEach(r => {
+            if (r.length < 6) return;
+            const cat = (r[0] || '').toUpperCase();
+            const name = (r[1] || '').trim();
+            const unitOrType = (r[2] || '').trim();
+            const minArea = parseFloat(String(r[3] || '0').replace(',', '.')) || 0;
+            const price = parseRibuan(r[4]);
+            const agentPrice = parseRibuan(r[5]);
+            if (!name) return;
+
+            if (cat.includes('M2')) {
+              const found = state.materialsM2.find(it => it.name.toLowerCase() === name.toLowerCase());
+              if (found) {
+                found.minArea = minArea;
+                found.price = price;
+                found.agentPrice = agentPrice;
+              } else {
+                state.materialsM2.push({ id: 'm_' + Date.now() + count, name, price, minArea: minArea || 0.35, agentPrice, stock: 50 });
+              }
+              count++;
+            } else if (cat.includes('SATUAN')) {
+              const found = state.materialsSatuan.find(it => it.name.toLowerCase() === name.toLowerCase());
+              if (found) {
+                found.unit = unitOrType || found.unit;
+                found.price = price;
+                found.agentPrice = agentPrice;
+              } else {
+                state.materialsSatuan.push({ id: 's_' + Date.now() + count, name, unit: unitOrType || 'lembar', price, agentPrice, stock: 100 });
+              }
+              count++;
+            } else if (cat.includes('ATK')) {
+              const found = state.productsAtk.find(it => it.name.toLowerCase() === name.toLowerCase());
+              if (found) {
+                found.unit = unitOrType || found.unit;
+                found.price = price;
+                found.agentPrice = agentPrice;
+              } else {
+                state.productsAtk.push({ id: 'a_' + Date.now() + count, name, unit: unitOrType || 'pcs', price, agentPrice, stock: 25 });
+              }
+              count++;
+            } else if (cat.includes('FINISHING')) {
+              const cType = unitOrType.toLowerCase().includes('m2') ? 'PER_M2' : 'PER_ITEM';
+              const found = state.finishings.find(it => it.name.toLowerCase() === name.toLowerCase());
+              if (found) {
+                found.costType = cType;
+                found.price = price;
+                found.agentPrice = agentPrice;
+              } else {
+                state.finishings.push({ id: 'f_' + Date.now() + count, name, costType: cType, price, agentPrice, stock: 50 });
+              }
+              count++;
+            }
+          });
+          saveState();
+          renderBahanPage();
+        } else if (type === 'agen') {
+          rows.forEach(r => {
+            const jenis = (r[0] || '').toLowerCase();
+            const name = (r[1] || r[0] || '').trim();
+            if (!name || !isNaN(Number(name))) return;
+            const phone = (r[2] || '').trim();
+            const address = (r[3] || '').trim();
+            const isUmumRow = jenis === 'umum';
+            const targetArr = isUmumRow ? state.pelangganUmum : state.agens;
+            const prefix = isUmumRow ? 'pu_' : 'ag_';
+            const found = targetArr.find(a => a.name.toLowerCase() === name.toLowerCase());
+            if (found) {
+              found.phone = phone === '-' ? '' : phone;
+              found.address = address === '-' ? '' : address;
+            } else {
+              targetArr.push({ id: prefix + Date.now() + count, name, phone: phone === '-' ? '' : phone, address: address === '-' ? '' : address });
+            }
+            count++;
+          });
+          saveState();
+          renderAgenPage();
+        } else if (type === 'suplier') {
+          rows.forEach(r => {
+            const name = (r[1] || r[0] || '').trim();
+            if (!name || !isNaN(Number(name))) return;
+            const category = (r[2] || 'Umum').trim();
+            const phone = (r[3] || '').trim();
+            const notes = (r[4] || '').trim();
+            const found = state.supliers.find(s => s.name.toLowerCase() === name.toLowerCase());
+            if (found) {
+              found.category = category;
+              found.phone = phone === '-' ? '' : phone;
+              found.notes = notes === '-' ? '' : notes;
+            } else {
+              state.supliers.push({ id: 'sup_' + Date.now() + count, name, category, phone: phone === '-' ? '' : phone, notes: notes === '-' ? '' : notes });
+            }
+            count++;
+          });
+          saveState();
+          renderSuplierPage();
+        }
+
+        if (count > 0) {
+          showToast(`Berhasil mengimpor ${count} baris data`, 'success');
+        } else {
+          showToast('Tidak ada baris data yang cocok untuk diimpor', 'error');
+        }
+      }
+
       document.addEventListener('click', function (e) {
         const target = e.target.closest('[data-action]');
         if (!target) return;
         const action = target.dataset.action;
 
-        if (action === 'submit-login') {
+        if (action === 'export-excel') {
+          exportTabToExcel(target.dataset.type);
+        } else if (action === 'submit-login') {
           handleLoginSubmit();
         } else if (action === 'logout-app') {
           handleLogout();
@@ -2522,20 +3284,23 @@ const __firebase_config = JSON.stringify({
           navigateTo(ui.prevPage || 'kasir');
         } else if (action === 'set-cust-type') {
           ui.customerType = target.dataset.value;
-          if (ui.customerType === 'Umum') {
-            document.getElementById('kasir-customer-name').value = '';
+          ui.selectedPelangganId = '';
+          const custInput = document.getElementById('kasir-customer-name');
+          if (custInput) {
+            delete custInput.dataset.manualEdited;
+            custInput.value = '';
           }
           renderKasirPage();
         } else if (action === 'set-prod-mode') {
           ui.prodMode = target.dataset.value;
-          ui.selectedFinishings = [];
+          ui.selectedFinishings = {};
           renderKasirPage();
         } else if (action === 'toggle-finishing') {
           const id = target.dataset.id;
-          if (ui.selectedFinishings.includes(id)) {
-            ui.selectedFinishings = ui.selectedFinishings.filter(f => f !== id);
+          if ((Number(ui.selectedFinishings[id]) || 0) > 0) {
+            delete ui.selectedFinishings[id];
           } else {
-            ui.selectedFinishings.push(id);
+            ui.selectedFinishings[id] = 1;
           }
           renderKasirPage();
         } else if (action === 'add-to-cart') {
@@ -2576,6 +3341,463 @@ const __firebase_config = JSON.stringify({
           renderOrderPage();
         } else if (action === 'open-nota') {
           openNotaModal(target.dataset.id);
+        } else if (action === 'edit-order-item') {
+          const order = state.orders.find(o => o.id === target.dataset.id);
+          const itemIdx = parseInt(target.dataset.itemIndex, 10);
+          if (!order || !order.items || !order.items[itemIdx]) return;
+          if (order.date !== getTodayISO()) {
+            showToast('Edit item invoice hanya berlaku pada hari yang sama', 'error');
+            return;
+          }
+          const item = order.items[itemIdx];
+          const canDelete = order.items.length > 1;
+          const isAgenOrder = order.customerType === 'Agen';
+          const getOrderEffPrice = (it) => (isAgenOrder && Number(it.agentPrice) > 0) ? Number(it.agentPrice) : (Number(it.price) || 0);
+          const existingFins = Array.isArray(item.finishingNames) ? item.finishingNames : [];
+          const existingFinDetails = Array.isArray(item.finishingDetails) ? item.finishingDetails : [];
+          const showFinishingOption = item.mode !== 'ATK';
+
+          function getExistingFinQty(finObj) {
+            const detailMatch = existingFinDetails.find(d => d.id === finObj.id || d.name === finObj.name);
+            if (detailMatch) return Math.max(1, parseInt(detailMatch.qty, 10) || 1);
+            const nameMatch = existingFins.find(fn => fn === finObj.name || fn.startsWith(finObj.name + ' (×') || fn.startsWith(finObj.name + ' (x'));
+            if (!nameMatch) return 0;
+            const qtyParse = nameMatch.match(/\([×x](\d+)\)/i);
+            return qtyParse ? Math.max(1, parseInt(qtyParse[1], 10) || 1) : 1;
+          }
+
+          const finCheckboxesHtml = showFinishingOption ? `
+            <div class="space-y-1">
+              <label class="block text-[11px] font-semibold text-slate-500">Finishing Tambahan & Jumlah</label>
+              <div class="space-y-1.5 max-h-36 overflow-y-auto pr-0.5">
+                ${state.finishings.map(fin => {
+                  const fp = getOrderEffPrice(fin);
+                  const unitFinText = fin.costType === 'PER_M2' ? '/m²' : '/pcs';
+                  const extra = fp > 0 ? ` (+${formatRibuan(fp)}${unitFinText})` : ' (Gratis)';
+                  const initFinQty = getExistingFinQty(fin);
+                  const isChecked = initFinQty > 0;
+                  return `<div class="flex items-center justify-between gap-2 px-2.5 py-1.5 rounded-lg border border-slate-200 bg-slate-50 text-[11px] font-semibold">
+                    <label class="inline-flex items-center gap-1.5 cursor-pointer flex-1">
+                      <input type="checkbox" class="edit-inv-fin-chk" value="${escapeHtml(fin.id)}" ${isChecked ? 'checked' : ''} />
+                      <span>${escapeHtml(fin.name)}${extra}</span>
+                    </label>
+                    <input type="number" min="1" value="${isChecked ? initFinQty : 1}" data-fin-id="${escapeHtml(fin.id)}"
+                      class="edit-inv-fin-qty w-14 rounded border border-slate-300 bg-white px-1.5 py-0.5 text-center text-[11px] font-bold font-mono-code ${isChecked ? '' : 'hidden'}" />
+                  </div>`;
+                }).join('')}
+              </div>
+            </div>
+          ` : '';
+
+          openFormModal(
+            `Edit Item · ${order.id}`,
+            `<div class="space-y-3">
+              <div>
+                <label class="block text-[11px] font-semibold text-slate-500 mb-1">Nama Produk / Bahan</label>
+                <input type="text" id="edit-inv-item-name" value="${escapeHtml(item.name)}"
+                  class="w-full border border-slate-300 rounded-xl px-3 py-2 text-xs font-bold" />
+              </div>
+              <div>
+                <label class="block text-[11px] font-semibold text-slate-500 mb-1">Keterangan Ukuran / Satuan</label>
+                <input type="text" id="edit-inv-item-dim" value="${escapeHtml(item.dimText || '')}"
+                  class="w-full border border-slate-300 rounded-xl px-3 py-2 text-xs font-semibold" />
+              </div>
+              ${finCheckboxesHtml}
+              <div class="grid grid-cols-2 gap-2">
+                <div>
+                  <label class="block text-[11px] font-semibold text-slate-500 mb-1">Jumlah (Qty)</label>
+                  <input type="number" min="1" id="edit-inv-item-qty" value="${Number(item.qty) || 1}"
+                    class="w-full border border-slate-300 rounded-xl px-3 py-2 text-xs font-bold font-mono-code" />
+                </div>
+                <div>
+                  <label class="block text-[11px] font-semibold text-slate-500 mb-1">Subtotal Item (Rp)</label>
+                  <input type="text" inputmode="numeric" id="edit-inv-item-sub" value="${formatRibuan(item.subtotal)}"
+                    class="rupiah-input w-full border border-slate-300 rounded-xl px-3 py-2 text-xs font-bold font-mono-code bg-slate-50" />
+                </div>
+              </div>
+              <div class="rounded-xl bg-cyan-50/70 border border-cyan-200 px-3 py-2 flex items-center justify-between text-xs">
+                <span class="font-semibold text-slate-600">Estimasi Total Invoice:</span>
+                <span id="edit-inv-live-total" class="font-extrabold font-mono-code text-cyan-800">${formatRp(order.total)}</span>
+              </div>
+              ${canDelete ? `
+                <button type="button" id="btn-delete-inv-item"
+                  class="w-full py-2 rounded-xl border border-rose-200 bg-rose-50 text-rose-600 text-xs font-bold cursor-pointer">
+                  Hapus Item Ini dari Invoice
+                </button>
+              ` : ''}
+            </div>`,
+            () => {
+              if (order.date !== getTodayISO()) {
+                showToast('Edit item invoice hanya berlaku pada hari yang sama', 'error');
+                return;
+              }
+              const newName = (document.getElementById('edit-inv-item-name').value || '').trim();
+              if (!newName) {
+                showToast('Nama item tidak boleh kosong', 'error');
+                return;
+              }
+              const newQty = Math.max(1, parseInt(document.getElementById('edit-inv-item-qty').value, 10) || 1);
+              const newSub = parseRibuan(document.getElementById('edit-inv-item-sub').value);
+
+              // Kembalikan stok lama sebelum item diperbarui
+              adjustStockForItem(item, 1);
+
+              if (showFinishingOption) {
+                const checkedFinChks = Array.from(document.querySelectorAll('.edit-inv-fin-chk:checked'));
+                const selectedFinObjs = checkedFinChks.map(c => {
+                  const finData = state.finishings.find(f => f.id === c.value);
+                  const qInp = document.querySelector(`.edit-inv-fin-qty[data-fin-id="${c.value}"]`);
+                  const fQty = Math.max(1, parseInt(qInp ? qInp.value : '1', 10) || 1);
+                  return finData ? { id: finData.id, name: finData.name, qty: fQty } : null;
+                }).filter(Boolean);
+                item.finishingDetails = selectedFinObjs;
+                item.finishingNames = selectedFinObjs.map(f => `${f.name} (×${f.qty})`);
+              }
+
+              item.name = newName;
+              item.dimText = document.getElementById('edit-inv-item-dim').value.trim();
+              if (item.mode === 'M2') {
+                delete item.billedArea;
+                item.billedArea = extractItemBilledArea(item);
+              }
+              item.qty = newQty;
+              item.subtotal = newSub;
+
+              // Potong stok baru sesuai rincian item terbaru
+              adjustStockForItem(item, -1);
+
+              order.total = order.items.reduce((sum, it) => sum + (Number(it.subtotal) || 0), 0);
+              if (Number(order.paid) > order.total) order.paid = order.total;
+
+              saveState();
+              renderOrderPage();
+              showToast(`Total ${order.id} diperbarui menjadi ${formatRp(order.total)}`, 'success');
+            }
+          );
+
+          const qtyInput = document.getElementById('edit-inv-item-qty');
+          const subInput = document.getElementById('edit-inv-item-sub');
+          const dimInput = document.getElementById('edit-inv-item-dim');
+          const liveTotalEl = document.getElementById('edit-inv-live-total');
+          const origQty = Math.max(1, Number(item.qty) || 1);
+          const otherItemsTotal = order.items.reduce((sum, it, idx) => idx === itemIdx ? sum : sum + (Number(it.subtotal) || 0), 0);
+
+          function getBilledAreaFromItem() {
+            const dimStr = (dimInput ? dimInput.value : item.dimText) || '';
+            const areaMatch = dimStr.match(/\(([\d.,]+)\s*m²?\)/i);
+            if (areaMatch) {
+              const parsed = parseFloat(areaMatch[1].replace(',', '.'));
+              if (parsed > 0) return parsed;
+            }
+            const dimMxM = dimStr.match(/([\d.,]+)\s*[×x]\s*([\d.,]+)\s*(cm|m)?/i);
+            if (dimMxM) {
+              const pVal = parseFloat(dimMxM[1].replace(',', '.')) || 0;
+              const lVal = parseFloat(dimMxM[2].replace(',', '.')) || 0;
+              const unitStr = (dimMxM[3] || 'm').toLowerCase();
+              const areaCalc = unitStr === 'cm' ? (pVal / 100) * (lVal / 100) : pVal * lVal;
+              if (areaCalc > 0) return areaCalc;
+            }
+            if ((item.mode === 'M2' || dimStr.includes('m²')) && Number(item.unitPrice) > 0) {
+              const oldNonAreaFinCost = state.finishings.reduce((acc, f) => {
+                const fq = getExistingFinQty(f);
+                if (fq <= 0 || f.costType === 'PER_M2') return acc;
+                return acc + getOrderEffPrice(f) * fq;
+              }, 0);
+              const basePerPcs = Math.max(0, ((Number(item.subtotal) || 0) / origQty) - oldNonAreaFinCost);
+              const estArea = basePerPcs / Number(item.unitPrice);
+              if (estArea > 0) return estArea;
+            }
+            return 1;
+          }
+
+          const isM2Item = item.mode === 'M2' || /m²|×|x/i.test(item.dimText || '');
+
+          function calcFinishingCostPerPcs(finEntries, areaM2) {
+            return finEntries.reduce((sum, entry) => {
+              const finData = state.finishings.find(f => f.id === entry.id || f.name === entry.name);
+              if (!finData) return sum;
+              const fp = getOrderEffPrice(finData);
+              const fQty = Math.max(1, Number(entry.qty) || 1);
+              return sum + (isM2Item && finData.costType === 'PER_M2' ? fp * areaM2 * fQty : fp * fQty);
+            }, 0);
+          }
+
+          const origArea = getBilledAreaFromItem();
+          const initialFinEntries = state.finishings
+            .map(f => ({ id: f.id, name: f.name, qty: getExistingFinQty(f) }))
+            .filter(e => e.qty > 0);
+          const origFinCostPerPcs = calcFinishingCostPerPcs(initialFinEntries, origArea);
+          const baseItemPerPcs = Math.max(0, ((Number(item.subtotal) || 0) / origQty) - origFinCostPerPcs);
+
+          function updateLiveTotalDisplay(newItemSub) {
+            if (liveTotalEl) {
+              liveTotalEl.textContent = formatRp(otherItemsTotal + newItemSub);
+            }
+          }
+
+          function recalcEditInvoiceItemSubtotal() {
+            const qVal = Math.max(1, parseInt(qtyInput.value, 10) || 1);
+            if (!showFinishingOption) {
+              const nextSub = Math.round(baseItemPerPcs * qVal);
+              subInput.value = formatRibuan(nextSub);
+              updateLiveTotalDisplay(nextSub);
+              return;
+            }
+            const areaNow = getBilledAreaFromItem();
+            const currentEntries = Array.from(document.querySelectorAll('.edit-inv-fin-chk:checked')).map(c => {
+              const qInp = document.querySelector(`.edit-inv-fin-qty[data-fin-id="${c.value}"]`);
+              return { id: c.value, qty: Math.max(1, parseInt(qInp ? qInp.value : '1', 10) || 1) };
+            });
+            const newFinPerPcs = calcFinishingCostPerPcs(currentEntries, areaNow);
+            const newTotalSub = Math.round((baseItemPerPcs + newFinPerPcs) * qVal);
+            subInput.value = formatRibuan(newTotalSub);
+            updateLiveTotalDisplay(newTotalSub);
+          }
+
+          qtyInput.addEventListener('input', recalcEditInvoiceItemSubtotal);
+          if (dimInput) {
+            dimInput.addEventListener('input', recalcEditInvoiceItemSubtotal);
+          }
+          subInput.addEventListener('input', () => {
+            updateLiveTotalDisplay(parseRibuan(subInput.value));
+          });
+          document.querySelectorAll('.edit-inv-fin-chk').forEach(chk => {
+            chk.addEventListener('change', () => {
+              const qInp = document.querySelector(`.edit-inv-fin-qty[data-fin-id="${chk.value}"]`);
+              if (qInp) qInp.classList.toggle('hidden', !chk.checked);
+              recalcEditInvoiceItemSubtotal();
+            });
+          });
+          document.querySelectorAll('.edit-inv-fin-qty').forEach(qInp => {
+            qInp.addEventListener('input', recalcEditInvoiceItemSubtotal);
+          });
+
+          const delBtn = document.getElementById('btn-delete-inv-item');
+          if (delBtn) {
+            delBtn.addEventListener('click', () => {
+              adjustStockForItem(item, 1);
+              order.items.splice(itemIdx, 1);
+              order.total = order.items.reduce((sum, it) => sum + (Number(it.subtotal) || 0), 0);
+              if (Number(order.paid) > order.total) order.paid = order.total;
+              saveState();
+              closeFormModal();
+              renderOrderPage();
+              showToast(`Item dihapus dari ${order.id} & stok dikembalikan`, 'info');
+            });
+          }
+        } else if (action === 'add-order-item') {
+          const order = state.orders.find(o => o.id === target.dataset.id);
+          if (!order) return;
+          if (order.date !== getTodayISO()) {
+            showToast('Tambah item hanya berlaku pada hari yang sama', 'error');
+            return;
+          }
+
+          const isAgenOrder = order.customerType === 'Agen';
+          const getOrderEffPrice = (it) => (isAgenOrder && Number(it.agentPrice) > 0) ? Number(it.agentPrice) : (Number(it.price) || 0);
+
+          openFormModal(
+            `+ Tambah Item ke ${order.id}`,
+            `<div class="space-y-3">
+              <div>
+                <label class="block text-[11px] font-semibold text-slate-500 mb-1">Kategori Produk (${escapeHtml(order.customerType || 'Umum')})</label>
+                <select id="add-inv-mode" class="w-full border border-slate-300 rounded-xl px-2.5 py-2 text-xs font-bold">
+                  <option value="M2">CETAK M²</option>
+                  <option value="SATUAN">CETAK SATUAN</option>
+                  <option value="ATK">PRODUK ATK</option>
+                </select>
+              </div>
+              <div>
+                <label id="add-inv-bahan-label" class="block text-[11px] font-semibold text-slate-500 mb-1">Pilih Bahan / Produk</label>
+                <select id="add-inv-bahan" class="w-full border border-slate-300 rounded-xl px-2.5 py-2 text-xs font-bold"></select>
+              </div>
+              <div id="add-inv-dim-wrap" class="grid grid-cols-3 gap-2">
+                <div>
+                  <label class="block text-[10px] font-semibold text-slate-500 mb-0.5">Panjang</label>
+                  <input type="number" step="any" min="0" id="add-inv-panjang" placeholder="0"
+                    class="w-full border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs font-bold font-mono-code" />
+                </div>
+                <div>
+                  <label class="block text-[10px] font-semibold text-slate-500 mb-0.5">Lebar</label>
+                  <input type="number" step="any" min="0" id="add-inv-lebar" placeholder="0"
+                    class="w-full border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs font-bold font-mono-code" />
+                </div>
+                <div>
+                  <label class="block text-[10px] font-semibold text-slate-500 mb-0.5">Satuan</label>
+                  <select id="add-inv-satuan" class="w-full border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs font-bold">
+                    <option value="meter">meter</option>
+                    <option value="cm">cm</option>
+                  </select>
+                </div>
+              </div>
+              <div>
+                <label class="block text-[11px] font-semibold text-slate-500 mb-1">Jumlah (Qty)</label>
+                <input type="number" min="1" id="add-inv-qty" value="1"
+                  class="w-full border border-slate-300 rounded-xl px-2.5 py-2 text-xs font-bold font-mono-code" />
+              </div>
+              <div id="add-inv-fin-wrap" class="space-y-1">
+                <label class="block text-[11px] font-semibold text-slate-500">Finishing Tambahan & Jumlah</label>
+                <div class="space-y-1.5">
+                  ${state.finishings.map(fin => {
+                    const fp = getOrderEffPrice(fin);
+                    const extra = fp > 0 ? ` (+${formatRibuan(fp)})` : '';
+                    return `<div class="flex items-center justify-between gap-2 px-2.5 py-1.5 rounded-lg border border-slate-200 bg-slate-50 text-[11px] font-semibold">
+                      <label class="inline-flex items-center gap-1.5 cursor-pointer flex-1">
+                        <input type="checkbox" class="add-inv-fin-chk" value="${escapeHtml(fin.id)}" />
+                        <span>${escapeHtml(fin.name)}${extra}</span>
+                      </label>
+                      <input type="number" min="1" value="1" data-fin-id="${escapeHtml(fin.id)}"
+                        class="add-inv-fin-qty hidden w-14 rounded border border-slate-300 bg-white px-1.5 py-0.5 text-center text-[11px] font-bold font-mono-code" />
+                    </div>`;
+                  }).join('')}
+                </div>
+              </div>
+              <div class="rounded-xl bg-slate-100 p-2.5 border border-slate-200">
+                <p id="add-inv-formula" class="text-[11px] text-slate-500">Isi panjang dan lebar</p>
+                <p id="add-inv-subtotal" class="text-base font-extrabold font-mono-code text-slate-900">Rp 0</p>
+              </div>
+            </div>`,
+            () => {
+              if (order.date !== getTodayISO()) {
+                showToast('Tambah item hanya berlaku pada hari yang sama', 'error');
+                return;
+              }
+              const calcItem = computeNewOrderItem();
+              if (!calcItem) {
+                showToast('Lengkapi ukuran panjang dan lebar terlebih dahulu', 'error');
+                return;
+              }
+              adjustStockForItem(calcItem, -1);
+              order.items = order.items || [];
+              order.items.push(calcItem);
+              order.total = order.items.reduce((sum, it) => sum + (Number(it.subtotal) || 0), 0);
+
+              saveState();
+              renderOrderPage();
+              showToast(`Item ditambahkan ke ${order.id} (Total: ${formatRp(order.total)})`, 'success');
+            }
+          );
+
+          const modeEl = document.getElementById('add-inv-mode');
+          const bahanEl = document.getElementById('add-inv-bahan');
+          const dimWrap = document.getElementById('add-inv-dim-wrap');
+          const finWrap = document.getElementById('add-inv-fin-wrap');
+          const pEl = document.getElementById('add-inv-panjang');
+          const lEl = document.getElementById('add-inv-lebar');
+          const satEl = document.getElementById('add-inv-satuan');
+          const qtyEl = document.getElementById('add-inv-qty');
+          const formulaEl = document.getElementById('add-inv-formula');
+          const subEl = document.getElementById('add-inv-subtotal');
+
+          function populateAddOrderBahan() {
+            const mode = modeEl.value;
+            let list = mode === 'M2' ? state.materialsM2 : (mode === 'SATUAN' ? state.materialsSatuan : state.productsAtk);
+            dimWrap.classList.toggle('hidden', mode !== 'M2');
+            finWrap.classList.toggle('hidden', mode === 'ATK');
+            bahanEl.innerHTML = list.map(it => {
+              const ep = getOrderEffPrice(it);
+              const unitLbl = mode === 'M2' ? '/m²' : `/${escapeHtml(it.unit || 'pcs')}`;
+              return `<option value="${escapeHtml(it.id)}">${escapeHtml(it.name)} · Rp ${formatRibuan(ep)}${unitLbl}</option>`;
+            }).join('');
+            computeNewOrderItem();
+          }
+
+          function computeNewOrderItem() {
+            const mode = modeEl.value;
+            const list = mode === 'M2' ? state.materialsM2 : (mode === 'SATUAN' ? state.materialsSatuan : state.productsAtk);
+            const item = list.find(i => i.id === bahanEl.value) || list[0];
+            if (!item) return null;
+
+            const qty = Math.max(1, parseInt(qtyEl.value, 10) || 1);
+            const effPrice = getOrderEffPrice(item);
+            const checkedFinIds = mode === 'ATK'
+              ? []
+              : Array.from(document.querySelectorAll('.add-inv-fin-chk:checked')).map(c => c.value);
+            const activeFins = state.finishings
+              .filter(f => checkedFinIds.includes(f.id))
+              .map(f => {
+                const qInp = document.querySelector(`.add-inv-fin-qty[data-fin-id="${f.id}"]`);
+                const finQty = Math.max(1, parseInt(qInp ? qInp.value : '1', 10) || 1);
+                return { ...f, finQty };
+              });
+
+            if (mode === 'M2') {
+              const pRaw = parseFloat(pEl.value) || 0;
+              const lRaw = parseFloat(lEl.value) || 0;
+              if (pRaw <= 0 || lRaw <= 0) {
+                formulaEl.textContent = 'Isi panjang dan lebar';
+                subEl.textContent = 'Rp 0';
+                return null;
+              }
+              const pMeter = satEl.value === 'cm' ? pRaw / 100 : pRaw;
+              const lMeter = satEl.value === 'cm' ? lRaw / 100 : lRaw;
+              const realArea = pMeter * lMeter;
+              const minArea = Number(item.minArea) || 0;
+              const billedArea = realArea < minArea ? minArea : realArea;
+
+              let finCostPerPcs = 0;
+              activeFins.forEach(f => {
+                const fp = getOrderEffPrice(f);
+                finCostPerPcs += f.costType === 'PER_M2' ? fp * billedArea * f.finQty : fp * f.finQty;
+              });
+
+              const subtotal = Math.round((billedArea * effPrice + finCostPerPcs) * qty);
+              formulaEl.textContent = `Luas ${formatDecimalComma(billedArea)} m² × Rp ${formatRibuan(effPrice)}/m² × ${qty} pcs`;
+              subEl.textContent = formatRp(subtotal);
+
+              return {
+                mode: 'M2',
+                productId: item.id,
+                name: item.name,
+                dimText: `${formatDecimalComma(pMeter)}×${formatDecimalComma(lMeter)} m (${formatDecimalComma(billedArea)} m²)`,
+                billedArea,
+                qty,
+                unitPrice: effPrice,
+                finishingNames: activeFins.map(f => `${f.name} (×${f.finQty})`),
+                finishingDetails: activeFins.map(f => ({ id: f.id, name: f.name, qty: f.finQty })),
+                subtotal
+              };
+            } else {
+              let finCostPerPcs = 0;
+              activeFins.forEach(f => {
+                finCostPerPcs += getOrderEffPrice(f) * f.finQty;
+              });
+              const subtotal = Math.round((effPrice + finCostPerPcs) * qty);
+              const unitLbl = item.unit || 'pcs';
+              formulaEl.textContent = `${qty} ${unitLbl} × Rp ${formatRibuan(effPrice)}`;
+              subEl.textContent = formatRp(subtotal);
+
+              return {
+                mode,
+                productId: item.id,
+                name: item.name,
+                dimText: `${qty} ${unitLbl}`,
+                qty,
+                unitPrice: effPrice,
+                finishingNames: activeFins.map(f => `${f.name} (×${f.finQty})`),
+                finishingDetails: activeFins.map(f => ({ id: f.id, name: f.name, qty: f.finQty })),
+                subtotal
+              };
+            }
+          }
+
+          modeEl.addEventListener('change', populateAddOrderBahan);
+          bahanEl.addEventListener('change', computeNewOrderItem);
+          pEl.addEventListener('input', computeNewOrderItem);
+          lEl.addEventListener('input', computeNewOrderItem);
+          satEl.addEventListener('change', computeNewOrderItem);
+          qtyEl.addEventListener('input', computeNewOrderItem);
+          document.querySelectorAll('.add-inv-fin-chk').forEach(chk => {
+            chk.addEventListener('change', () => {
+              const qInp = document.querySelector(`.add-inv-fin-qty[data-fin-id="${chk.value}"]`);
+              if (qInp) qInp.classList.toggle('hidden', !chk.checked);
+              computeNewOrderItem();
+            });
+          });
+          document.querySelectorAll('.add-inv-fin-qty').forEach(qInp => {
+            qInp.addEventListener('input', computeNewOrderItem);
+          });
+          populateAddOrderBahan();
         } else if (action === 'close-nota-modal') {
           const m = document.getElementById('modal-nota');
           m.classList.add('hidden');
@@ -2602,6 +3824,37 @@ const __firebase_config = JSON.stringify({
             renderOrderPage();
             showToast(`Status ${order.id} -> ${order.status}`, 'success');
           }
+        } else if (action === 'cancel-order') {
+          const order = state.orders.find(o => o.id === target.dataset.id);
+          if (!order || order.status === 'Dibatalkan') return;
+          openFormModal(
+            `Batalkan Invoice ${order.id}`,
+            `<div class="space-y-2.5">
+              <p class="text-xs text-slate-600 leading-relaxed">
+                Invoice <strong>${escapeHtml(order.id)}</strong> atas nama <strong>${escapeHtml(order.customerName)}</strong> (${formatRp(order.total)}) akan ditandai <strong>Dibatalkan</strong>, stok bahan dikembalikan, dan tidak dihitung dalam omzet/piutang laporan.
+              </p>
+              <div>
+                <label class="block text-[11px] font-semibold text-slate-500 mb-1">Alasan Pembatalan (Opsional)</label>
+                <input type="text" id="modal-cancel-reason" placeholder="Contoh: Salah input ukuran / pelanggan batal"
+                  class="w-full border border-slate-300 rounded-xl px-3 py-2 text-xs font-semibold" />
+              </div>
+            </div>`,
+            () => {
+              const reason = (document.getElementById('modal-cancel-reason').value || '').trim();
+              (order.items || []).forEach(it => {
+                adjustStockForItem(it, 1);
+              });
+              order.status = 'Dibatalkan';
+              order.cancelReason = reason;
+              order.cancelledAt = getTodayISO();
+              saveState();
+              renderOrderPage();
+              showToast(`Invoice ${order.id} dibatalkan & stok dikembalikan`, 'info');
+            }
+          );
+        } else if (action === 'set-stok-tab') {
+          ui.stokSubTab = target.dataset.tab;
+          renderStokPage();
         } else if (action === 'set-bahan-tab') {
           ui.bahanSubTab = target.dataset.tab;
           renderBahanPage();
@@ -2623,7 +3876,9 @@ const __firebase_config = JSON.stringify({
         } else if (action === 'open-stok-modal') {
           const cat = target.dataset.cat;
           const id = target.dataset.id;
-          const list = cat === 'M2' ? state.materialsM2 : state.productsAtk;
+          const list = cat === 'M2'
+            ? state.materialsM2
+            : (cat === 'SATUAN' ? state.materialsSatuan : (cat === 'ATK' ? state.productsAtk : state.finishings));
           const item = list.find(i => i.id === id);
           if (!item) return;
           openFormModal(
@@ -2643,30 +3898,72 @@ const __firebase_config = JSON.stringify({
               }
             }
           );
-        } else if (action === 'open-agen-modal') {
+        } else if (action === 'set-pelanggan-tab') {
+          ui.pelangganSubTab = target.dataset.tab;
+          renderAgenPage();
+        } else if (action === 'open-pelanggan-modal') {
+          const isAgenTab = ui.pelangganSubTab === 'AGEN';
           openFormModal(
-            'Tambah Agen Baru',
+            isAgenTab ? 'Tambah Pelanggan Agen Baru' : 'Tambah Pelanggan Umum Baru',
             `<div class="space-y-2.5">
-              <input type="text" id="modal-agen-name" placeholder="Nama Percetakan / Agen *" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-xs font-bold" />
-              <input type="text" id="modal-agen-phone" placeholder="No. WhatsApp" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-xs" />
-              <input type="text" id="modal-agen-addr" placeholder="Alamat" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-xs" />
+              <input type="text" id="modal-pel-name" placeholder="${isAgenTab ? 'Nama Percetakan / Agen *' : 'Nama Pelanggan Umum *'}" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-xs font-bold" />
+              <input type="text" id="modal-pel-phone" placeholder="No. WhatsApp" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-xs" />
+              <input type="text" id="modal-pel-addr" placeholder="Alamat" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-xs" />
             </div>`,
             () => {
-              const name = (document.getElementById('modal-agen-name').value || '').trim();
-              if (!name) { showToast('Nama agen wajib diisi', 'error'); return; }
-              state.agens.push({
-                id: 'ag_' + Date.now(),
+              const name = (document.getElementById('modal-pel-name').value || '').trim();
+              if (!name) { showToast('Nama pelanggan wajib diisi', 'error'); return; }
+              const entry = {
+                id: (isAgenTab ? 'ag_' : 'pu_') + Date.now(),
                 name,
-                phone: document.getElementById('modal-agen-phone').value.trim(),
-                address: document.getElementById('modal-agen-addr').value.trim()
-              });
+                phone: document.getElementById('modal-pel-phone').value.trim(),
+                address: document.getElementById('modal-pel-addr').value.trim()
+              };
+              if (isAgenTab) state.agens.push(entry);
+              else state.pelangganUmum.push(entry);
               saveState();
               renderAgenPage();
-              showToast('Agen berhasil ditambahkan', 'success');
+              showToast(`${isAgenTab ? 'Agen' : 'Pelanggan umum'} berhasil ditambahkan`, 'success');
             }
           );
-        } else if (action === 'delete-agen') {
-          state.agens.splice(parseInt(target.dataset.index, 10), 1);
+        } else if (action === 'edit-pelanggan') {
+          const idx = parseInt(target.dataset.index, 10);
+          const isAgenTab = target.dataset.cat === 'AGEN';
+          const list = isAgenTab ? state.agens : state.pelangganUmum;
+          const item = list[idx];
+          if (!item) return;
+
+          openFormModal(
+            isAgenTab ? 'Edit Pelanggan Agen' : 'Edit Pelanggan Umum',
+            `<div class="space-y-2.5">
+              <div>
+                <label class="block text-[11px] font-semibold text-slate-500 mb-1">Nama Pelanggan</label>
+                <input type="text" id="modal-pel-name" value="${escapeHtml(item.name)}" placeholder="Nama Pelanggan *" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-xs font-bold" />
+              </div>
+              <div>
+                <label class="block text-[11px] font-semibold text-slate-500 mb-1">No. WhatsApp</label>
+                <input type="text" id="modal-pel-phone" value="${escapeHtml(item.phone || '')}" placeholder="No. WhatsApp" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-xs" />
+              </div>
+              <div>
+                <label class="block text-[11px] font-semibold text-slate-500 mb-1">Alamat</label>
+                <input type="text" id="modal-pel-addr" value="${escapeHtml(item.address || '')}" placeholder="Alamat" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-xs" />
+              </div>
+            </div>`,
+            () => {
+              const name = (document.getElementById('modal-pel-name').value || '').trim();
+              if (!name) { showToast('Nama pelanggan wajib diisi', 'error'); return; }
+              item.name = name;
+              item.phone = document.getElementById('modal-pel-phone').value.trim();
+              item.address = document.getElementById('modal-pel-addr').value.trim();
+              saveState();
+              renderAgenPage();
+              showToast('Data pelanggan diperbarui', 'success');
+            }
+          );
+        } else if (action === 'delete-pelanggan') {
+          const idx = parseInt(target.dataset.index, 10);
+          if (target.dataset.cat === 'UMUM') state.pelangganUmum.splice(idx, 1);
+          else state.agens.splice(idx, 1);
           saveState();
           renderAgenPage();
         } else if (action === 'open-suplier-modal') {
@@ -2691,6 +3988,43 @@ const __firebase_config = JSON.stringify({
               saveState();
               renderSuplierPage();
               showToast('Suplier berhasil ditambahkan', 'success');
+            }
+          );
+        } else if (action === 'edit-suplier') {
+          const idx = parseInt(target.dataset.index, 10);
+          const sup = state.supliers[idx];
+          if (!sup) return;
+
+          openFormModal(
+            'Edit Data Suplier',
+            `<div class="space-y-2.5">
+              <div>
+                <label class="block text-[11px] font-semibold text-slate-500 mb-1">Nama Suplier</label>
+                <input type="text" id="modal-sup-name" value="${escapeHtml(sup.name)}" placeholder="Nama Suplier *" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-xs font-bold" />
+              </div>
+              <div>
+                <label class="block text-[11px] font-semibold text-slate-500 mb-1">Kategori Bahan</label>
+                <input type="text" id="modal-sup-cat" value="${escapeHtml(sup.category || '')}" placeholder="Kategori Bahan (misal: Flexi, Kertas)" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-xs" />
+              </div>
+              <div>
+                <label class="block text-[11px] font-semibold text-slate-500 mb-1">No. WhatsApp</label>
+                <input type="text" id="modal-sup-phone" value="${escapeHtml(sup.phone || '')}" placeholder="No. WhatsApp" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-xs" />
+              </div>
+              <div>
+                <label class="block text-[11px] font-semibold text-slate-500 mb-1">Catatan</label>
+                <input type="text" id="modal-sup-notes" value="${escapeHtml(sup.notes || '')}" placeholder="Catatan" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-xs" />
+              </div>
+            </div>`,
+            () => {
+              const name = (document.getElementById('modal-sup-name').value || '').trim();
+              if (!name) { showToast('Nama suplier wajib diisi', 'error'); return; }
+              sup.name = name;
+              sup.category = document.getElementById('modal-sup-cat').value.trim();
+              sup.phone = document.getElementById('modal-sup-phone').value.trim();
+              sup.notes = document.getElementById('modal-sup-notes').value.trim();
+              saveState();
+              renderSuplierPage();
+              showToast('Data suplier diperbarui', 'success');
             }
           );
         } else if (action === 'delete-suplier') {
@@ -2729,15 +4063,11 @@ const __firebase_config = JSON.stringify({
           }
         } else if (action === 'export-backup-json') {
           const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = `backup-${activeRoomCode}-${getTodayISO()}.json`;
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-          URL.revokeObjectURL(url);
-          showToast('File backup JSON diunduh', 'success');
+          const suggestedName = `backup-${activeRoomCode}-${getTodayISO()}.json`;
+          saveBlobWithFolderPicker(blob, suggestedName, 'application/json', '.json').then(res => {
+            if (res === 'CANCELLED') showToast('Backup dibatalkan', 'info');
+            else showToast('File backup JSON berhasil disimpan', 'success');
+          });
         } else if (action === 'set-lap-period') {
           ui.lapPeriod = target.dataset.period;
           ui.lapDate = '';
@@ -2766,6 +4096,8 @@ const __firebase_config = JSON.stringify({
             accentColor: document.getElementById('custom-color-accent').value,
             appBg: document.getElementById('custom-color-bg').value,
             navBg: document.getElementById('custom-color-navbg').value,
+            navBoxBg: document.getElementById('custom-color-navboxbg').value,
+            navBoxBorder: document.getElementById('custom-color-navboxborder').value,
             navActive: document.getElementById('custom-color-navactive').value,
             isDark: false
           };
@@ -2851,7 +4183,6 @@ const __firebase_config = JSON.stringify({
         }
       });
 
-      // Event Input & Change Delegation
       document.addEventListener('input', function (e) {
         const el = e.target;
 
@@ -2862,6 +4193,15 @@ const __firebase_config = JSON.stringify({
 
         if (el.id === 'kasir-pay-input') {
           updateKasirPayHint();
+        } else if (el.dataset.action === 'change-finishing-qty') {
+          const id = el.dataset.id;
+          ui.selectedFinishings[id] = Math.max(1, parseInt(el.value, 10) || 1);
+          recalcKasir();
+        } else if (el.id === 'kasir-customer-name') {
+          el.dataset.manualEdited = 'true';
+          ui.selectedPelangganId = '';
+          const pelSelectEl = document.getElementById('kasir-cart-pelanggan-select');
+          if (pelSelectEl) pelSelectEl.value = '';
         } else if (el.dataset.action === 'calc-kasir') {
           recalcKasir();
         } else if (el.dataset.action === 'search-order') {
@@ -2919,10 +4259,15 @@ const __firebase_config = JSON.stringify({
         const el = e.target;
         if (el.dataset.action === 'change-bahan' || el.dataset.action === 'calc-kasir') {
           recalcKasir();
-        } else if (el.dataset.action === 'select-agen') {
-          ui.selectedAgenId = el.value;
-          const ag = state.agens.find(a => a.id === ui.selectedAgenId);
-          if (ag) document.getElementById('kasir-customer-name').value = ag.name;
+        } else if (el.id === 'kasir-cart-pelanggan-select' || el.dataset.action === 'select-pelanggan') {
+          ui.selectedPelangganId = el.value;
+          const sourceList = ui.customerType === 'Agen' ? state.agens : state.pelangganUmum;
+          const chosen = sourceList.find(p => p.id === ui.selectedPelangganId);
+          const custInput = document.getElementById('kasir-customer-name');
+          if (custInput) {
+            delete custInput.dataset.manualEdited;
+            custInput.value = chosen ? chosen.name : '';
+          }
           renderKasirPage();
         } else if (el.dataset.action === 'filter-lap-date') {
           ui.lapDate = el.value;
@@ -2933,6 +4278,22 @@ const __firebase_config = JSON.stringify({
             state.finishings[idx].costType = el.value;
             saveState();
           }
+        } else if (el.classList.contains('excel-import-input')) {
+          const file = el.files && el.files[0];
+          const importType = el.dataset.importType;
+          if (!file || !importType) return;
+          const reader = new FileReader();
+          reader.onload = function (ev) {
+            try {
+              const rows = parseSpreadsheetText(ev.target.result);
+              importExcelData(importType, rows);
+            } catch (err) {
+              showToast('Gagal membaca file Excel/CSV', 'error');
+            } finally {
+              el.value = '';
+            }
+          };
+          reader.readAsText(file);
         } else if (el.id === 'input-restore-json') {
           const file = el.files && el.files[0];
           if (!file) return;
@@ -2967,9 +4328,6 @@ const __firebase_config = JSON.stringify({
         }
       });
 
-      // =====================================================================
-      // INISIALISASI APLIKASI (SAFE BOOT)
-      // =====================================================================
       function initApp() {
         try {
           applyTheme();
@@ -2978,7 +4336,6 @@ const __firebase_config = JSON.stringify({
           navigateTo('kasir');
           initFirebaseCloud();
         } catch (err) {
-          console.error('Error inisialisasi aplikasi, memuat ulang default:', err);
           state = createDefaultState();
           saveState();
           applyTheme();
