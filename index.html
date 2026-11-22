@@ -170,8 +170,9 @@
 
       <div class="p-5 space-y-4">
         <div class="space-y-1.5">
-          <label class="block text-xs font-bold muted-text">Pilih Akun Pengguna</label>
-          <select id="login-user-select" class="app-input w-full rounded-xl px-3.5 py-3 text-sm font-bold"></select>
+          <label class="block text-xs font-bold muted-text">Username</label>
+          <input type="text" id="login-username-input" value="" autocomplete="off" placeholder="Masukkan nama pengguna..."
+            class="app-input w-full rounded-xl px-3.5 py-3 text-sm font-bold" />
         </div>
 
         <div class="space-y-1.5">
@@ -217,7 +218,7 @@
               AMANAH-01
             </span>
             <span id="header-user-badge" class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-200">
-              Administrator
+              Admin
             </span>
           </div>
         </div>
@@ -348,7 +349,7 @@
 
           <div class="flex items-center justify-between rounded-xl bg-slate-50 px-3 py-2 border border-slate-200">
             <span class="text-xs font-semibold muted-text">Kasir bertugas (otomatis di invoice)</span>
-            <span id="kasir-staff-display" class="text-xs font-extrabold text-slate-800">Administrator</span>
+            <span id="kasir-staff-display" class="text-xs font-extrabold text-slate-800">Admin</span>
           </div>
 
           <div class="space-y-1">
@@ -1122,7 +1123,7 @@
             { id: 'f4', name: 'Rangka kayu', costType: 'PER_ITEM', price: 25000, agentPrice: 20000, stock: 30 }
           ],
           users: [
-            { id: 'u_admin', name: 'Administrator', role: 'Kasir', accessLevel: 'ADMIN', pin: '1234' },
+            { id: 'u_admin', name: 'Admin', role: 'Kasir', accessLevel: 'ADMIN', pin: '1234' },
             { id: 'u1', name: 'Arman', role: 'Kasir', accessLevel: 'USER', pin: '1234' },
             { id: 'u2', name: 'Siti Munaroh', role: 'Kasir', accessLevel: 'USER', pin: '1234' },
             { id: 'u3', name: 'Budi Santoso', role: 'Operator', accessLevel: 'USER', pin: '1234' }
@@ -1171,7 +1172,13 @@
       }
 
       function ensureAtLeastOneAdmin(userList) {
-        const normalized = userList.map(normalizeUser);
+        const normalized = userList.map(u => {
+          const norm = normalizeUser(u);
+          if ((norm.name || '').trim().toLowerCase() === 'administrator') {
+            norm.name = 'Admin';
+          }
+          return norm;
+        });
         if (!normalized.some(u => u.accessLevel === 'ADMIN') && normalized.length > 0) {
           normalized[0].accessLevel = 'ADMIN';
         }
@@ -1613,8 +1620,7 @@ const __firebase_config = JSON.stringify({
 
         if (userBadge) {
           if (currentUser) {
-            const levelLabel = isAdmin ? 'Administrator' : `User · ${currentUser.role}`;
-            userBadge.textContent = `${currentUser.name} (${levelLabel})`;
+            userBadge.textContent = currentUser.name;
             userBadge.className = isAdmin
               ? 'px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-400/20 text-amber-200 border border-amber-300/30'
               : 'px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-200';
@@ -1646,35 +1652,37 @@ const __firebase_config = JSON.stringify({
 
       function renderLoginScreen() {
         const screen = document.getElementById('login-screen');
-        const selectEl = document.getElementById('login-user-select');
-        if (!screen || !selectEl) return;
-
-        const prevVal = selectEl.value;
-        selectEl.innerHTML = state.users.map(u => {
-          const levelText = u.accessLevel === 'ADMIN' ? 'Administrator' : `User Biasa (${u.role})`;
-          return `<option value="${escapeHtml(u.id)}">${escapeHtml(u.name)} — ${escapeHtml(levelText)}</option>`;
-        }).join('');
-        if (prevVal && state.users.some(u => u.id === prevVal)) {
-          selectEl.value = prevVal;
-        }
+        const userInput = document.getElementById('login-username-input');
+        if (!screen) return;
 
         const validUser = getCurrentUser();
         if (validUser) {
           screen.classList.add('hidden');
         } else {
           ui.loggedInUserId = '';
+          if (userInput && document.activeElement !== userInput) {
+            userInput.value = '';
+          }
           screen.classList.remove('hidden');
         }
       }
 
       function handleLoginSubmit() {
-        const selectEl = document.getElementById('login-user-select');
+        const userInput = document.getElementById('login-username-input');
         const pinInput = document.getElementById('login-pin-input');
-        if (!selectEl || !pinInput) return;
+        if (!userInput || !pinInput) return;
 
-        const user = state.users.find(u => u.id === selectEl.value);
+        const enteredName = String(userInput.value || '').trim();
+        if (!enteredName) {
+          showToast('Masukkan username terlebih dahulu', 'error');
+          userInput.focus();
+          return;
+        }
+
+        const user = state.users.find(u => (u.name || '').trim().toLowerCase() === enteredName.toLowerCase());
         if (!user) {
-          showToast('Pilih akun pengguna terlebih dahulu', 'error');
+          showToast('Username tidak ditemukan', 'error');
+          userInput.focus();
           return;
         }
 
@@ -1696,6 +1704,7 @@ const __firebase_config = JSON.stringify({
 
         ui.loggedInUserId = user.id;
         try { sessionStorage.setItem(SESSION_USER_KEY, user.id); } catch (e) {}
+        userInput.value = '';
         pinInput.value = '';
         renderHeaderIdentity();
         renderLoginScreen();
@@ -1707,8 +1716,7 @@ const __firebase_config = JSON.stringify({
           staffDisplay.textContent = user.name;
         }
 
-        const levelInfo = user.accessLevel === 'ADMIN' ? 'Administrator' : 'User Biasa';
-        showToast(`Masuk sebagai ${user.name} (${levelInfo})`, 'success');
+        showToast(`Masuk sebagai ${user.name}`, 'success');
       }
 
       function handleLogout() {
@@ -1716,6 +1724,10 @@ const __firebase_config = JSON.stringify({
         try { sessionStorage.removeItem(SESSION_USER_KEY); } catch (e) {}
         ui.activePage = 'kasir';
         ui.prevPage = 'kasir';
+        const userInput = document.getElementById('login-username-input');
+        const pinInput = document.getElementById('login-pin-input');
+        if (userInput) userInput.value = '';
+        if (pinInput) pinInput.value = '';
         renderHeaderIdentity();
         renderLoginScreen();
         showToast('Anda telah keluar dari sesi', 'info');
@@ -1868,7 +1880,7 @@ const __firebase_config = JSON.stringify({
         const staffDisplay = document.getElementById('kasir-staff-display');
         const loggedUser = getCurrentUser();
         if (staffDisplay) {
-          staffDisplay.textContent = loggedUser ? loggedUser.name : (state.users[0]?.name || 'Administrator');
+          staffDisplay.textContent = loggedUser ? loggedUser.name : (state.users[0]?.name || 'Admin');
         }
 
         renderPaymentMethodPills();
@@ -2089,7 +2101,7 @@ const __firebase_config = JSON.stringify({
         const rawCustInput = (document.getElementById('kasir-customer-name').value || '').trim();
         const custName = rawCustInput || 'Umum';
         const loggedUser = getCurrentUser();
-        const cashierName = loggedUser ? loggedUser.name : (state.users[0]?.name || 'Administrator');
+        const cashierName = loggedUser ? loggedUser.name : (state.users[0]?.name || 'Admin');
 
         if (rawCustInput && rawCustInput.toLowerCase() !== 'umum') {
           if (ui.customerType === 'Agen') {
@@ -4398,8 +4410,15 @@ const __firebase_config = JSON.stringify({
       });
 
       document.addEventListener('keydown', function (e) {
-        if (e.key === 'Enter' && e.target && e.target.id === 'login-pin-input') {
+        if (e.key === 'Enter' && e.target && (e.target.id === 'login-pin-input' || e.target.id === 'login-username-input')) {
           e.preventDefault();
+          if (e.target.id === 'login-username-input') {
+            const pinEl = document.getElementById('login-pin-input');
+            if (pinEl && !pinEl.value) {
+              pinEl.focus();
+              return;
+            }
+          }
           handleLoginSubmit();
         }
       });
