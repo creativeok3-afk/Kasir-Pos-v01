@@ -839,6 +839,35 @@
           + Tambah pengguna
         </button>
       </div>
+
+      <!-- 5. Manajemen & Hapus Data Invoice -->
+      <div class="surface-card rounded-2xl border p-4 shadow-sm space-y-3.5">
+        <div class="flex items-start justify-between gap-2">
+          <div>
+            <h3 class="text-sm font-extrabold">Kelola & Hapus Data Invoice</h3>
+            <p class="text-xs muted-text">Hapus invoice tertentu atau bersihkan invoice yang dibatalkan (stok order aktif otomatis dikembalikan).</p>
+          </div>
+          <span id="settings-invoice-count" class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-slate-100 text-slate-700 shrink-0">
+            0 Invoice
+          </span>
+        </div>
+
+        <input type="text" id="settings-invoice-search" data-action="search-settings-invoice" placeholder="Cari No. Invoice atau nama pelanggan..."
+          class="app-input w-full rounded-xl px-3 py-2 text-xs font-semibold" />
+
+        <div id="settings-invoice-list" class="divide-y divide-slate-200 max-h-72 overflow-y-auto pr-0.5"></div>
+
+        <div class="grid grid-cols-2 gap-2 pt-2 border-t border-slate-200">
+          <button type="button" data-action="delete-cancelled-invoices"
+            class="py-2.5 px-3 rounded-xl border border-amber-300 bg-amber-50 text-amber-800 text-xs font-bold cursor-pointer">
+            Hapus Yg Dibatalkan
+          </button>
+          <button type="button" data-action="delete-all-invoices"
+            class="py-2.5 px-3 rounded-xl border border-rose-200 bg-rose-50 text-rose-700 text-xs font-bold cursor-pointer">
+            Hapus Semua Invoice
+          </button>
+        </div>
+      </div>
     </section>
 
   </main>
@@ -1345,15 +1374,6 @@
         else if (ui.activePage === 'suplier') renderSuplierPage();
         else if (ui.activePage === 'settings' && !isTypingInInput) renderSettingsPage();
       }
-const __firebase_config = JSON.stringify({
-  apiKey: "AIzaSyA3yWPf312q2hPn8jQU7WQ9pdOAA3NHM8I",
-  authDomain: "kasir-amanah-pos.firebaseapp.com",
-  projectId: "kasir-amanah-pos",
-  storageBucket: "kasir-amanah-pos.firebasestorage.app",
-  messagingSenderId: "234878771362",
-  appId: "1:234878771362:web:fae6c26a314ae3d084f7fb",
-  measurementId: "G-EMJ324XB7N"
-});
 
       async function initFirebaseCloud() {
         try {
@@ -1404,6 +1424,7 @@ const __firebase_config = JSON.stringify({
         bahanSubTab: 'M2',
         activeNotaId: null,
         notaSettleMethod: 'Tunai',
+        settingsInvoiceSearch: '',
         modalCallback: null
       };
 
@@ -2862,6 +2883,47 @@ const __firebase_config = JSON.stringify({
             </div>
           </div>
         `}).join('');
+
+        renderSettingsInvoiceList();
+      }
+
+      function renderSettingsInvoiceList() {
+        const listEl = document.getElementById('settings-invoice-list');
+        const countEl = document.getElementById('settings-invoice-count');
+        if (!listEl) return;
+
+        if (countEl) {
+          countEl.textContent = `${state.orders.length} Invoice`;
+        }
+
+        const q = (ui.settingsInvoiceSearch || '').trim().toLowerCase();
+        const filtered = state.orders.filter(o =>
+          !q || (o.id || '').toLowerCase().includes(q) || (o.customerName || '').toLowerCase().includes(q)
+        );
+
+        if (filtered.length === 0) {
+          listEl.innerHTML = `<p class="py-6 text-center text-xs muted-text">Tidak ada invoice yang cocok.</p>`;
+          return;
+        }
+
+        listEl.innerHTML = filtered.map(o => {
+          const isCancelled = o.status === 'Dibatalkan';
+          return `
+            <div class="py-2.5 flex items-center justify-between gap-2">
+              <div class="min-w-0">
+                <div class="flex items-center gap-1.5 flex-wrap">
+                  <span class="text-xs font-extrabold font-mono-code ${isCancelled ? 'line-through text-slate-400' : ''}">${escapeHtml(o.id)}</span>
+                  <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${isCancelled ? 'bg-rose-100 text-rose-700' : 'bg-slate-100 text-slate-700'}">${escapeHtml(o.status)}</span>
+                </div>
+                <p class="text-[11px] muted-text truncate mt-0.5">${escapeHtml(o.customerName)} · ${escapeHtml(o.date)} · ${formatRp(o.total)}</p>
+              </div>
+              <button type="button" data-action="delete-single-invoice" data-id="${escapeHtml(o.id)}"
+                class="px-3 py-1.5 rounded-xl border border-rose-200 bg-rose-50 hover:bg-rose-100 text-rose-600 text-xs font-bold cursor-pointer shrink-0">
+                Hapus
+              </button>
+            </div>
+          `;
+        }).join('');
       }
 
       function openFormModal(title, bodyHtml, onSave) {
@@ -4184,6 +4246,72 @@ const __firebase_config = JSON.stringify({
           } else {
             renderSettingsPage();
           }
+        } else if (action === 'delete-single-invoice') {
+          const invId = target.dataset.id;
+          const idx = state.orders.findIndex(o => o.id === invId);
+          if (idx === -1) return;
+          const ord = state.orders[idx];
+          openFormModal(
+            `Hapus Invoice ${ord.id}`,
+            `<p class="text-xs text-slate-600 leading-relaxed">
+              Apakah Anda yakin ingin menghapus permanen invoice <strong>${escapeHtml(ord.id)}</strong> atas nama <strong>${escapeHtml(ord.customerName)}</strong> (${formatRp(ord.total)})?
+              ${ord.status !== 'Dibatalkan' ? '<br/><span class="text-emerald-700 font-semibold">Stok bahan pada invoice ini akan otomatis dikembalikan.</span>' : ''}
+            </p>`,
+            () => {
+              const curIdx = state.orders.findIndex(o => o.id === invId);
+              if (curIdx !== -1) {
+                const targetOrd = state.orders[curIdx];
+                if (targetOrd.status !== 'Dibatalkan') {
+                  (targetOrd.items || []).forEach(it => adjustStockForItem(it, 1));
+                }
+                state.orders.splice(curIdx, 1);
+                saveState();
+                renderSettingsInvoiceList();
+                showToast(`Invoice ${invId} berhasil dihapus`, 'success');
+              }
+            }
+          );
+        } else if (action === 'delete-cancelled-invoices') {
+          const cancelledCount = state.orders.filter(o => o.status === 'Dibatalkan').length;
+          if (cancelledCount === 0) {
+            showToast('Tidak ada invoice berstatus Dibatalkan', 'info');
+            return;
+          }
+          openFormModal(
+            'Hapus Semua Invoice Dibatalkan',
+            `<p class="text-xs text-slate-600 leading-relaxed">
+              Terdapat <strong>${cancelledCount} invoice</strong> berstatus <strong>Dibatalkan</strong>. Hapus permanen seluruh invoice yang dibatalkan tersebut?
+            </p>`,
+            () => {
+              state.orders = state.orders.filter(o => o.status !== 'Dibatalkan');
+              saveState();
+              renderSettingsInvoiceList();
+              showToast(`${cancelledCount} invoice dibatalkan berhasil dihapus`, 'success');
+            }
+          );
+        } else if (action === 'delete-all-invoices') {
+          if (state.orders.length === 0) {
+            showToast('Daftar invoice sudah kosong', 'info');
+            return;
+          }
+          const totalCount = state.orders.length;
+          openFormModal(
+            'Hapus Semua Data Invoice',
+            `<p class="text-xs text-slate-600 leading-relaxed">
+              Seluruh <strong>${totalCount} data invoice</strong> akan dihapus permanen dari aplikasi dan laporan keuangan akan direset ke 0. Lanjutkan?
+            </p>`,
+            () => {
+              state.orders.forEach(ord => {
+                if (ord.status !== 'Dibatalkan') {
+                  (ord.items || []).forEach(it => adjustStockForItem(it, 1));
+                }
+              });
+              state.orders = [];
+              saveState();
+              renderSettingsInvoiceList();
+              showToast('Seluruh data invoice berhasil dihapus', 'success');
+            }
+          );
         } else if (action === 'close-form-modal') {
           closeFormModal();
         } else if (action === 'submit-form-modal') {
@@ -4216,6 +4344,9 @@ const __firebase_config = JSON.stringify({
         } else if (el.dataset.action === 'search-order') {
           ui.orderSearch = el.value;
           renderOrderPage();
+        } else if (el.dataset.action === 'search-settings-invoice') {
+          ui.settingsInvoiceSearch = el.value;
+          renderSettingsInvoiceList();
         } else if (el.dataset.action === 'update-store-info') {
           state.settings.storeName = document.getElementById('setting-store-name').value || 'PERCETAKAN AMANAH';
           state.settings.storeSlogan = document.getElementById('setting-store-slogan').value || '';
