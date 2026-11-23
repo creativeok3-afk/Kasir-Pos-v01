@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Kasir Percetakan - PERCETAKAN AMANAH</title>
+  <title>Kasir Pos v01</title>
   <script src="https://cdn.tailwindcss.com"></script>
 
   <style>
@@ -343,7 +343,7 @@
       <div class="app-header p-6 text-center space-y-2.5">
         <div id="login-logo-wrap" class="w-16 h-16 mx-auto rounded-2xl bg-white p-1.5 flex items-center justify-center shadow-md overflow-hidden"></div>
         <div>
-          <h2 id="login-store-name" class="text-lg font-extrabold tracking-tight text-white">PERCETAKAN AMANAH</h2>
+          <h2 id="login-store-name" class="text-lg font-extrabold tracking-tight text-white">Kasir Pos v01</h2>
           <p class="text-xs text-slate-300 mt-0.5">Silakan masuk untuk memulai sesi kasir</p>
         </div>
       </div>
@@ -376,7 +376,7 @@
         </button>
 
         <div class="pt-2 border-t border-slate-200 flex items-center justify-between text-[11px] muted-text">
-          <span>Kode Toko: <strong id="login-room-code" class="font-mono-code">AMANAH-01</strong></span>
+          <span>Kode Toko: <strong id="login-room-code" class="font-mono-code">KASIRPOS-01</strong></span>
           <span id="login-cloud-status" class="font-semibold">Online</span>
         </div>
       </div>
@@ -390,7 +390,7 @@
         <div id="header-logo-wrap" class="w-11 h-11 rounded-xl bg-white p-1 flex items-center justify-center shrink-0 shadow-sm overflow-hidden"></div>
         <div class="min-w-0">
           <h1 id="header-store-name" class="text-base sm:text-lg font-extrabold tracking-tight leading-tight truncate text-white">
-            PERCETAKAN AMANAH
+            Kasir Pos v01
           </h1>
           <div class="flex items-center gap-1.5 flex-wrap mt-0.5">
             <p id="header-date-text" class="text-[11px] text-slate-300 truncate">
@@ -772,7 +772,7 @@
         <div class="space-y-1.5">
           <label class="block text-xs font-semibold muted-text">Kode Toko / Ruang Sync Aktif</label>
           <div class="flex gap-2">
-            <input type="text" id="setting-room-code" value="AMANAH-01" placeholder="Contoh: AMANAH-01"
+            <input type="text" id="setting-room-code" value="KASIRPOS-01" placeholder="Contoh: KASIRPOS-01"
               class="app-input flex-1 rounded-xl px-3 py-2.5 text-sm font-extrabold font-mono-code uppercase" />
             <button type="button" data-action="join-room-code"
               class="px-4 py-2.5 rounded-xl btn-accent text-xs font-bold cursor-pointer shrink-0">
@@ -936,7 +936,7 @@
         </div>
         <div class="space-y-1">
           <label class="block text-xs font-semibold muted-text">Nama Usaha</label>
-          <input type="text" id="setting-store-name" data-action="update-store-info" value="PERCETAKAN AMANAH"
+          <input type="text" id="setting-store-name" data-action="update-store-info" value="Kasir Pos v01"
             class="app-input w-full rounded-xl px-3 py-2.5 text-sm font-bold" />
         </div>
         <div class="space-y-1">
@@ -1173,10 +1173,10 @@
     (function () {
       'use strict';
 
-      const STORAGE_KEY = 'percetakan_amanah_pos_v3';
-      const ROOM_STORAGE_KEY = 'percetakan_amanah_room_code';
-      const SESSION_USER_KEY = 'percetakan_amanah_logged_user';
-      const appId = typeof __app_id !== 'undefined' ? __app_id : 'percetakan-amanah-pos';
+      const STORAGE_KEY = 'kasir_pos_v01_state';
+      const ROOM_STORAGE_KEY = 'kasir_pos_v01_room_code';
+      const SESSION_USER_KEY = 'kasir_pos_v01_logged_user';
+      const appId = typeof __app_id !== 'undefined' ? __app_id : 'kasir-pos-v01';
 
       // Cloud State (dimuat secara dinamis agar aplikasi tetap berjalan penuh saat offline)
       let db = null;
@@ -1193,7 +1193,7 @@
         try {
           if (!('serviceWorker' in navigator) || !window.location.protocol.startsWith('http')) return;
           const swCode = `
-            const CACHE_NAME = 'percetakan-amanah-offline-v1';
+            const CACHE_NAME = 'kasir-pos-v01-offline-v1';
             self.addEventListener('install', (event) => {
               self.skipWaiting();
               event.waitUntil(
@@ -1229,7 +1229,7 @@
           const saved = localStorage.getItem(ROOM_STORAGE_KEY);
           if (saved && saved.trim()) return saved.trim().toUpperCase().replace(/[^A-Z0-9_-]/g, '');
         } catch (e) {}
-        return 'AMANAH-01';
+        return 'KASIRPOS-01';
       }
 
       let activeRoomCode = getActiveRoomCode();
@@ -1256,7 +1256,7 @@
             <rect x="92" y="39" width="8" height="4" rx="2" fill="#0f2137"/>
           </g>
           <path d="M36 74 Q50 66 64 74 Q74 66 84 74 L74 86 Q60 92 46 86 Z" fill="#0066b2"/>
-          <text x="60" y="106" text-anchor="middle" font-family="Inter, sans-serif" font-weight="800" font-size="11.5" fill="#004a8f">AMANAH</text>
+          <text x="60" y="106" text-anchor="middle" font-family="Inter, sans-serif" font-weight="800" font-size="11.5" fill="#004a8f">POS v01</text>
         </svg>
       `;
 
@@ -1308,7 +1308,7 @@
       function createDefaultState() {
         return {
           settings: {
-            storeName: 'PERCETAKAN AMANAH',
+            storeName: 'Kasir Pos v01',
             storeSlogan: 'Kualitas & Kepercayaan',
             storeWa: '0812-3456-7890',
             customLogoDataUrl: '',
@@ -1608,31 +1608,22 @@
         else if (ui.activePage === 'settings' && !isTypingInInput) renderSettingsPage();
       }
 const firebaseConfig = {
-    apiKey: "AIzaSyAM33uppfEs_eifvuFcgZM8zSxhf49SJ34",
-    authDomain: "kasir-pos-v01.firebaseapp.com",
-    projectId: "kasir-pos-v01",
-    storageBucket: "kasir-pos-v01.firebasestorage.app",
-    messagingSenderId: "153460446332",
-    appId: "1:153460446332:web:7c1b2105983b3cc25be5f9"
-  };
+        apiKey: "AIzaSyAM33uppfEs_eifvuFcgZM8zSxhf49SJ34",
+        authDomain: "kasir-pos-v01.firebaseapp.com",
+        projectId: "kasir-pos-v01",
+        storageBucket: "kasir-pos-v01.firebasestorage.app",
+        messagingSenderId: "153460446332",
+        appId: "1:153460446332:web:7c1b2105983b3cc25be5f9"
+      };
+
       async function initFirebaseCloud() {
         try {
           if (navigator.onLine === false) {
             updateCloudBadgeUI('OFFLINE', 'Offline (Lokal)');
             return;
           }
-          if (typeof __firebase_config === 'undefined' || !__firebase_config) {
-            updateCloudBadgeUI('OFFLINE', 'Offline (Lokal)');
-            return;
-          }
 
-          const firebaseConfig = typeof __firebase_config === 'string'
-            ? JSON.parse(__firebase_config)
-            : __firebase_config;
-
-          if (!firebaseConfig || !firebaseConfig.
-
- || firebaseConfig.apiKey === 'ISI_API_KEY_ANDA') {
+          if (!firebaseConfig || !firebaseConfig.apiKey || firebaseConfig.apiKey === 'ISI_API_KEY_ANDA') {
             updateCloudBadgeUI('OFFLINE', 'Offline (Lokal)');
             return;
           }
@@ -1858,7 +1849,7 @@ const firebaseConfig = {
         const userBadge = document.getElementById('header-user-badge');
         const settingsBtn = document.getElementById('btn-header-settings');
 
-        if (nameEl) nameEl.textContent = state.settings.storeName || 'PERCETAKAN AMANAH';
+        if (nameEl) nameEl.textContent = state.settings.storeName || 'Kasir Pos v01';
         if (dateEl) dateEl.textContent = getFormattedIndoDate();
 
         const currentUser = getCurrentUser();
@@ -1893,7 +1884,7 @@ const firebaseConfig = {
         const loginLogoWrap = document.getElementById('login-logo-wrap');
         const loginStoreName = document.getElementById('login-store-name');
         if (loginLogoWrap) loginLogoWrap.innerHTML = logoHtml;
-        if (loginStoreName) loginStoreName.textContent = state.settings.storeName || 'PERCETAKAN AMANAH';
+        if (loginStoreName) loginStoreName.textContent = state.settings.storeName || 'Kasir Pos v01';
       }
 
       function renderLoginScreen() {
@@ -3067,7 +3058,7 @@ const firebaseConfig = {
         if (roomInput) roomInput.value = activeRoomCode;
         updateCloudBadgeUI(cloudConnected ? 'ONLINE' : 'OFFLINE', cloudConnected ? 'Online' : 'Offline (Lokal)');
 
-        document.getElementById('setting-store-name').value = state.settings.storeName || 'PERCETAKAN AMANAH';
+        document.getElementById('setting-store-name').value = state.settings.storeName || 'Kasir Pos v01';
         document.getElementById('setting-store-slogan').value = state.settings.storeSlogan || '';
         document.getElementById('setting-store-wa').value = state.settings.storeWa || '';
 
@@ -3235,7 +3226,7 @@ const firebaseConfig = {
         if (typeof window.showSaveFilePicker === 'function') {
           try {
             const pickerPromise = window.showSaveFilePicker({
-              id: 'percetakan-amanah-export',
+              id: 'kasir-pos-v01-export',
               suggestedName,
               startIn: 'documents',
               types: [
@@ -3302,7 +3293,7 @@ const firebaseConfig = {
           <head><meta charset="UTF-8" /></head>
           <body>
             <table>
-              <tr><td colspan="${headers.length}" style="font-size:14pt;font-weight:bold;">${escapeHtml(state.settings.storeName || 'PERCETAKAN AMANAH')} - ${escapeHtml(sheetTitle)}</td></tr>
+              <tr><td colspan="${headers.length}" style="font-size:14pt;font-weight:bold;">${escapeHtml(state.settings.storeName || 'Kasir Pos v01')} - ${escapeHtml(sheetTitle)}</td></tr>
               <tr><td colspan="${headers.length}" style="font-size:10pt;color:#475569;">Tanggal Ekspor: ${escapeHtml(getFormattedIndoDate())}</td></tr>
               <tr></tr>
               <thead><tr>${thHtml}</tr></thead>
@@ -4647,7 +4638,7 @@ const firebaseConfig = {
           ui.settingsInvoiceSearch = el.value;
           renderSettingsInvoiceList();
         } else if (el.dataset.action === 'update-store-info') {
-          state.settings.storeName = document.getElementById('setting-store-name').value || 'PERCETAKAN AMANAH';
+          state.settings.storeName = document.getElementById('setting-store-name').value || 'Kasir Pos v01';
           state.settings.storeSlogan = document.getElementById('setting-store-slogan').value || '';
           state.settings.storeWa = document.getElementById('setting-store-wa').value || '';
           saveState();
