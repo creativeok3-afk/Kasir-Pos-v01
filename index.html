@@ -4,6 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Kasir Pos v01</title>
+  <link rel="manifest" href="./manifest.json" />
+  <meta name="theme-color" content="#0f2137" />
   <script src="https://cdn.tailwindcss.com"></script>
 
   <style>
@@ -1192,6 +1194,7 @@
       function registerOfflineServiceWorker() {
         try {
           if (!('serviceWorker' in navigator) || !window.location.protocol.startsWith('http')) return;
+          navigator.serviceWorker.register('./sw.js').catch(() => {});
           const swCode = `
             const CACHE_NAME = 'kasir-pos-v01-offline-v1';
             self.addEventListener('install', (event) => {
@@ -1491,7 +1494,7 @@
       }
 
       async function pushStateToCloud(immediate = false) {
-        if (!db || !cloudUser || !firestoreMod) return;
+        if (!db || !firestoreMod) return;
         try {
           updateCloudBadgeUI('SYNCING', 'Menyimpan...');
           const docRef = getRoomDocRef(activeRoomCode);
@@ -1513,7 +1516,7 @@
       }
 
       function scheduleCloudPush() {
-        if (!db || !cloudUser || !firestoreMod) return;
+        if (!db || !firestoreMod) return;
         if (syncPushTimer) clearTimeout(syncPushTimer);
         syncPushTimer = setTimeout(() => {
           pushStateToCloud(false);
@@ -1539,7 +1542,7 @@
       }
 
       function subscribeToRoom(roomCode) {
-        if (!db || !cloudUser || !firestoreMod) return;
+        if (!db || !firestoreMod) return;
         if (unsubscribeRoom) {
           unsubscribeRoom();
           unsubscribeRoom = null;
@@ -1639,19 +1642,20 @@ const firebaseConfig = {
           auth = authMod.getAuth(app);
           db = fsMod.getFirestore(app);
 
-          if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-            const cred = await authMod.signInWithCustomToken(auth, __initial_auth_token);
-            cloudUser = cred.user;
-          } else {
-            const cred = await authMod.signInAnonymously(auth);
-            cloudUser = cred.user;
+          try {
+            if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+              const cred = await authMod.signInWithCustomToken(auth, __initial_auth_token);
+              cloudUser = cred.user;
+            } else {
+              const cred = await authMod.signInAnonymously(auth);
+              cloudUser = cred.user;
+            }
+          } catch (authErr) {
+            // Jika Anonymous Auth belum diaktifkan di Firebase Console, tetap coba subscribe Firestore
+            cloudUser = { uid: 'guest_' + activeRoomCode };
           }
 
-          if (cloudUser) {
-            subscribeToRoom(activeRoomCode);
-          } else {
-            updateCloudBadgeUI('OFFLINE', 'Offline (Lokal)');
-          }
+          subscribeToRoom(activeRoomCode);
         } catch (err) {
           updateCloudBadgeUI('OFFLINE', 'Offline (Lokal)');
         }
