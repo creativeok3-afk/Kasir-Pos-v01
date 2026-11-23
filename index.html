@@ -920,6 +920,89 @@
         </div>
       </div>
 
+      <!-- 0C. Pengaturan Cetak Nota & Pemilihan Printer Langsung -->
+      <div class="surface-card rounded-2xl border p-4 shadow-sm space-y-3.5">
+        <div class="flex items-start justify-between gap-2">
+          <div>
+            <h3 class="text-sm font-extrabold">Pengaturan Cetak Nota & Printer</h3>
+            <p class="text-xs muted-text mt-0.5">Pilih jalur printer (Bluetooth Thermal, USB/Serial, Network/IP, atau Printer Sistem) agar cetak nota langsung terkirim tanpa lewat aplikasi lain.</p>
+          </div>
+          <span id="settings-printer-status-badge" class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-slate-100 text-slate-700 shrink-0">
+            Siap
+          </span>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2.5">
+          <div class="space-y-1">
+            <label class="block text-xs font-semibold muted-text">Jenis Koneksi Printer</label>
+            <select id="setting-printer-type" class="app-input w-full rounded-xl px-3 py-2.5 text-xs font-bold">
+              <option value="SYSTEM_DIRECT">Printer Sistem / Default (Langsung)</option>
+              <option value="BLUETOOTH_ESC">Bluetooth Thermal (ESC/POS)</option>
+              <option value="USB_SERIAL_ESC">USB / Serial Thermal (ESC/POS)</option>
+              <option value="NETWORK_ESC">Network / Wi-Fi IP (ESC/POS)</option>
+            </select>
+          </div>
+
+          <div class="space-y-1">
+            <label class="block text-xs font-semibold muted-text">Ukuran Kertas Nota</label>
+            <select id="setting-printer-paper" class="app-input w-full rounded-xl px-3 py-2.5 text-xs font-bold">
+              <option value="58mm">Thermal 58 mm (32 kolom)</option>
+              <option value="80mm">Thermal 80 mm (48 kolom)</option>
+              <option value="A4">Kertas A4 / Folio</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="printer-bt-panel" class="hidden space-y-2 rounded-xl bg-slate-50 p-3 border border-slate-200">
+          <div class="flex items-center justify-between gap-2">
+            <span class="text-xs font-bold text-slate-700">Perangkat Bluetooth Thermal</span>
+            <button type="button" data-action="scan-bluetooth-printer"
+              class="px-3 py-1.5 rounded-lg btn-accent text-[11px] font-bold cursor-pointer">
+              Pilih / Hubungkan Bluetooth
+            </button>
+          </div>
+          <p id="setting-printer-bt-name" class="text-[11px] font-mono-code text-slate-600">Belum ada perangkat Bluetooth dipilih</p>
+        </div>
+
+        <div id="printer-usb-panel" class="hidden space-y-2 rounded-xl bg-slate-50 p-3 border border-slate-200">
+          <div class="flex items-center justify-between gap-2">
+            <span class="text-xs font-bold text-slate-700">Port USB / Serial Thermal</span>
+            <button type="button" data-action="select-usb-printer"
+              class="px-3 py-1.5 rounded-lg btn-accent text-[11px] font-bold cursor-pointer">
+              Pilih Port USB / Serial
+            </button>
+          </div>
+          <p id="setting-printer-usb-name" class="text-[11px] font-mono-code text-slate-600">Belum ada port USB/Serial dipilih</p>
+        </div>
+
+        <div id="printer-net-panel" class="hidden space-y-2 rounded-xl bg-slate-50 p-3 border border-slate-200">
+          <label class="block text-xs font-bold text-slate-700">Alamat IP & Port Printer Jaringan</label>
+          <div class="grid grid-cols-3 gap-2">
+            <input type="text" id="setting-printer-ip" placeholder="192.168.1.100"
+              class="app-input col-span-2 rounded-xl px-3 py-2 text-xs font-bold font-mono-code" />
+            <input type="number" id="setting-printer-port" value="9100" placeholder="9100"
+              class="app-input rounded-xl px-3 py-2 text-xs font-bold font-mono-code" />
+          </div>
+        </div>
+
+        <div class="space-y-1">
+          <label class="block text-xs font-semibold muted-text">Nama / Label Printer Pilihan</label>
+          <input type="text" id="setting-printer-label" placeholder="Contoh: RPP02N Bluetooth / Epson TM-T82 / Canon G2010"
+            class="app-input w-full rounded-xl px-3 py-2.5 text-xs font-bold" />
+        </div>
+
+        <div class="flex flex-wrap items-center justify-between gap-2 pt-1">
+          <label class="inline-flex items-center gap-2 text-xs font-semibold cursor-pointer">
+            <input type="checkbox" id="setting-printer-autocut" class="rounded" />
+            <span>Auto-cut / Feed kertas otomatis (ESC/POS)</span>
+          </label>
+          <button type="button" data-action="test-print-nota"
+            class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold cursor-pointer">
+            Tes Cetak Nota
+          </button>
+        </div>
+      </div>
+
       <!-- 1. Identitas & Logo Usaha -->
       <div class="surface-card rounded-2xl border p-4 shadow-sm space-y-3.5">
         <h3 class="text-sm font-extrabold">Identitas & Logo Usaha</h3>
@@ -1272,6 +1355,10 @@ const firebaseConfig = {
             ...defSettings.nonCashMethods,
             ...((rawSettings && rawSettings.nonCashMethods) || {})
           },
+          printer: {
+            ...defSettings.printer,
+            ...((rawSettings && rawSettings.printer) || {})
+          },
           theme: {
             ...defSettings.theme,
             ...((rawSettings && rawSettings.theme) || {})
@@ -1297,6 +1384,17 @@ const firebaseConfig = {
               'Transfer Bank': true,
               'QRIS': true,
               'E-Wallet': true
+            },
+            printer: {
+              connectionType: 'SYSTEM_DIRECT',
+              paperSize: '58mm',
+              label: '',
+              btDeviceName: '',
+              btDeviceId: '',
+              usbPortInfo: '',
+              ipAddress: '192.168.1.100',
+              port: 9100,
+              autoCut: true
             },
             theme: { ...THEME_PRESETS[0] }
           },
@@ -3035,6 +3133,21 @@ const firebaseConfig = {
         document.getElementById('setting-store-slogan').value = state.settings.storeSlogan || '';
         document.getElementById('setting-store-wa').value = state.settings.storeWa || '';
 
+        const pCfg = getPrinterConfig();
+        const pTypeEl = document.getElementById('setting-printer-type');
+        const pPaperEl = document.getElementById('setting-printer-paper');
+        const pLabelEl = document.getElementById('setting-printer-label');
+        const pIpEl = document.getElementById('setting-printer-ip');
+        const pPortEl = document.getElementById('setting-printer-port');
+        const pCutEl = document.getElementById('setting-printer-autocut');
+        if (pTypeEl) pTypeEl.value = pCfg.connectionType || 'SYSTEM_DIRECT';
+        if (pPaperEl) pPaperEl.value = pCfg.paperSize || '58mm';
+        if (pLabelEl) pLabelEl.value = pCfg.label || '';
+        if (pIpEl) pIpEl.value = pCfg.ipAddress || '192.168.1.100';
+        if (pPortEl) pPortEl.value = String(pCfg.port || 9100);
+        if (pCutEl) pCutEl.checked = pCfg.autoCut !== false;
+        updatePrinterPanelVisibility(pCfg);
+
         const logoPrev = document.getElementById('settings-logo-preview');
         logoPrev.innerHTML = state.settings.customLogoDataUrl
           ? `<img src="${state.settings.customLogoDataUrl}" class="w-full h-full object-contain rounded-lg" />`
@@ -4131,8 +4244,346 @@ const firebaseConfig = {
           document.getElementById('nota-settle-input').value = sisa > 0 ? formatRibuan(sisa) : '';
         } else if (action === 'submit-settle-nota') {
           submitSettleNota();
+      // =====================================================================
+      // MESIN CETAK NOTA LANGSUNG (BLUETOOTH / USB SERIAL / NETWORK / SISTEM)
+      // =====================================================================
+      let connectedBtCharacteristic = null;
+      let connectedUsbPort = null;
+
+      function getPrinterConfig() {
+        const defP = createDefaultState().settings.printer;
+        return { ...defP, ...((state.settings && state.settings.printer) || {}) };
+      }
+
+      function updatePrinterPanelVisibility(cfg) {
+        const p = cfg || getPrinterConfig();
+        const btPanel = document.getElementById('printer-bt-panel');
+        const usbPanel = document.getElementById('printer-usb-panel');
+        const netPanel = document.getElementById('printer-net-panel');
+        const btNameEl = document.getElementById('setting-printer-bt-name');
+        const usbNameEl = document.getElementById('setting-printer-usb-name');
+        const badgeEl = document.getElementById('settings-printer-status-badge');
+
+        if (btPanel) btPanel.classList.toggle('hidden', p.connectionType !== 'BLUETOOTH_ESC');
+        if (usbPanel) usbPanel.classList.toggle('hidden', p.connectionType !== 'USB_SERIAL_ESC');
+        if (netPanel) netPanel.classList.toggle('hidden', p.connectionType !== 'NETWORK_ESC');
+
+        if (btNameEl) {
+          btNameEl.textContent = p.btDeviceName
+            ? `Terpilih: ${p.btDeviceName}${connectedBtCharacteristic ? ' (Aktif)' : ''}`
+            : 'Belum ada perangkat Bluetooth dipilih';
+        }
+        if (usbNameEl) {
+          usbNameEl.textContent = p.usbPortInfo
+            ? `Terpilih: ${p.usbPortInfo}${connectedUsbPort ? ' (Aktif)' : ''}`
+            : 'Belum ada port USB/Serial dipilih';
+        }
+        if (badgeEl) {
+          const typeLabels = {
+            SYSTEM_DIRECT: 'Printer Sistem',
+            BLUETOOTH_ESC: 'Bluetooth ESC/POS',
+            USB_SERIAL_ESC: 'USB / Serial',
+            NETWORK_ESC: 'Network IP'
+          };
+          badgeEl.textContent = p.label ? `${typeLabels[p.connectionType] || 'Printer'} · ${p.label}` : (typeLabels[p.connectionType] || 'Siap');
+        }
+      }
+
+      function buildPlainReceiptText(order) {
+        const p = getPrinterConfig();
+        const cols = p.paperSize === '80mm' ? 48 : 32;
+        const lineDiv = '-'.repeat(cols);
+        const sisa = Math.max(0, (Number(order.total) || 0) - (Number(order.paid) || 0));
+        const lines = [];
+
+        lines.push((state.settings.storeName || 'Kasir Pos v01').toUpperCase());
+        if (state.settings.storeSlogan) lines.push(state.settings.storeSlogan);
+        if (state.settings.storeWa) lines.push('WA: ' + state.settings.storeWa);
+        lines.push(`${order.id} | ${order.date}`);
+        lines.push(`Pelanggan: ${order.customerName}`);
+        lines.push(`Kasir: ${order.cashierName}`);
+        lines.push(lineDiv);
+
+        (order.items || []).forEach(it => {
+          lines.push(`${it.name} ${it.mode === 'M2' ? it.dimText : ''} x${it.qty}`.trim());
+          if (it.finishingNames && it.finishingNames.length) {
+            lines.push(`  + ${it.finishingNames.join(', ')}`);
+          }
+          lines.push(`  ${formatRp(it.subtotal)}`);
+        });
+
+        lines.push(lineDiv);
+        lines.push(`Total  : ${formatRp(order.total)}`);
+        lines.push(`Dibayar: ${formatRp(order.paid)}`);
+        lines.push(`Sisa   : ${order.status === 'Dibatalkan' ? 'Rp 0 (Dibatalkan)' : formatRp(sisa)}`);
+        lines.push(`Status : ${order.status}`);
+        lines.push('');
+        lines.push('Terima kasih.');
+        lines.push('');
+        lines.push('');
+        return lines.join('\n');
+      }
+
+      function encodeEscPosBytes(text, autoCut) {
+        const encoder = new TextEncoder();
+        const initCmd = [0x1b, 0x40]; // ESC @ (Initialize printer)
+        const bodyBytes = Array.from(encoder.encode(String(text || '').replace(/m²/g, 'm2').replace(/×/g, 'x')));
+        const feedCmd = [0x0a, 0x0a, 0x0a];
+        const cutCmd = autoCut ? [0x1d, 0x56, 0x42, 0x00] : []; // GS V B 0 (Partial/full cut)
+        return new Uint8Array([...initCmd, ...bodyBytes, ...feedCmd, ...cutCmd]);
+      }
+
+      async function connectBluetoothThermalPrinter() {
+        if (!navigator.bluetooth || !navigator.bluetooth.requestDevice) {
+          showToast('Browser/perangkat ini tidak mendukung Web Bluetooth. Gunakan Printer Sistem atau Chrome/Edge.', 'error');
+          return;
+        }
+        try {
+          const device = await navigator.bluetooth.requestDevice({
+            acceptAllDevices: true,
+            optionalServices: [
+              '000018f0-0000-1000-8000-00805f9b34fb',
+              'e7810a71-73ae-499d-8c15-faa9aef0c3f2',
+              '49535343-fe7d-4ae5-8fa9-9fafd205e455'
+            ]
+          });
+          const server = await device.gatt.connect();
+          const services = await server.getPrimaryServices();
+          let targetChar = null;
+          for (const srv of services) {
+            const chars = await srv.getCharacteristics();
+            for (const ch of chars) {
+              if (ch.properties.writeWithoutResponse || ch.properties.write) {
+                targetChar = ch;
+                break;
+              }
+            }
+            if (targetChar) break;
+          }
+          connectedBtCharacteristic = targetChar;
+          const pCfg = getPrinterConfig();
+          pCfg.connectionType = 'BLUETOOTH_ESC';
+          pCfg.btDeviceName = device.name || 'Bluetooth Printer';
+          pCfg.btDeviceId = device.id || '';
+          if (!pCfg.label) pCfg.label = pCfg.btDeviceName;
+          state.settings.printer = pCfg;
+          saveState();
+          updatePrinterPanelVisibility(pCfg);
+          const lblInput = document.getElementById('setting-printer-label');
+          if (lblInput) lblInput.value = pCfg.label;
+          showToast(`Printer Bluetooth "${pCfg.btDeviceName}" siap digunakan`, 'success');
+        } catch (err) {
+          showToast('Koneksi Bluetooth dibatalkan atau gagal', 'error');
+        }
+      }
+
+      async function connectUsbSerialPrinter() {
+        if (!navigator.serial || !navigator.serial.requestPort) {
+          showToast('Browser ini tidak mendukung Web Serial (USB). Gunakan Chrome/Edge desktop atau Printer Sistem.', 'error');
+          return;
+        }
+        try {
+          const port = await navigator.serial.requestPort();
+          await port.open({ baudRate: 9600 });
+          connectedUsbPort = port;
+          const info = port.getInfo ? port.getInfo() : {};
+          const portDesc = info.usbVendorId
+            ? `USB VID:${info.usbVendorId} PID:${info.usbProductId || ''}`
+            : 'Serial/USB Thermal Port';
+          const pCfg = getPrinterConfig();
+          pCfg.connectionType = 'USB_SERIAL_ESC';
+          pCfg.usbPortInfo = portDesc;
+          if (!pCfg.label) pCfg.label = portDesc;
+          state.settings.printer = pCfg;
+          saveState();
+          updatePrinterPanelVisibility(pCfg);
+          const lblInput = document.getElementById('setting-printer-label');
+          if (lblInput) lblInput.value = pCfg.label;
+          showToast(`Port USB/Serial "${portDesc}" terhubung`, 'success');
+        } catch (err) {
+          showToast('Pemilihan port USB/Serial dibatalkan atau gagal', 'error');
+        }
+      }
+
+      async function sendBytesOverBluetooth(bytes) {
+        if (!connectedBtCharacteristic) {
+          await connectBluetoothThermalPrinter();
+        }
+        if (!connectedBtCharacteristic) {
+          throw new Error('Karakteristik tulis Bluetooth belum tersedia');
+        }
+        const chunkSize = 100;
+        for (let i = 0; i < bytes.length; i += chunkSize) {
+          const slice = bytes.slice(i, i + chunkSize);
+          if (connectedBtCharacteristic.properties.writeWithoutResponse) {
+            await connectedBtCharacteristic.writeValueWithoutResponse(slice);
+          } else {
+            await connectedBtCharacteristic.writeValue(slice);
+          }
+        }
+      }
+
+      async function sendBytesOverUsbSerial(bytes) {
+        if (!connectedUsbPort) {
+          await connectUsbSerialPrinter();
+        }
+        if (!connectedUsbPort || !connectedUsbPort.writable) {
+          throw new Error('Port USB/Serial belum terbuka');
+        }
+        const writer = connectedUsbPort.writable.getWriter();
+        await writer.write(bytes);
+        writer.releaseLock();
+      }
+
+      async function sendBytesOverNetwork(bytes, ip, port) {
+        const cleanIp = String(ip || '').trim();
+        const cleanPort = parseInt(port, 10) || 9100;
+        if (!cleanIp) {
+          throw new Error('Alamat IP printer belum diisi');
+        }
+        // Coba kirim RAW TCP via HTTP bridge lokal jika tersedia di jaringan/perangkat
+        const endpoint = `http://${cleanIp}:${cleanPort}/`;
+        await fetch(endpoint, {
+          method: 'POST',
+          mode: 'no-cors',
+          body: bytes
+        });
+      }
+
+      function triggerSystemDirectPrint() {
+        const printArea = document.getElementById('nota-print-area');
+        const pCfg = getPrinterConfig();
+        let dynStyle = document.getElementById('dynamic-paper-print-style');
+        if (!dynStyle) {
+          dynStyle = document.createElement('style');
+          dynStyle.id = 'dynamic-paper-print-style';
+          document.head.appendChild(dynStyle);
+        }
+        const pageSizeRule = pCfg.paperSize === '58mm'
+          ? '@page { size: 58mm auto; margin: 2mm; }'
+          : (pCfg.paperSize === '80mm' ? '@page { size: 80mm auto; margin: 2mm; }' : '@page { size: A4; margin: 10mm; }');
+        dynStyle.textContent = `@media print { ${pageSizeRule} }`;
+
+        if (printArea) {
+          const printWindow = window.open('', '_blank', 'width=420,height=640');
+          if (printWindow) {
+            const paperWidthCss = pCfg.paperSize === '58mm' ? '58mm' : (pCfg.paperSize === '80mm' ? '80mm' : '100%');
+            printWindow.document.open();
+            printWindow.document.write(`
+              <!DOCTYPE html>
+              <html>
+              <head>
+                <meta charset="UTF-8" />
+                <title>Cetak Nota</title>
+                <style>
+                  ${pageSizeRule}
+                  body {
+                    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+                    font-size: 12px;
+                    color: #000;
+                    background: #fff;
+                    margin: 0;
+                    padding: 6px;
+                    width: ${paperWidthCss};
+                  }
+                  img { max-width: 48px; max-height: 48px; }
+                </style>
+              </head>
+              <body>
+                ${printArea.innerHTML}
+                <script>
+                  window.onload = function() {
+                    setTimeout(function() {
+                      window.print();
+                      window.close();
+                    }, 120);
+                  };
+                <\/script>
+              </body>
+              </html>
+            `);
+            printWindow.document.close();
+            return;
+          }
+        }
+        window.print();
+      }
+
+      async function executeDirectNotaPrint(orderId) {
+        const order = state.orders.find(o => o.id === (orderId || ui.activeNotaId)) || state.orders[0];
+        const pCfg = getPrinterConfig();
+
+        if (pCfg.connectionType === 'BLUETOOTH_ESC') {
+          if (!order) {
+            showToast('Tidak ada data nota untuk dicetak', 'error');
+            return;
+          }
+          try {
+            const bytes = encodeEscPosBytes(buildPlainReceiptText(order), Boolean(pCfg.autoCut));
+            await sendBytesOverBluetooth(bytes);
+            showToast(`Nota ${order.id} tercetak langsung via Bluetooth (${pCfg.btDeviceName || 'Printer'})`, 'success');
+          } catch (err) {
+            showToast(`Gagal cetak Bluetooth: ${err.message || err}. Mencetak via printer sistem...`, 'error');
+            triggerSystemDirectPrint();
+          }
+        } else if (pCfg.connectionType === 'USB_SERIAL_ESC') {
+          if (!order) {
+            showToast('Tidak ada data nota untuk dicetak', 'error');
+            return;
+          }
+          try {
+            const bytes = encodeEscPosBytes(buildPlainReceiptText(order), Boolean(pCfg.autoCut));
+            await sendBytesOverUsbSerial(bytes);
+            showToast(`Nota ${order.id} tercetak langsung via USB/Serial`, 'success');
+          } catch (err) {
+            showToast(`Gagal cetak USB/Serial: ${err.message || err}. Mencetak via printer sistem...`, 'error');
+            triggerSystemDirectPrint();
+          }
+        } else if (pCfg.connectionType === 'NETWORK_ESC') {
+          if (!order) {
+            showToast('Tidak ada data nota untuk dicetak', 'error');
+            return;
+          }
+          try {
+            const bytes = encodeEscPosBytes(buildPlainReceiptText(order), Boolean(pCfg.autoCut));
+            await sendBytesOverNetwork(bytes, pCfg.ipAddress, pCfg.port);
+            showToast(`Nota ${order.id} dikirim langsung ke printer IP ${pCfg.ipAddress}:${pCfg.port || 9100}`, 'success');
+          } catch (err) {
+            showToast(`Gagal kirim ke IP printer: ${err.message || err}. Mencetak via printer sistem...`, 'error');
+            triggerSystemDirectPrint();
+          }
+        } else {
+          triggerSystemDirectPrint();
+        }
+      }
+
         } else if (action === 'print-nota') {
-          window.print();
+          executeDirectNotaPrint(ui.activeNotaId);
+        } else if (action === 'scan-bluetooth-printer') {
+          connectBluetoothThermalPrinter();
+        } else if (action === 'select-usb-printer') {
+          connectUsbSerialPrinter();
+        } else if (action === 'test-print-nota') {
+          const sampleOrder = state.orders[0] || {
+            id: 'TEST-0001',
+            date: getTodayISO(),
+            customerName: 'Uji Coba Printer',
+            cashierName: getCurrentUser()?.name || 'Admin',
+            status: 'Antri',
+            items: [{ mode: 'SATUAN', name: 'Tes Cetak Nota', dimText: '1 lbr', qty: 1, finishingNames: [], subtotal: 10000 }],
+            total: 10000,
+            paid: 10000
+          };
+          const pCfg = getPrinterConfig();
+          if (pCfg.connectionType === 'SYSTEM_DIRECT') {
+            const pa = document.getElementById('nota-print-area');
+            if (pa && !pa.innerHTML.trim()) {
+              pa.innerHTML = `<pre style="font-family:monospace;font-size:12px;">${escapeHtml(buildPlainReceiptText(sampleOrder))}</pre>`;
+            }
+            triggerSystemDirectPrint();
+          } else {
+            executeDirectNotaPrint(sampleOrder.id);
+          }
         } else if (action === 'send-wa-nota') {
           sendWhatsAppNota();
         } else if (action === 'advance-order-status') {
@@ -4616,6 +5067,18 @@ const firebaseConfig = {
           state.settings.storeWa = document.getElementById('setting-store-wa').value || '';
           saveState();
           renderHeaderIdentity();
+        } else if (
+          el.id === 'setting-printer-label' ||
+          el.id === 'setting-printer-ip' ||
+          el.id === 'setting-printer-port'
+        ) {
+          const pCfg = getPrinterConfig();
+          pCfg.label = (document.getElementById('setting-printer-label')?.value || '').trim();
+          pCfg.ipAddress = (document.getElementById('setting-printer-ip')?.value || '').trim();
+          pCfg.port = parseInt(document.getElementById('setting-printer-port')?.value, 10) || 9100;
+          state.settings.printer = pCfg;
+          saveState();
+          updatePrinterPanelVisibility(pCfg);
         } else if (el.classList.contains('bahan-edit-input')) {
           const cat = el.dataset.bahanCat;
           const idx = parseInt(el.dataset.index, 10);
@@ -4723,6 +5186,19 @@ const firebaseConfig = {
             }
           };
           reader.readAsText(file);
+        } else if (
+          el.id === 'setting-printer-type' ||
+          el.id === 'setting-printer-paper' ||
+          el.id === 'setting-printer-autocut'
+        ) {
+          const pCfg = getPrinterConfig();
+          pCfg.connectionType = document.getElementById('setting-printer-type')?.value || 'SYSTEM_DIRECT';
+          pCfg.paperSize = document.getElementById('setting-printer-paper')?.value || '58mm';
+          pCfg.autoCut = Boolean(document.getElementById('setting-printer-autocut')?.checked);
+          state.settings.printer = pCfg;
+          saveState();
+          updatePrinterPanelVisibility(pCfg);
+          showToast('Pengaturan printer disimpan', 'success');
         } else if (el.id === 'input-upload-logo') {
           const file = el.files && el.files[0];
           if (!file) return;
