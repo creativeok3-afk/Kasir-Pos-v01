@@ -1,4 +1,4 @@
-const CACHE_NAME = 'kasir-pos-v01-cache-v1';
+const CACHE_NAME = 'kasir-pos-v01-cache-v2';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -29,7 +29,11 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
   const url = new URL(event.request.url);
-  if (url.hostname.includes('googleapis.com') || url.hostname.includes('firebaseio.com')) {
+  if (
+    url.hostname.includes('googleapis.com') ||
+    url.hostname.includes('firebaseio.com') ||
+    url.hostname.includes('gstatic.com')
+  ) {
     return;
   }
 

@@ -4,6 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Kasir Pos v01</title>
+  <link rel="manifest" href="./manifest.json" />
+  <meta name="theme-color" content="#0f2137" />
   <script src="https://cdn.tailwindcss.com"></script>
 
   <style>
@@ -401,7 +403,7 @@
               <span id="cloud-status-text">Menghubungkan...</span>
             </span>
             <span id="header-room-badge" class="px-1.5 py-0.5 rounded text-[10px] font-mono-code font-bold bg-white/10 text-cyan-300">
-              AMANAH-01
+              KASIR-01
             </span>
             <span id="header-user-badge" class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-200">
               Admin
@@ -1164,13 +1166,13 @@
   <!-- ===================================================================== -->
   <script>
 const firebaseConfig = {
-        apiKey: "AIzaSyAM33uppfEs_eifvuFcgZM8zSxhf49SJ34",
-        authDomain: "kasir-pos-v01.firebaseapp.com",
-        projectId: "kasir-pos-v01",
-        storageBucket: "kasir-pos-v01.firebasestorage.app",
-        messagingSenderId: "153460446332",
-        appId: "1:153460446332:web:7c1b2105983b3cc25be5f9"
-      };
+    apiKey: "AIzaSyAM33uppfEs_eifvuFcgZM8zSxhf49SJ34",
+    authDomain: "kasir-pos-v01.firebaseapp.com",
+    projectId: "kasir-pos-v01",
+    storageBucket: "kasir-pos-v01.firebasestorage.app",
+    messagingSenderId: "153460446332",
+    appId: "1:153460446332:web:7c1b2105983b3cc25be5f9"
+  };
   </script>
 
   <!-- ===================================================================== -->
@@ -1199,35 +1201,7 @@ const firebaseConfig = {
       function registerOfflineServiceWorker() {
         try {
           if (!('serviceWorker' in navigator) || !window.location.protocol.startsWith('http')) return;
-          const swCode = `
-            const CACHE_NAME = 'kasir-pos-v01-offline-v1';
-            self.addEventListener('install', (event) => {
-              self.skipWaiting();
-              event.waitUntil(
-                caches.open(CACHE_NAME).then((cache) => cache.addAll([self.location.href]).catch(() => {}))
-              );
-            });
-            self.addEventListener('activate', (event) => {
-              event.waitUntil(self.clients.claim());
-            });
-            self.addEventListener('fetch', (event) => {
-              if (event.request.method !== 'GET') return;
-              event.respondWith(
-                fetch(event.request)
-                  .then((response) => {
-                    if (response && response.ok) {
-                      const clone = response.clone();
-                      caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone)).catch(() => {});
-                    }
-                    return response;
-                  })
-                  .catch(() => caches.match(event.request, { ignoreSearch: true }))
-              );
-            });
-          `;
-          const swBlob = new Blob([swCode], { type: 'application/javascript' });
-          const swUrl = URL.createObjectURL(swBlob);
-          navigator.serviceWorker.register(swUrl).catch(() => {});
+          navigator.serviceWorker.register('./sw.js').catch(() => {});
         } catch (e) {}
       }
 
@@ -1498,7 +1472,7 @@ const firebaseConfig = {
       }
 
       async function pushStateToCloud(immediate = false) {
-        if (!db || !cloudUser || !firestoreMod) return;
+        if (!db || !firestoreMod) return;
         try {
           updateCloudBadgeUI('SYNCING', 'Menyimpan...');
           const docRef = getRoomDocRef(activeRoomCode);
@@ -1520,7 +1494,7 @@ const firebaseConfig = {
       }
 
       function scheduleCloudPush() {
-        if (!db || !cloudUser || !firestoreMod) return;
+        if (!db || !firestoreMod) return;
         if (syncPushTimer) clearTimeout(syncPushTimer);
         syncPushTimer = setTimeout(() => {
           pushStateToCloud(false);
@@ -1546,7 +1520,7 @@ const firebaseConfig = {
       }
 
       function subscribeToRoom(roomCode) {
-        if (!db || !cloudUser || !firestoreMod) return;
+        if (!db || !firestoreMod) return;
         if (unsubscribeRoom) {
           unsubscribeRoom();
           unsubscribeRoom = null;
@@ -1622,7 +1596,7 @@ const firebaseConfig = {
             return;
           }
 
-          if (!firebaseConfig || !firebaseConfig.apiKey || firebaseConfig.apiKey === 'AIzaSyAM33uppfEs_eifvuFcgZM8zSxhf49SJ34') {
+          if (typeof firebaseConfig === 'undefined' || !firebaseConfig || !firebaseConfig.apiKey || firebaseConfig.apiKey === 'ISI_API_KEY_ANDA') {
             updateCloudBadgeUI('OFFLINE', 'Offline (Lokal)');
             return;
           }
@@ -1638,19 +1612,19 @@ const firebaseConfig = {
           auth = authMod.getAuth(app);
           db = fsMod.getFirestore(app);
 
-          if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-            const cred = await authMod.signInWithCustomToken(auth, __initial_auth_token);
-            cloudUser = cred.user;
-          } else {
-            const cred = await authMod.signInAnonymously(auth);
-            cloudUser = cred.user;
+          try {
+            if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+              const cred = await authMod.signInWithCustomToken(auth, __initial_auth_token);
+              cloudUser = cred.user;
+            } else {
+              const cred = await authMod.signInAnonymously(auth);
+              cloudUser = cred.user;
+            }
+          } catch (authErr) {
+            cloudUser = { uid: 'guest_' + activeRoomCode };
           }
 
-          if (cloudUser) {
-            subscribeToRoom(activeRoomCode);
-          } else {
-            updateCloudBadgeUI('OFFLINE', 'Offline (Lokal)');
-          }
+          subscribeToRoom(activeRoomCode);
         } catch (err) {
           updateCloudBadgeUI('OFFLINE', 'Offline (Lokal)');
         }
@@ -4400,7 +4374,7 @@ const firebaseConfig = {
           activeRoomCode = rawCode;
           try { localStorage.setItem(ROOM_STORAGE_KEY, activeRoomCode); } catch (e) {}
           renderHeaderIdentity();
-          if (db && cloudUser) {
+          if (db) {
             subscribeToRoom(activeRoomCode);
             showToast(`Terhubung ke Kode Toko: ${activeRoomCode}`, 'success');
           } else {
@@ -4415,7 +4389,7 @@ const firebaseConfig = {
           document.body.removeChild(tempInput);
           showToast(`Kode Toko "${activeRoomCode}" disalin`, 'success');
         } else if (action === 'force-cloud-sync') {
-          if (db && cloudUser) {
+          if (db) {
             pushStateToCloud(true);
           } else {
             initFirebaseCloud();
@@ -4783,7 +4757,7 @@ const firebaseConfig = {
       }
 
       window.addEventListener('online', () => {
-        if (db && cloudUser && firestoreMod) pushStateToCloud(false);
+        if (db && firestoreMod) pushStateToCloud(false);
         else initFirebaseCloud();
       });
 
