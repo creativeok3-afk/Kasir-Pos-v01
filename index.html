@@ -1163,14 +1163,7 @@
   <!-- KONFIGURASI FIREBASE CLOUD (OPSIONAL UNTUK SINKRONISASI ONLINE)       -->
   <!-- ===================================================================== -->
   <script>
-    const firebaseConfig = {
-    apiKey: "AIzaSyAM33uppfEs_eifvuFcgZM8zSxhf49SJ34",
-    authDomain: "kasir-pos-v01.firebaseapp.com",
-    projectId: "kasir-pos-v01",
-    storageBucket: "kasir-pos-v01.firebasestorage.app",
-    messagingSenderId: "153460446332",
-    appId: "1:153460446332:web:7c1b2105983b3cc25be5f9"
-  };
+
   </script>
 
   <!-- ===================================================================== -->
@@ -1614,7 +1607,14 @@
         else if (ui.activePage === 'suplier') renderSuplierPage();
         else if (ui.activePage === 'settings' && !isTypingInInput) renderSettingsPage();
       }
-
+const firebaseConfig = {
+    apiKey: "AIzaSyAM33uppfEs_eifvuFcgZM8zSxhf49SJ34",
+    authDomain: "kasir-pos-v01.firebaseapp.com",
+    projectId: "kasir-pos-v01",
+    storageBucket: "kasir-pos-v01.firebasestorage.app",
+    messagingSenderId: "153460446332",
+    appId: "1:153460446332:web:7c1b2105983b3cc25be5f9"
+  };
       async function initFirebaseCloud() {
         try {
           if (navigator.onLine === false) {
@@ -1630,7 +1630,9 @@
             ? JSON.parse(__firebase_config)
             : __firebase_config;
 
-          if (!firebaseConfig || !firebaseConfig.apiKey || firebaseConfig.apiKey === 'ISI_API_KEY_ANDA') {
+          if (!firebaseConfig || !firebaseConfig.
+
+ || firebaseConfig.apiKey === 'ISI_API_KEY_ANDA') {
             updateCloudBadgeUI('OFFLINE', 'Offline (Lokal)');
             return;
           }
