@@ -39,7 +39,7 @@
       transition: background-color 0.2s ease, color 0.2s ease;
     }
 
-    /* Offline Fallback Utility Classes (aktif otomatis jika CDN Tailwind tidak tersedia saat offline) */
+    /* Offline Fallback Utility Classes */
     .hidden { display: none !important; }
     .flex { display: flex; }
     .inline-flex { display: inline-flex; }
@@ -230,24 +230,6 @@
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
     }
 
-    * {
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    body {
-      font-family: 'Inter', sans-serif;
-      background-color: var(--app-bg);
-      color: var(--text-main);
-      margin: 0;
-      padding: 0;
-      transition: background-color 0.2s ease, color 0.2s ease;
-    }
-
-    .font-mono-code {
-      font-family: 'JetBrains Mono', monospace;
-    }
-
     .app-header {
       background-color: var(--header-bg);
       color: #ffffff;
@@ -354,11 +336,851 @@
   <div id="toast-box" class="fixed top-16 left-1/2 -translate-x-1/2 z-[100] pointer-events-none flex flex-col items-center gap-2 w-[92%] max-w-sm"></div>
 
   <!-- ===================================================================== -->
+  <!-- HALAMAN LOGIN (SEBELUM MASUK APLIKASI)                                -->
+  <!-- ===================================================================== -->
+  <div id="login-screen" class="fixed inset-0 z-50 overflow-y-auto flex flex-col items-center justify-center p-4" style="background-color: var(--app-bg);">
+    <div class="w-full max-w-sm surface-card rounded-3xl border shadow-xl overflow-hidden">
+      <div class="app-header p-6 text-center space-y-2.5">
+        <div id="login-logo-wrap" class="w-16 h-16 mx-auto rounded-2xl bg-white p-1.5 flex items-center justify-center shadow-md overflow-hidden"></div>
+        <div>
+          <h2 id="login-store-name" class="text-lg font-extrabold tracking-tight text-white">PERCETAKAN AMANAH</h2>
+          <p class="text-xs text-slate-300 mt-0.5">Silakan masuk untuk memulai sesi kasir</p>
+        </div>
+      </div>
+      <div class="cmyk-bar">
+        <div class="bg-cyan-400"></div>
+        <div class="bg-pink-500"></div>
+        <div class="bg-yellow-400"></div>
+        <div class="bg-slate-950"></div>
+      </div>
+
+      <div class="p-5 space-y-4">
+        <div class="space-y-1.5">
+          <label class="block text-xs font-bold muted-text">Username</label>
+          <input type="text" id="login-username-input" value="" autocomplete="off" placeholder="Masukkan username..."
+            class="app-input w-full rounded-xl px-3.5 py-3 text-sm font-bold" />
+        </div>
+
+        <div class="space-y-1.5">
+          <div class="flex items-center justify-between">
+            <label class="block text-xs font-bold muted-text">Masukkan PIN (4-6 Digit)</label>
+            <span class="text-[11px] muted-text">PIN bawaan: <strong class="font-mono-code">1234</strong></span>
+          </div>
+          <input type="password" inputmode="numeric" maxlength="6" id="login-pin-input" placeholder="••••"
+            class="app-input w-full rounded-xl px-3.5 py-3 text-center text-lg font-extrabold font-mono-code tracking-[0.4em]" />
+        </div>
+
+        <button type="button" data-action="submit-login"
+          class="w-full py-3.5 rounded-xl btn-accent font-extrabold text-sm shadow-sm cursor-pointer">
+          Masuk Aplikasi
+        </button>
+
+        <div class="pt-2 border-t border-slate-200 flex items-center justify-between text-[11px] muted-text">
+          <span>Kode Toko: <strong id="login-room-code" class="font-mono-code">AMANAH-01</strong></span>
+          <span id="login-cloud-status" class="font-semibold">Online</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HEADER UTAMA -->
+  <header class="app-header sticky top-0 z-30 shadow-md">
+    <div class="max-w-xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
+      <div class="flex items-center gap-3 min-w-0">
+        <div id="header-logo-wrap" class="w-11 h-11 rounded-xl bg-white p-1 flex items-center justify-center shrink-0 shadow-sm overflow-hidden"></div>
+        <div class="min-w-0">
+          <h1 id="header-store-name" class="text-base sm:text-lg font-extrabold tracking-tight leading-tight truncate text-white">
+            PERCETAKAN AMANAH
+          </h1>
+          <div class="flex items-center gap-1.5 flex-wrap mt-0.5">
+            <p id="header-date-text" class="text-[11px] text-slate-300 truncate">
+              Sabtu, 21 November 2026
+            </p>
+            <span id="cloud-status-badge" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-400/30">
+              <span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
+              <span id="cloud-status-text">Menghubungkan...</span>
+            </span>
+            <span id="header-room-badge" class="px-1.5 py-0.5 rounded text-[10px] font-mono-code font-bold bg-white/10 text-cyan-300">
+              AMANAH-01
+            </span>
+            <span id="header-user-badge" class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-200">
+              Admin
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="flex items-center gap-1.5 shrink-0">
+        <button type="button" data-action="logout-app" aria-label="Keluar Akun" title="Keluar / Ganti Akun"
+          class="w-10 h-10 rounded-xl bg-white/10 hover:bg-rose-500/30 text-white flex items-center justify-center shrink-0 transition cursor-pointer">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+          </svg>
+        </button>
+        <button type="button" id="btn-header-settings" data-action="toggle-settings" aria-label="Pengaturan" title="Pengaturan Administrator"
+          class="w-10 h-10 rounded-xl bg-white/10 hover:bg-white/20 text-white flex items-center justify-center shrink-0 transition cursor-pointer">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
+        </button>
+      </div>
+    </div>
+    <div class="cmyk-bar">
+      <div class="bg-cyan-400"></div>
+      <div class="bg-pink-500"></div>
+      <div class="bg-yellow-400"></div>
+      <div class="bg-slate-950"></div>
+    </div>
+  </header>
+
+  <main class="max-w-xl mx-auto p-3.5 space-y-4">
+
+    <!-- =================================================================== -->
+    <!-- PAGE 1: KASIR                                                       -->
+    <!-- =================================================================== -->
+    <section id="page-kasir" class="space-y-4">
+      <div class="surface-card rounded-2xl border p-4 shadow-sm space-y-3.5">
+        <div class="space-y-1.5">
+          <label class="block text-xs font-semibold muted-text">Jenis pelanggan</label>
+          <div class="grid grid-cols-2 rounded-xl border border-slate-200 bg-slate-50 p-1">
+            <button type="button" id="btn-cust-umum" data-action="set-cust-type" data-value="Umum"
+              class="py-2 text-xs font-bold rounded-lg transition cursor-pointer btn-accent">
+              Umum
+            </button>
+            <button type="button" id="btn-cust-agen" data-action="set-cust-type" data-value="Agen"
+              class="py-2 text-xs font-bold rounded-lg transition cursor-pointer text-slate-600">
+              Agen
+            </button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-3 rounded-xl border border-slate-200 bg-slate-50 p-1">
+          <button type="button" id="btn-mode-M2" data-action="set-prod-mode" data-value="M2"
+            class="py-2 text-[11px] sm:text-xs font-extrabold rounded-lg transition cursor-pointer btn-accent">
+            CETAK M²
+          </button>
+          <button type="button" id="btn-mode-SATUAN" data-action="set-prod-mode" data-value="SATUAN"
+            class="py-2 text-[11px] sm:text-xs font-extrabold rounded-lg transition cursor-pointer text-slate-600">
+            CETAK SATUAN
+          </button>
+          <button type="button" id="btn-mode-ATK" data-action="set-prod-mode" data-value="ATK"
+            class="py-2 text-[11px] sm:text-xs font-extrabold rounded-lg transition cursor-pointer text-slate-600">
+            PRODUK ATK
+          </button>
+        </div>
+
+        <div class="space-y-1">
+          <label id="kasir-bahan-label" class="block text-xs font-semibold muted-text">Bahan</label>
+          <select id="kasir-bahan-select" data-action="change-bahan"
+            class="app-input w-full rounded-xl px-3 py-2.5 text-sm font-bold"></select>
+        </div>
+
+        <div id="kasir-dimensi-wrap" class="grid grid-cols-3 gap-2.5">
+          <div class="space-y-1">
+            <label class="block text-xs font-semibold muted-text">Panjang</label>
+            <input type="number" step="any" min="0" id="kasir-panjang" data-action="calc-kasir" placeholder="0"
+              class="app-input w-full rounded-xl px-3 py-2.5 text-sm font-bold font-mono-code" />
+          </div>
+          <div class="space-y-1">
+            <label class="block text-xs font-semibold muted-text">Lebar</label>
+            <input type="number" step="any" min="0" id="kasir-lebar" data-action="calc-kasir" placeholder="0"
+              class="app-input w-full rounded-xl px-3 py-2.5 text-sm font-bold font-mono-code" />
+          </div>
+          <div class="space-y-1">
+            <label class="block text-xs font-semibold muted-text">Satuan</label>
+            <select id="kasir-satuan-dimensi" data-action="calc-kasir"
+              class="app-input w-full rounded-xl px-3 py-2.5 text-sm font-bold">
+              <option value="meter">meter</option>
+              <option value="cm">cm</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="space-y-1">
+          <label class="block text-xs font-semibold muted-text">Jumlah</label>
+          <input type="number" min="1" id="kasir-qty" value="1" data-action="calc-kasir"
+            class="app-input w-full rounded-xl px-3 py-2.5 text-sm font-bold font-mono-code" />
+        </div>
+
+        <div id="kasir-finishing-wrap" class="space-y-1.5">
+          <label class="block text-xs font-semibold muted-text">Finishing</label>
+          <div id="kasir-finishing-pills" class="flex flex-wrap gap-2"></div>
+        </div>
+
+        <div class="rounded-xl bg-slate-100 p-3.5 space-y-0.5 border border-slate-200">
+          <p id="kasir-calc-formula" class="text-xs text-slate-500">Isi panjang dan lebar</p>
+          <p id="kasir-calc-subtotal" class="text-xl font-extrabold font-mono-code text-slate-900">Rp 0</p>
+        </div>
+
+        <button type="button" data-action="add-to-cart"
+          class="w-full py-3.5 rounded-xl btn-accent font-extrabold text-sm shadow-sm cursor-pointer">
+          Tambah ke keranjang
+        </button>
+      </div>
+
+      <!-- Keranjang & Pembayaran -->
+      <div class="surface-card rounded-2xl border p-4 shadow-sm space-y-3.5">
+        <div class="flex items-center justify-between">
+          <h2 class="text-base font-extrabold">Keranjang</h2>
+          <span id="cart-count-badge" class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-slate-100 text-slate-700">0 item</span>
+        </div>
+
+        <div id="cart-items-container" class="divide-y divide-slate-200"></div>
+
+        <div id="cart-checkout-section" class="hidden pt-3 border-t border-dashed border-slate-300 space-y-3.5">
+          <div class="flex items-center justify-between">
+            <span class="text-base font-extrabold">Total</span>
+            <span id="cart-grand-total" class="text-lg font-extrabold font-mono-code">Rp 0</span>
+          </div>
+
+          <div class="flex items-center justify-between rounded-xl bg-slate-50 px-3 py-2 border border-slate-200">
+            <span class="text-xs font-semibold muted-text">Kasir bertugas (otomatis di invoice)</span>
+            <span id="kasir-staff-display" class="text-xs font-extrabold text-slate-800">Admin</span>
+          </div>
+
+          <div class="space-y-1">
+            <label class="block text-xs font-semibold muted-text">Nama pelanggan</label>
+            <select id="kasir-cart-pelanggan-select" data-action="select-pelanggan"
+              class="app-input w-full rounded-xl px-3 py-2.5 text-sm font-bold mb-1.5"></select>
+            <input type="text" id="kasir-customer-name" value="" placeholder="Kosongkan untuk Umum"
+              class="app-input w-full rounded-xl px-3 py-2.5 text-sm font-bold" />
+          </div>
+
+          <div class="space-y-1">
+            <div class="flex items-center justify-between">
+              <label class="block text-xs font-semibold muted-text">Bayar sekarang (DP atau lunas)</label>
+              <button type="button" data-action="fill-lunas-kasir" class="text-xs font-bold text-cyan-700 underline cursor-pointer">
+                Isi Lunas
+              </button>
+            </div>
+            <input type="text" inputmode="numeric" id="kasir-pay-input" value="" placeholder="Masukkan nominal bayar..."
+              class="rupiah-input app-input w-full rounded-xl px-3 py-2.5 text-sm font-extrabold font-mono-code" />
+            <p id="kasir-pay-status-hint" class="text-[11px] muted-text">Kosongkan jika belum bayar (Tempo / Piutang)</p>
+          </div>
+
+          <div class="space-y-1.5">
+            <label class="block text-xs font-semibold muted-text">Metode pembayaran</label>
+            <div id="payment-method-pills" class="flex flex-wrap gap-2"></div>
+          </div>
+
+          <button type="button" data-action="save-order"
+            class="w-full py-3.5 rounded-xl btn-accent font-extrabold text-sm shadow-sm cursor-pointer">
+            Simpan order
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- PAGE 2: ORDER & ANTREAN PRODUKSI                                    -->
+    <!-- =================================================================== -->
+    <section id="page-order" class="hidden space-y-3.5">
+      <div class="surface-card rounded-2xl border p-3.5 shadow-sm space-y-3">
+        <input type="text" data-action="search-order" placeholder="Cari No. Invoice atau nama pelanggan..."
+          class="app-input w-full rounded-xl px-3.5 py-2.5 text-xs font-semibold" />
+        <div id="order-filter-pills" class="flex gap-1.5 overflow-x-auto no-scrollbar pb-0.5"></div>
+      </div>
+      <div id="orders-list-container" class="space-y-3"></div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- PAGE 3: LAPORAN KEUANGAN                                            -->
+    <!-- =================================================================== -->
+    <section id="page-laporan" class="hidden space-y-3.5">
+      <div class="surface-card rounded-2xl border p-3.5 shadow-sm flex flex-wrap items-center justify-between gap-2">
+        <div class="flex gap-1.5">
+          <button type="button" data-action="set-lap-period" data-period="ALL" id="lap-period-ALL"
+            class="px-3 py-1.5 rounded-xl text-xs font-bold btn-accent cursor-pointer">Semua</button>
+          <button type="button" data-action="set-lap-period" data-period="TODAY" id="lap-period-TODAY"
+            class="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 cursor-pointer">Hari Ini</button>
+          <button type="button" data-action="set-lap-period" data-period="MONTH" id="lap-period-MONTH"
+            class="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 cursor-pointer">Bulan Ini</button>
+        </div>
+        <input type="date" id="lap-date-filter" data-action="filter-lap-date"
+          class="app-input rounded-xl px-2.5 py-1.5 text-xs font-semibold" />
+      </div>
+
+      <div class="grid grid-cols-2 gap-2.5">
+        <div class="surface-card rounded-2xl border p-3.5 shadow-sm">
+          <p class="text-[11px] font-semibold muted-text">Total Omzet</p>
+          <p id="lap-total-omzet" class="text-base sm:text-lg font-extrabold font-mono-code mt-1">Rp 0</p>
+        </div>
+        <div class="surface-card rounded-2xl border p-3.5 shadow-sm">
+          <p class="text-[11px] font-semibold muted-text">Uang Masuk</p>
+          <p id="lap-uang-masuk" class="text-base sm:text-lg font-extrabold font-mono-code text-emerald-600 mt-1">Rp 0</p>
+        </div>
+        <div class="surface-card rounded-2xl border p-3.5 shadow-sm">
+          <p class="text-[11px] font-semibold muted-text">Sisa Piutang / DP</p>
+          <p id="lap-piutang" class="text-base sm:text-lg font-extrabold font-mono-code text-rose-600 mt-1">Rp 0</p>
+        </div>
+        <div class="surface-card rounded-2xl border p-3.5 shadow-sm">
+          <p class="text-[11px] font-semibold muted-text">Jumlah Order</p>
+          <p id="lap-jumlah-order" class="text-base sm:text-lg font-extrabold font-mono-code mt-1">0</p>
+        </div>
+      </div>
+
+      <div class="surface-card rounded-2xl border p-4 shadow-sm space-y-2">
+        <h3 class="text-sm font-extrabold">Riwayat Transaksi</h3>
+        <div id="lap-history-list" class="divide-y divide-slate-200"></div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- PAGE 4: STOK BAHAN & ATK (4 SUB-TAB: M2, SATUAN, ATK, FINISHING)    -->
+    <!-- =================================================================== -->
+    <section id="page-stok" class="hidden space-y-3.5">
+      <div class="surface-card rounded-2xl border p-1.5 shadow-sm grid grid-cols-4 gap-1">
+        <button type="button" id="subtab-stok-M2" data-action="set-stok-tab" data-tab="M2"
+          class="py-2 text-[10px] sm:text-xs font-extrabold rounded-lg transition cursor-pointer btn-accent">
+          CETAK M²
+        </button>
+        <button type="button" id="subtab-stok-SATUAN" data-action="set-stok-tab" data-tab="SATUAN"
+          class="py-2 text-[10px] sm:text-xs font-extrabold rounded-lg transition cursor-pointer text-slate-600">
+          SATUAN
+        </button>
+        <button type="button" id="subtab-stok-ATK" data-action="set-stok-tab" data-tab="ATK"
+          class="py-2 text-[10px] sm:text-xs font-extrabold rounded-lg transition cursor-pointer text-slate-600">
+          ATK
+        </button>
+        <button type="button" id="subtab-stok-FINISHING" data-action="set-stok-tab" data-tab="FINISHING"
+          class="py-2 text-[10px] sm:text-xs font-extrabold rounded-lg transition cursor-pointer text-slate-600">
+          FINISHING
+        </button>
+      </div>
+
+      <div class="surface-card rounded-2xl border p-4 shadow-sm space-y-2">
+        <div>
+          <h2 id="stok-section-title" class="text-base font-extrabold">Stok Bahan Cetak M²</h2>
+          <p id="stok-section-desc" class="text-xs muted-text">Pantau dan tambah sisa stok bahan meteran.</p>
+        </div>
+        <div id="stok-list-container" class="divide-y divide-slate-200"></div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- PAGE 5: HARGA (4 SUB-TAB: M2, SATUAN, ATK, FINISHING)               -->
+    <!-- =================================================================== -->
+    <section id="page-bahan" class="hidden space-y-3.5">
+      <div class="surface-card rounded-2xl border p-1.5 shadow-sm grid grid-cols-4 gap-1">
+        <button type="button" id="subtab-bahan-M2" data-action="set-bahan-tab" data-tab="M2"
+          class="py-2 text-[10px] sm:text-xs font-extrabold rounded-lg transition cursor-pointer btn-accent">
+          CETAK M²
+        </button>
+        <button type="button" id="subtab-bahan-SATUAN" data-action="set-bahan-tab" data-tab="SATUAN"
+          class="py-2 text-[10px] sm:text-xs font-extrabold rounded-lg transition cursor-pointer text-slate-600">
+          SATUAN
+        </button>
+        <button type="button" id="subtab-bahan-ATK" data-action="set-bahan-tab" data-tab="ATK"
+          class="py-2 text-[10px] sm:text-xs font-extrabold rounded-lg transition cursor-pointer text-slate-600">
+          ATK
+        </button>
+        <button type="button" id="subtab-bahan-FINISHING" data-action="set-bahan-tab" data-tab="FINISHING"
+          class="py-2 text-[10px] sm:text-xs font-extrabold rounded-lg transition cursor-pointer text-slate-600">
+          FINISHING
+        </button>
+      </div>
+
+      <div class="surface-card rounded-2xl border p-4 shadow-sm space-y-4">
+        <div>
+          <h2 id="bahan-section-title" class="text-base font-extrabold">Bahan (harga per m²)</h2>
+          <p id="bahan-section-desc" class="text-xs muted-text">Nama, harga per m², dan luas minimal ditagih.</p>
+        </div>
+        <div id="bahan-list-container" class="space-y-4"></div>
+        <button type="button" id="btn-add-bahan" data-action="add-new-bahan"
+          class="w-full py-3 rounded-xl border border-slate-300 bg-white text-slate-800 text-xs font-extrabold cursor-pointer">
+          + Tambah bahan baru
+        </button>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- PAGE 6: PELANGGAN (2 SUB-TAB: AGEN & UMUM)                          -->
+    <!-- =================================================================== -->
+    <section id="page-agen" class="hidden space-y-3.5">
+      <div class="surface-card rounded-2xl border p-1.5 shadow-sm grid grid-cols-2 gap-1">
+        <button type="button" id="subtab-pelanggan-AGEN" data-action="set-pelanggan-tab" data-tab="AGEN"
+          class="py-2 text-xs font-extrabold rounded-lg transition cursor-pointer btn-accent">
+          Agen
+        </button>
+        <button type="button" id="subtab-pelanggan-UMUM" data-action="set-pelanggan-tab" data-tab="UMUM"
+          class="py-2 text-xs font-extrabold rounded-lg transition cursor-pointer text-slate-600">
+          Umum
+        </button>
+      </div>
+
+      <div class="surface-card rounded-2xl border p-4 shadow-sm space-y-3">
+        <div class="flex items-center justify-between gap-2">
+          <div>
+            <h2 id="pelanggan-section-title" class="text-base font-extrabold">Daftar Pelanggan Agen / Reseller</h2>
+            <p id="pelanggan-section-desc" class="text-xs muted-text">Pelanggan agen otomatis mendapat tarif khusus agen.</p>
+          </div>
+          <button type="button" id="btn-add-pelanggan" data-action="open-pelanggan-modal"
+            class="px-3.5 py-2 rounded-xl btn-accent text-xs font-bold cursor-pointer shrink-0">
+            + Agen
+          </button>
+        </div>
+        <div id="pelanggan-list-container" class="divide-y divide-slate-200"></div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- PAGE 7: SUPLIER                                                     -->
+    <!-- =================================================================== -->
+    <section id="page-suplier" class="hidden space-y-3.5">
+      <div class="surface-card rounded-2xl border p-4 shadow-sm space-y-3">
+        <div class="flex items-center justify-between gap-2">
+          <div>
+            <h2 class="text-base font-extrabold">Daftar Suplier Bahan</h2>
+            <p class="text-xs muted-text">Kontak pemasok bahan flexi, tinta, dan kertas.</p>
+          </div>
+          <button type="button" data-action="open-suplier-modal"
+            class="px-3.5 py-2 rounded-xl btn-accent text-xs font-bold cursor-pointer shrink-0">
+            + Suplier
+          </button>
+        </div>
+        <div id="suplier-list-container" class="divide-y divide-slate-200"></div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- PAGE 8: PENGATURAN (KHUSUS ADMINISTRATOR)                           -->
+    <!-- =================================================================== -->
+    <section id="page-settings" class="hidden space-y-4">
+      <div class="flex items-center justify-between">
+        <div>
+          <h2 class="text-base font-extrabold">Pengaturan Administrator</h2>
+          <p class="text-[11px] muted-text">Hanya dapat diakses oleh akun dengan level Administrator.</p>
+        </div>
+        <button type="button" data-action="close-settings"
+          class="px-3.5 py-1.5 rounded-xl bg-slate-800 text-white text-xs font-bold cursor-pointer shrink-0">
+          ← Kembali
+        </button>
+      </div>
+
+      <!-- 0. Sinkronisasi Cloud Online Multi-Perangkat -->
+      <div class="surface-card rounded-2xl border p-4 shadow-sm space-y-3.5">
+        <div class="flex items-start justify-between gap-2">
+          <div>
+            <h3 class="text-sm font-extrabold">Sinkronisasi Cloud Online (Multi-Perangkat)</h3>
+            <p class="text-xs muted-text mt-0.5">Gunakan Kode Toko yang sama di HP Kasir & Komputer Operator agar data order sinkron realtime.</p>
+          </div>
+          <span id="settings-cloud-pill" class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-100 text-amber-800 shrink-0">
+            Menghubungkan...
+          </span>
+        </div>
+
+        <div class="space-y-1.5">
+          <label class="block text-xs font-semibold muted-text">Kode Toko / Ruang Sync Aktif</label>
+          <div class="flex gap-2">
+            <input type="text" id="setting-room-code" value="AMANAH-01" placeholder="Contoh: AMANAH-01"
+              class="app-input flex-1 rounded-xl px-3 py-2.5 text-sm font-extrabold font-mono-code uppercase" />
+            <button type="button" data-action="join-room-code"
+              class="px-4 py-2.5 rounded-xl btn-accent text-xs font-bold cursor-pointer shrink-0">
+              Gabung / Simpan
+            </button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <button type="button" data-action="copy-room-code"
+            class="py-2.5 px-3 rounded-xl border border-slate-300 bg-white text-slate-800 text-xs font-bold cursor-pointer">
+            Salin Kode Toko
+          </button>
+          <button type="button" data-action="force-cloud-sync"
+            class="py-2.5 px-3 rounded-xl border border-slate-300 bg-white text-slate-800 text-xs font-bold cursor-pointer">
+            Paksa Sinkronisasi
+          </button>
+        </div>
+
+        <div class="pt-2 border-t border-slate-200 flex items-center justify-between gap-2">
+          <span class="text-[11px] muted-text" id="settings-last-sync">Sinkronisasi terakhir: -</span>
+          <div class="flex gap-2">
+            <button type="button" data-action="export-backup-json"
+              class="px-2.5 py-1.5 rounded-lg bg-slate-100 text-slate-700 text-[11px] font-bold cursor-pointer">
+              Backup JSON
+            </button>
+            <label class="px-2.5 py-1.5 rounded-lg bg-slate-100 text-slate-700 text-[11px] font-bold cursor-pointer">
+              Pulihkan
+              <input type="file" id="input-restore-json" accept="application/json" class="hidden" />
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- 0B. Pusat Ekspor & Impor Excel (.XLS / .CSV) -->
+      <div class="surface-card rounded-2xl border p-4 shadow-sm space-y-3">
+        <div>
+          <h3 class="text-sm font-extrabold">Ekspor & Impor Data Excel</h3>
+          <p class="text-xs muted-text mt-0.5">Ekspor data masing-masing modul ke file Excel (.xls) ke folder pilihan atau impor kembali dari file Excel/CSV.</p>
+        </div>
+        <div class="divide-y divide-slate-200">
+          <div class="py-2.5 flex items-center justify-between gap-2">
+            <div>
+              <p class="text-xs font-extrabold">Data Order & Produksi</p>
+              <p class="text-[11px] muted-text">Seluruh transaksi order & status</p>
+            </div>
+            <div class="flex gap-1.5 shrink-0">
+              <button type="button" data-action="export-excel" data-type="order"
+                class="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold cursor-pointer">
+                Ekspor Excel
+              </button>
+              <label class="px-3 py-1.5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white text-xs font-extrabold cursor-pointer">
+                Impor Excel
+                <input type="file" accept=".xls,.xlsx,.csv" data-import-type="order" class="excel-import-input hidden" />
+              </label>
+            </div>
+          </div>
+
+          <div class="py-2.5 flex items-center justify-between gap-2">
+            <div>
+              <p class="text-xs font-extrabold">Laporan Keuangan</p>
+              <p class="text-[11px] muted-text">Rekap omzet, kas masuk & piutang</p>
+            </div>
+            <div class="flex gap-1.5 shrink-0">
+              <button type="button" data-action="export-excel" data-type="laporan"
+                class="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold cursor-pointer">
+                Ekspor Excel
+              </button>
+              <label class="px-3 py-1.5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white text-xs font-extrabold cursor-pointer">
+                Impor Excel
+                <input type="file" accept=".xls,.xlsx,.csv" data-import-type="laporan" class="excel-import-input hidden" />
+              </label>
+            </div>
+          </div>
+
+          <div class="py-2.5 flex items-center justify-between gap-2">
+            <div>
+              <p class="text-xs font-extrabold">Data Stok Bahan & ATK</p>
+              <p class="text-[11px] muted-text">Sisa stok Cetak M², Satuan, ATK & Finishing</p>
+            </div>
+            <div class="flex gap-1.5 shrink-0">
+              <button type="button" data-action="export-excel" data-type="stok"
+                class="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold cursor-pointer">
+                Ekspor Excel
+              </button>
+              <label class="px-3 py-1.5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white text-xs font-extrabold cursor-pointer">
+                Impor Excel
+                <input type="file" accept=".xls,.xlsx,.csv" data-import-type="stok" class="excel-import-input hidden" />
+              </label>
+            </div>
+          </div>
+
+          <div class="py-2.5 flex items-center justify-between gap-2">
+            <div>
+              <p class="text-xs font-extrabold">Daftar Harga Bahan & Finishing</p>
+              <p class="text-[11px] muted-text">Tarif umum, tarif agen & minimal m²</p>
+            </div>
+            <div class="flex gap-1.5 shrink-0">
+              <button type="button" data-action="export-excel" data-type="harga"
+                class="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold cursor-pointer">
+                Ekspor Excel
+              </button>
+              <label class="px-3 py-1.5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white text-xs font-extrabold cursor-pointer">
+                Impor Excel
+                <input type="file" accept=".xls,.xlsx,.csv" data-import-type="harga" class="excel-import-input hidden" />
+              </label>
+            </div>
+          </div>
+
+          <div class="py-2.5 flex items-center justify-between gap-2">
+            <div>
+              <p class="text-xs font-extrabold">Data Pelanggan (Agen & Umum)</p>
+              <p class="text-[11px] muted-text">Daftar nama, kontak & alamat pelanggan</p>
+            </div>
+            <div class="flex gap-1.5 shrink-0">
+              <button type="button" data-action="export-excel" data-type="agen"
+                class="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold cursor-pointer">
+                Ekspor Excel
+              </button>
+              <label class="px-3 py-1.5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white text-xs font-extrabold cursor-pointer">
+                Impor Excel
+                <input type="file" accept=".xls,.xlsx,.csv" data-import-type="agen" class="excel-import-input hidden" />
+              </label>
+            </div>
+          </div>
+
+          <div class="py-2.5 flex items-center justify-between gap-2">
+            <div>
+              <p class="text-xs font-extrabold">Data Suplier Bahan</p>
+              <p class="text-[11px] muted-text">Daftar kontak pemasok bahan & catatan</p>
+            </div>
+            <div class="flex gap-1.5 shrink-0">
+              <button type="button" data-action="export-excel" data-type="suplier"
+                class="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold cursor-pointer">
+                Ekspor Excel
+              </button>
+              <label class="px-3 py-1.5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white text-xs font-extrabold cursor-pointer">
+                Impor Excel
+                <input type="file" accept=".xls,.xlsx,.csv" data-import-type="suplier" class="excel-import-input hidden" />
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 1. Identitas & Logo Usaha -->
+      <div class="surface-card rounded-2xl border p-4 shadow-sm space-y-3.5">
+        <h3 class="text-sm font-extrabold">Identitas & Logo Usaha</h3>
+        <div class="flex items-center gap-3.5">
+          <div id="settings-logo-preview" class="w-16 h-16 rounded-2xl border border-slate-200 bg-white p-1.5 flex items-center justify-center shrink-0 overflow-hidden"></div>
+          <div class="space-y-2 flex-1">
+            <label class="inline-block px-3.5 py-2 rounded-xl btn-accent text-xs font-bold cursor-pointer">
+              Ubah Logo Usaha
+              <input type="file" id="input-upload-logo" accept="image/*" class="hidden" />
+            </label>
+            <button type="button" data-action="reset-default-logo"
+              class="block text-xs font-bold text-slate-600 underline cursor-pointer">
+              Reset Logo Default
+            </button>
+          </div>
+        </div>
+        <div class="space-y-1">
+          <label class="block text-xs font-semibold muted-text">Nama Usaha</label>
+          <input type="text" id="setting-store-name" data-action="update-store-info" value="PERCETAKAN AMANAH"
+            class="app-input w-full rounded-xl px-3 py-2.5 text-sm font-bold" />
+        </div>
+        <div class="space-y-1">
+          <label class="block text-xs font-semibold muted-text">Slogan Usaha</label>
+          <input type="text" id="setting-store-slogan" data-action="update-store-info" placeholder="Contoh: Kualitas & Kepercayaan"
+            class="app-input w-full rounded-xl px-3 py-2.5 text-xs font-semibold" />
+        </div>
+        <div class="space-y-1">
+          <label class="block text-xs font-semibold muted-text">Nomor WhatsApp</label>
+          <input type="tel" id="setting-store-wa" data-action="update-store-info" placeholder="Contoh: 0812-3456-7890"
+            class="app-input w-full rounded-xl px-3 py-2.5 text-xs font-semibold font-mono-code" />
+        </div>
+      </div>
+
+      <!-- 2. Tema Warna Aplikasi -->
+      <div class="surface-card rounded-2xl border p-4 shadow-sm space-y-3.5">
+        <div class="flex items-center justify-between">
+          <h3 class="text-sm font-extrabold">Tema Warna Aplikasi</h3>
+          <button type="button" data-action="reset-theme" class="text-xs font-bold text-cyan-700 underline cursor-pointer">
+            Reset Default
+          </button>
+        </div>
+        <div id="theme-presets-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-2"></div>
+        <div class="pt-2 border-t border-slate-200 space-y-2.5">
+          <p class="text-xs font-bold">Kustom Warna Sendiri</p>
+          <div class="grid grid-cols-2 gap-2.5 text-xs">
+            <label class="flex items-center justify-between bg-slate-50 px-2.5 py-1.5 rounded-xl border border-slate-200">
+              <span class="text-slate-700 font-semibold">Header</span>
+              <input type="color" id="custom-color-header" value="#0f2137" class="w-7 h-7 rounded cursor-pointer border-0" />
+            </label>
+            <label class="flex items-center justify-between bg-slate-50 px-2.5 py-1.5 rounded-xl border border-slate-200">
+              <span class="text-slate-700 font-semibold">Tombol / Aksen</span>
+              <input type="color" id="custom-color-accent" value="#0e7490" class="w-7 h-7 rounded cursor-pointer border-0" />
+            </label>
+            <label class="flex items-center justify-between bg-slate-50 px-2.5 py-1.5 rounded-xl border border-slate-200">
+              <span class="text-slate-700 font-semibold">Background</span>
+              <input type="color" id="custom-color-bg" value="#eceff3" class="w-7 h-7 rounded cursor-pointer border-0" />
+            </label>
+            <label class="flex items-center justify-between bg-slate-50 px-2.5 py-1.5 rounded-xl border border-slate-200">
+              <span class="text-slate-700 font-semibold">Bar Tab Bawah</span>
+              <input type="color" id="custom-color-navbg" value="#ffffff" class="w-7 h-7 rounded cursor-pointer border-0" />
+            </label>
+            <label class="flex items-center justify-between bg-slate-50 px-2.5 py-1.5 rounded-xl border border-slate-200">
+              <span class="text-slate-700 font-semibold">Kotak Tab</span>
+              <input type="color" id="custom-color-navboxbg" value="#f8fafc" class="w-7 h-7 rounded cursor-pointer border-0" />
+            </label>
+            <label class="flex items-center justify-between bg-slate-50 px-2.5 py-1.5 rounded-xl border border-slate-200">
+              <span class="text-slate-700 font-semibold">Garis Kotak Tab</span>
+              <input type="color" id="custom-color-navboxborder" value="#cbd5e1" class="w-7 h-7 rounded cursor-pointer border-0" />
+            </label>
+            <label class="flex items-center justify-between bg-slate-50 px-2.5 py-1.5 rounded-xl border border-slate-200 col-span-2">
+              <span class="text-slate-700 font-semibold">Kotak Tab Aktif</span>
+              <input type="color" id="custom-color-navactive" value="#0e7490" class="w-7 h-7 rounded cursor-pointer border-0" />
+            </label>
+          </div>
+          <button type="button" data-action="apply-custom-theme"
+            class="w-full py-2.5 rounded-xl btn-accent text-xs font-extrabold cursor-pointer">
+            Terapkan Tema Kustom
+          </button>
+        </div>
+      </div>
+
+      <!-- 3. Pengaturan Pembayaran Non-Tunai -->
+      <div class="surface-card rounded-2xl border p-4 shadow-sm space-y-2">
+        <div>
+          <h3 class="text-sm font-extrabold">Pembayaran Non-Tunai</h3>
+          <p class="text-xs muted-text">Atur metode pembayaran non-tunai yang ditampilkan di Kasir dan pelunasan Nota.</p>
+        </div>
+        <div id="non-cash-settings-list" class="divide-y divide-slate-200"></div>
+      </div>
+
+      <!-- 4. Manajemen Pengguna (Administrator & User Biasa) -->
+      <div class="surface-card rounded-2xl border p-4 shadow-sm space-y-3.5">
+        <div class="flex items-start justify-between gap-2">
+          <div>
+            <h3 class="text-sm font-extrabold">Pengguna, Hak Akses & PIN Login</h3>
+            <p class="text-xs muted-text">Akun <strong>Administrator</strong> dapat mengakses menu Pengaturan, sedangkan <strong>User Biasa</strong> (Kasir/Operator) tidak dapat membuka Pengaturan.</p>
+          </div>
+          <button type="button" data-action="logout-app"
+            class="px-3 py-1.5 rounded-xl bg-rose-50 text-rose-700 border border-rose-200 text-xs font-bold cursor-pointer shrink-0">
+            Keluar Akun
+          </button>
+        </div>
+        <div id="users-list-container" class="space-y-3"></div>
+        <button type="button" data-action="add-new-user"
+          class="w-full py-3 rounded-xl border border-slate-300 bg-white text-slate-800 text-xs font-extrabold cursor-pointer">
+          + Tambah pengguna
+        </button>
+      </div>
+
+      <!-- 5. Kelola & Hapus Data Invoice -->
+      <div class="surface-card rounded-2xl border p-4 shadow-sm space-y-3.5">
+        <div class="flex items-start justify-between gap-2">
+          <div>
+            <h3 class="text-sm font-extrabold text-rose-700">Hapus Data Invoice</h3>
+            <p class="text-xs muted-text">Hapus invoice tertentu atau bersihkan riwayat invoice. Stok bahan otomatis dikembalikan jika invoice belum dibatalkan.</p>
+          </div>
+          <span id="settings-invoice-count" class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-slate-100 text-slate-700 shrink-0">0 Invoice</span>
+        </div>
+
+        <input type="text" data-action="search-settings-invoice" placeholder="Cari No. Invoice atau nama pelanggan..."
+          class="app-input w-full rounded-xl px-3 py-2 text-xs font-semibold" />
+
+        <div id="settings-invoice-list" class="divide-y divide-slate-200 max-h-72 overflow-y-auto"></div>
+
+        <div class="grid grid-cols-2 gap-2 pt-2 border-t border-slate-200">
+          <button type="button" data-action="delete-cancelled-invoices"
+            class="py-2.5 px-3 rounded-xl border border-amber-300 bg-amber-50 text-amber-800 text-xs font-extrabold cursor-pointer">
+            Hapus Yg Dibatalkan
+          </button>
+          <button type="button" data-action="delete-all-invoices"
+            class="py-2.5 px-3 rounded-xl border border-rose-300 bg-rose-50 text-rose-700 text-xs font-extrabold cursor-pointer">
+            Hapus Semua Invoice
+          </button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===================================================================== -->
+  <!-- NAVIGASI BAWAH (7 TAB KOTAK TERPISAH - BISA DIGESER KIRI/KANAN)       -->
+  <!-- ===================================================================== -->
+  <nav class="bottom-nav fixed bottom-0 left-0 right-0 z-30 shadow-[0_-2px_10px_rgba(0,0,0,0.05)] py-2">
+    <div class="max-w-xl mx-auto flex items-center gap-1.5 overflow-x-auto no-scrollbar px-2.5 text-center">
+      <button type="button" data-action="nav-tab" data-page="kasir" id="nav-kasir"
+        class="nav-btn nav-tab-active relative py-2.5 px-3.5 text-xs font-bold text-slate-600 cursor-pointer">
+        KASIR
+      </button>
+      <button type="button" data-action="nav-tab" data-page="order" id="nav-order"
+        class="nav-btn relative py-2.5 px-3.5 text-xs font-bold text-slate-600 cursor-pointer">
+        ORDER
+      </button>
+      <button type="button" data-action="nav-tab" data-page="laporan" id="nav-laporan"
+        class="nav-btn relative py-2.5 px-3.5 text-xs font-bold text-slate-600 cursor-pointer">
+        LAPORAN
+      </button>
+      <button type="button" data-action="nav-tab" data-page="stok" id="nav-stok"
+        class="nav-btn relative py-2.5 px-3.5 text-xs font-bold text-slate-600 cursor-pointer">
+        STOK
+      </button>
+      <button type="button" data-action="nav-tab" data-page="bahan" id="nav-bahan"
+        class="nav-btn relative py-2.5 px-3.5 text-xs font-bold text-slate-600 cursor-pointer">
+        HARGA
+      </button>
+      <button type="button" data-action="nav-tab" data-page="agen" id="nav-agen"
+        class="nav-btn relative py-2.5 px-3.5 text-xs font-bold text-slate-600 cursor-pointer">
+        PELANGGAN
+      </button>
+      <button type="button" data-action="nav-tab" data-page="suplier" id="nav-suplier"
+        class="nav-btn relative py-2.5 px-3.5 text-xs font-bold text-slate-600 cursor-pointer">
+        SUPLIER
+      </button>
+    </div>
+  </nav>
+
+  <!-- ===================================================================== -->
+  <!-- MODAL 1: NOTA STRUK THERMAL & PELUNASAN                               -->
+  <!-- ===================================================================== -->
+  <div id="modal-nota" class="fixed inset-0 z-50 bg-black/60 hidden items-end sm:items-center justify-center p-0 sm:p-4">
+    <div class="bg-white text-slate-900 w-full max-w-md rounded-t-3xl sm:rounded-2xl shadow-2xl p-4 space-y-3.5 max-h-[90vh] overflow-y-auto">
+      <div id="nota-print-area" class="bg-slate-100 rounded-xl p-4 font-mono-code text-xs leading-relaxed text-slate-900 border border-slate-200"></div>
+
+      <!-- Kotak Pelunasan Jika Belum Lunas -->
+      <div id="nota-settle-box" class="hidden bg-amber-50 border border-amber-200 rounded-xl p-3 space-y-2.5 no-print">
+        <div class="flex items-center justify-between">
+          <span id="nota-sisa-label" class="text-xs font-extrabold text-amber-900">Sisa: Rp 0</span>
+          <button type="button" data-action="fill-sisa-nota" class="text-xs font-bold text-amber-900 underline cursor-pointer">
+            Lunas Sisa
+          </button>
+        </div>
+        <div id="nota-settle-methods" class="flex flex-wrap gap-1.5"></div>
+        <div class="flex gap-2">
+          <input type="text" inputmode="numeric" id="nota-settle-input" value="" placeholder="Nominal pelunasan..."
+            class="rupiah-input flex-1 bg-white border border-amber-300 rounded-xl px-3 py-2 text-xs font-bold font-mono-code text-slate-900" />
+          <button type="button" data-action="submit-settle-nota"
+            class="px-4 py-2 rounded-xl bg-emerald-600 text-white text-xs font-bold cursor-pointer">
+            Bayar
+          </button>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-3 gap-2 no-print">
+        <button type="button" data-action="print-nota"
+          class="py-3 rounded-xl btn-accent font-bold text-xs cursor-pointer">
+          Cetak
+        </button>
+        <button type="button" data-action="send-wa-nota"
+          class="py-3 rounded-xl btn-accent font-bold text-xs cursor-pointer leading-tight">
+          Kirim<br/>WhatsApp
+        </button>
+        <button type="button" data-action="close-nota-modal"
+          class="py-3 rounded-xl border border-slate-300 bg-white text-slate-800 font-bold text-xs cursor-pointer">
+          Tutup
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- MODAL 2: DIALOG INPUT SERBAGUNA (UBAH HARGA, STOK, AGEN, SUPLIER)     -->
+  <!-- ===================================================================== -->
+  <div id="modal-form" class="fixed inset-0 z-50 bg-black/60 hidden items-center justify-center p-4">
+    <div class="bg-white text-slate-900 w-full max-w-sm rounded-2xl shadow-2xl p-4 space-y-3.5">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
+        <h3 id="modal-form-title" class="text-sm font-extrabold">Form Input</h3>
+        <button type="button" data-action="close-form-modal" class="text-slate-400 hover:text-slate-700 font-bold text-base cursor-pointer">✕</button>
+      </div>
+      <div id="modal-form-body" class="space-y-3"></div>
+      <div class="flex gap-2 pt-2">
+        <button type="button" data-action="close-form-modal"
+          class="flex-1 py-2.5 rounded-xl border border-slate-300 bg-white text-slate-700 text-xs font-bold cursor-pointer">
+          Batal
+        </button>
+        <button type="button" data-action="submit-form-modal"
+          class="flex-1 py-2.5 rounded-xl btn-accent text-xs font-bold cursor-pointer">
+          Simpan
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- KONFIGURASI FIREBASE CLOUD (OPSIONAL UNTUK SINKRONISASI ONLINE)       -->
+  <!-- ===================================================================== -->
+  <script>
+    const __firebase_config = JSON.stringify({
+      apiKey: "AIzaSyA3yWPf312q2hPn8jQU7WQ9pdOAA3NHM8I",
+      authDomain: "kasir-amanah-pos.firebaseapp.com",
+      projectId: "kasir-amanah-pos",
+      storageBucket: "kasir-amanah-pos.firebasestorage.app",
+      messagingSenderId: "234878771362",
+      appId: "1:234878771362:web:fae6c26a314ae3d084f7fb",
+      measurementId: "G-EMJ324XB7N"
+    });
+  </script>
+
+  <!-- ===================================================================== -->
   <!-- JAVASCRIPT LOGIC (OFFLINE-FIRST + DYNAMIC CLOUD SYNC)                 -->
   <!-- ===================================================================== -->
   <script>
     (function () {
       'use strict';
+
       const STORAGE_KEY = 'percetakan_amanah_pos_v3';
       const ROOM_STORAGE_KEY = 'percetakan_amanah_room_code';
       const SESSION_USER_KEY = 'percetakan_amanah_logged_user';
@@ -793,14 +1615,6 @@
         else if (ui.activePage === 'suplier') renderSuplierPage();
         else if (ui.activePage === 'settings' && !isTypingInInput) renderSettingsPage();
       }
-const __firebase_config = JSON.stringify({
-  apiKey: "ISI_API_KEY_ANDA",
-  authDomain: "kasir-amanah-pos.firebaseapp.com",
-  projectId: "kasir-amanah-pos",
-  storageBucket: "kasir-amanah-pos.firebasestorage.app",
-  messagingSenderId: "234878771362",
-  appId: "1:234878771362:web:fae6c26a3..."
-});
 
       async function initFirebaseCloud() {
         try {
@@ -813,6 +1627,15 @@ const __firebase_config = JSON.stringify({
             return;
           }
 
+          const firebaseConfig = typeof __firebase_config === 'string'
+            ? JSON.parse(__firebase_config)
+            : __firebase_config;
+
+          if (!firebaseConfig || !firebaseConfig.apiKey || firebaseConfig.apiKey === 'ISI_API_KEY_ANDA') {
+            updateCloudBadgeUI('OFFLINE', 'Offline (Lokal)');
+            return;
+          }
+
           const [appMod, authMod, fsMod] = await Promise.all([
             import('https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js'),
             import('https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js'),
@@ -820,7 +1643,6 @@ const __firebase_config = JSON.stringify({
           ]);
 
           firestoreMod = fsMod;
-          const firebaseConfig = JSON.parse(__firebase_config);
           const app = appMod.initializeApp(firebaseConfig);
           auth = authMod.getAuth(app);
           db = fsMod.getFirestore(app);
@@ -1550,7 +2372,6 @@ const __firebase_config = JSON.stringify({
           }
         }
 
-        // Kurangi stok otomatis untuk semua item keranjang (Cetak M2, Satuan, ATK & Finishing)
         ui.cart.forEach(item => {
           adjustStockForItem(item, -1);
         });
@@ -2606,7 +3427,7 @@ const __firebase_config = JSON.stringify({
                   date: r[1] || getTodayISO(),
                   customerType: r[2] || 'Umum',
                   customerName: r[3] || 'Umum',
-                  cashierName: r[4] || 'Administrator',
+                  cashierName: r[4] || 'Admin',
                   status: r[6] || 'Antri',
                   paymentMethod: r[7] || 'Tunai',
                   items: [{ mode: 'SATUAN', name: r[5] || 'Item Impor Excel', dimText: '1 pcs', qty: 1, unitPrice: total, finishingNames: [], subtotal: total }],
@@ -2634,7 +3455,7 @@ const __firebase_config = JSON.stringify({
                   date: r[1] || getTodayISO(),
                   customerType: 'Umum',
                   customerName: r[2] || 'Umum',
-                  cashierName: r[3] || 'Administrator',
+                  cashierName: r[3] || 'Admin',
                   status: 'Selesai',
                   paymentMethod: r[4] || 'Tunai',
                   items: [{ mode: 'SATUAN', name: 'Transaksi Impor Excel', dimText: '1 pcs', qty: 1, unitPrice: total, finishingNames: [], subtotal: total }],
@@ -2954,7 +3775,6 @@ const __firebase_config = JSON.stringify({
               const newQty = Math.max(1, parseInt(document.getElementById('edit-inv-item-qty').value, 10) || 1);
               const newSub = parseRibuan(document.getElementById('edit-inv-item-sub').value);
 
-              // Kembalikan stok lama sebelum item diperbarui
               adjustStockForItem(item, 1);
 
               if (showFinishingOption) {
@@ -2978,7 +3798,6 @@ const __firebase_config = JSON.stringify({
               item.qty = newQty;
               item.subtotal = newSub;
 
-              // Potong stok baru sesuai rincian item terbaru
               adjustStockForItem(item, -1);
 
               order.total = order.items.reduce((sum, it) => sum + (Number(it.subtotal) || 0), 0);
