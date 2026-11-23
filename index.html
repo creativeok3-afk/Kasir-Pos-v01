@@ -5,9 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Kasir Percetakan - PERCETAKAN AMANAH</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet" />
 
   <style>
     :root {
@@ -32,16 +29,205 @@
     }
 
     body {
-      font-family: 'Inter', sans-serif;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
       background-color: var(--app-bg);
       color: var(--text-main);
       margin: 0;
       padding: 0;
+      padding-bottom: 6rem;
+      min-height: 100vh;
       transition: background-color 0.2s ease, color 0.2s ease;
     }
 
+    /* Offline Fallback Utility Classes */
+    .hidden { display: none !important; }
+    .flex { display: flex; }
+    .inline-flex { display: inline-flex; }
+    .inline-block { display: inline-block; }
+    .block { display: block; }
+    .grid { display: grid; }
+    .grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+    .grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .col-span-2 { grid-column: span 2 / span 2; }
+    .flex-col { flex-direction: column; }
+    .flex-wrap { flex-wrap: wrap; }
+    .flex-1 { flex: 1 1 0%; }
+    .shrink-0 { flex-shrink: 0; }
+    .items-center { align-items: center; }
+    .items-start { align-items: flex-start; }
+    .items-end { align-items: flex-end; }
+    .justify-center { justify-content: center; }
+    .justify-between { justify-content: space-between; }
+    .justify-end { justify-content: flex-end; }
+    .gap-1 { gap: 0.25rem; }
+    .gap-1\.5 { gap: 0.375rem; }
+    .gap-2 { gap: 0.5rem; }
+    .gap-2\.5 { gap: 0.625rem; }
+    .gap-3 { gap: 0.75rem; }
+    .gap-3\.5 { gap: 0.875rem; }
+    .space-y-0\.5 > :not([hidden]) ~ :not([hidden]) { margin-top: 0.125rem; }
+    .space-y-1 > :not([hidden]) ~ :not([hidden]) { margin-top: 0.25rem; }
+    .space-y-1\.5 > :not([hidden]) ~ :not([hidden]) { margin-top: 0.375rem; }
+    .space-y-2 > :not([hidden]) ~ :not([hidden]) { margin-top: 0.5rem; }
+    .space-y-2\.5 > :not([hidden]) ~ :not([hidden]) { margin-top: 0.625rem; }
+    .space-y-3 > :not([hidden]) ~ :not([hidden]) { margin-top: 0.75rem; }
+    .space-y-3\.5 > :not([hidden]) ~ :not([hidden]) { margin-top: 0.875rem; }
+    .space-y-4 > :not([hidden]) ~ :not([hidden]) { margin-top: 1rem; }
+    .divide-y > :not([hidden]) ~ :not([hidden]) { border-top: 1px solid var(--card-border); }
+    .w-full { width: 100%; }
+    .w-7 { width: 1.75rem; }
+    .h-7 { height: 1.75rem; }
+    .w-9 { width: 2.25rem; }
+    .h-9 { height: 2.25rem; }
+    .w-10 { width: 2.5rem; }
+    .h-10 { height: 2.5rem; }
+    .w-11 { width: 2.75rem; }
+    .h-11 { height: 2.75rem; }
+    .w-12 { width: 3rem; }
+    .w-14 { width: 3.5rem; }
+    .w-16 { width: 4rem; }
+    .h-16 { height: 4rem; }
+    .w-20 { width: 5rem; }
+    .w-24 { width: 6rem; }
+    .w-28 { width: 7rem; }
+    .max-w-sm { max-width: 24rem; }
+    .max-w-md { max-width: 28rem; }
+    .max-w-xl { max-width: 36rem; }
+    .max-h-36 { max-height: 9rem; }
+    .max-h-72 { max-height: 18rem; }
+    .max-h-\[90vh\] { max-height: 90vh; }
+    .mx-auto { margin-left: auto; margin-right: auto; }
+    .mt-0\.5 { margin-top: 0.125rem; }
+    .mt-1 { margin-top: 0.25rem; }
+    .mt-2 { margin-top: 0.5rem; }
+    .mb-0\.5 { margin-bottom: 0.125rem; }
+    .mb-1 { margin-bottom: 0.25rem; }
+    .mb-1\.5 { margin-bottom: 0.375rem; }
+    .mb-2 { margin-bottom: 0.5rem; }
+    .ml-2 { margin-left: 0.5rem; }
+    .p-0\.5 { padding: 0.125rem; }
+    .p-1 { padding: 0.25rem; }
+    .p-1\.5 { padding: 0.375rem; }
+    .p-2\.5 { padding: 0.625rem; }
+    .p-3 { padding: 0.75rem; }
+    .p-3\.5 { padding: 0.875rem; }
+    .p-4 { padding: 1rem; }
+    .p-5 { padding: 1.25rem; }
+    .p-6 { padding: 1.5rem; }
+    .px-1\.5 { padding-left: 0.375rem; padding-right: 0.375rem; }
+    .px-2 { padding-left: 0.5rem; padding-right: 0.5rem; }
+    .px-2\.5 { padding-left: 0.625rem; padding-right: 0.625rem; }
+    .px-3 { padding-left: 0.75rem; padding-right: 0.75rem; }
+    .px-3\.5 { padding-left: 0.875rem; padding-right: 0.875rem; }
+    .px-4 { padding-left: 1rem; padding-right: 1rem; }
+    .py-0\.5 { padding-top: 0.125rem; padding-bottom: 0.125rem; }
+    .py-1 { padding-top: 0.25rem; padding-bottom: 0.25rem; }
+    .py-1\.5 { padding-top: 0.375rem; padding-bottom: 0.375rem; }
+    .py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+    .py-2\.5 { padding-top: 0.625rem; padding-bottom: 0.625rem; }
+    .py-3 { padding-top: 0.75rem; padding-bottom: 0.75rem; }
+    .py-3\.5 { padding-top: 0.875rem; padding-bottom: 0.875rem; }
+    .py-6 { padding-top: 1.5rem; padding-bottom: 1.5rem; }
+    .py-8 { padding-top: 2rem; padding-bottom: 2rem; }
+    .pt-1 { padding-top: 0.25rem; }
+    .pt-2 { padding-top: 0.5rem; }
+    .pt-3 { padding-top: 0.75rem; }
+    .pb-2 { padding-bottom: 0.5rem; }
+    .pb-2\.5 { padding-bottom: 0.625rem; }
+    .pb-3\.5 { padding-bottom: 0.875rem; }
+    .pb-4 { padding-bottom: 1rem; }
+    .pl-2 { padding-left: 0.5rem; }
+    .pl-3 { padding-left: 0.75rem; }
+    .pl-5 { padding-left: 1.25rem; }
+    .fixed { position: fixed; }
+    .sticky { position: sticky; }
+    .relative { position: relative; }
+    .inset-0 { inset: 0; }
+    .top-0 { top: 0; }
+    .top-16 { top: 4rem; }
+    .bottom-0 { bottom: 0; }
+    .left-0 { left: 0; }
+    .right-0 { right: 0; }
+    .left-1\/2 { left: 50%; }
+    .-translate-x-1\/2 { transform: translateX(-50%); }
+    .z-30 { z-index: 30; }
+    .z-50 { z-index: 50; }
+    .z-\[100\] { z-index: 100; }
+    .rounded { border-radius: 0.25rem; }
+    .rounded-md { border-radius: 0.375rem; }
+    .rounded-lg { border-radius: 0.5rem; }
+    .rounded-xl { border-radius: 0.75rem; }
+    .rounded-2xl { border-radius: 1rem; }
+    .rounded-3xl { border-radius: 1.5rem; }
+    .rounded-full { border-radius: 9999px; }
+    .border { border: 1px solid var(--card-border); }
+    .border-t { border-top: 1px solid var(--card-border); }
+    .border-b { border-bottom: 1px solid var(--card-border); }
+    .border-dashed { border-style: dashed; }
+    .text-left { text-align: left; }
+    .text-center { text-align: center; }
+    .text-right { text-align: right; }
+    .text-\[10px\] { font-size: 0.625rem; line-height: 0.875rem; }
+    .text-\[11px\] { font-size: 0.6875rem; line-height: 1rem; }
+    .text-xs { font-size: 0.75rem; line-height: 1rem; }
+    .text-sm { font-size: 0.875rem; line-height: 1.25rem; }
+    .text-base { font-size: 1rem; line-height: 1.5rem; }
+    .text-lg { font-size: 1.125rem; line-height: 1.75rem; }
+    .text-xl { font-size: 1.25rem; line-height: 1.75rem; }
+    .font-medium { font-weight: 500; }
+    .font-semibold { font-weight: 600; }
+    .font-bold { font-weight: 700; }
+    .font-extrabold { font-weight: 800; }
+    .uppercase { text-transform: uppercase; }
+    .truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .min-w-0 { min-width: 0; }
+    .overflow-hidden { overflow: hidden; }
+    .overflow-x-auto { overflow-x: auto; }
+    .overflow-y-auto { overflow-y: auto; }
+    .shadow-sm { box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06); }
+    .shadow-md { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+    .shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.12); }
+    .shadow-xl { box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15); }
+    .shadow-2xl { box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); }
+    .bg-white { background-color: #ffffff; }
+    .bg-slate-50 { background-color: #f8fafc; }
+    .bg-slate-100 { background-color: #f1f5f9; }
+    .bg-slate-200 { background-color: #e2e8f0; }
+    .bg-slate-800 { background-color: #1e293b; }
+    .bg-slate-900 { background-color: #0f172a; }
+    .bg-black\/60 { background-color: rgba(0, 0, 0, 0.6); }
+    .bg-emerald-600 { background-color: #059669; }
+    .bg-sky-600 { background-color: #0284c7; }
+    .bg-rose-50 { background-color: #fff1f2; }
+    .bg-rose-600 { background-color: #e11d48; }
+    .bg-amber-50 { background-color: #fffbeb; }
+    .text-white { color: #ffffff; }
+    .text-slate-300 { color: #cbd5e1; }
+    .text-slate-400 { color: #94a3b8; }
+    .text-slate-500 { color: #64748b; }
+    .text-slate-600 { color: #475569; }
+    .text-slate-700 { color: #334155; }
+    .text-slate-800 { color: #1e293b; }
+    .text-slate-900 { color: #0f172a; }
+    .text-cyan-700 { color: #0e7490; }
+    .text-emerald-600 { color: #059669; }
+    .text-rose-600 { color: #e11d48; }
+    .text-rose-700 { color: #be123c; }
+    .text-amber-700 { color: #b45309; }
+    .text-amber-800 { color: #92400e; }
+    .text-amber-900 { color: #78350f; }
+    .cursor-pointer { cursor: pointer; }
+    .pointer-events-none { pointer-events: none; }
+    .object-contain { object-fit: contain; }
+    .bg-cyan-400 { background-color: #22d3ee; }
+    .bg-pink-500 { background-color: #ec4899; }
+    .bg-yellow-400 { background-color: #facc15; }
+    .bg-slate-950 { background-color: #020617; }
+
     .font-mono-code {
-      font-family: 'JetBrains Mono', monospace;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
     }
 
     .app-header {
@@ -170,8 +356,9 @@
 
       <div class="p-5 space-y-4">
         <div class="space-y-1.5">
-          <label class="block text-xs font-bold muted-text">Pilih Akun Pengguna</label>
-          <select id="login-user-select" class="app-input w-full rounded-xl px-3.5 py-3 text-sm font-bold"></select>
+          <label class="block text-xs font-bold muted-text">Username</label>
+          <input type="text" id="login-username-input" value="" autocomplete="off" placeholder="Masukkan username..."
+            class="app-input w-full rounded-xl px-3.5 py-3 text-sm font-bold" />
         </div>
 
         <div class="space-y-1.5">
@@ -217,7 +404,7 @@
               AMANAH-01
             </span>
             <span id="header-user-badge" class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-200">
-              Administrator
+              Admin
             </span>
           </div>
         </div>
@@ -348,7 +535,7 @@
 
           <div class="flex items-center justify-between rounded-xl bg-slate-50 px-3 py-2 border border-slate-200">
             <span class="text-xs font-semibold muted-text">Kasir bertugas (otomatis di invoice)</span>
-            <span id="kasir-staff-display" class="text-xs font-extrabold text-slate-800">Administrator</span>
+            <span id="kasir-staff-display" class="text-xs font-extrabold text-slate-800">Admin</span>
           </div>
 
           <div class="space-y-1">
@@ -839,6 +1026,33 @@
           + Tambah pengguna
         </button>
       </div>
+
+      <!-- 5. Kelola & Hapus Data Invoice -->
+      <div class="surface-card rounded-2xl border p-4 shadow-sm space-y-3.5">
+        <div class="flex items-start justify-between gap-2">
+          <div>
+            <h3 class="text-sm font-extrabold text-rose-700">Hapus Data Invoice</h3>
+            <p class="text-xs muted-text">Hapus invoice tertentu atau bersihkan riwayat invoice. Stok bahan otomatis dikembalikan jika invoice belum dibatalkan.</p>
+          </div>
+          <span id="settings-invoice-count" class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-slate-100 text-slate-700 shrink-0">0 Invoice</span>
+        </div>
+
+        <input type="text" data-action="search-settings-invoice" placeholder="Cari No. Invoice atau nama pelanggan..."
+          class="app-input w-full rounded-xl px-3 py-2 text-xs font-semibold" />
+
+        <div id="settings-invoice-list" class="divide-y divide-slate-200 max-h-72 overflow-y-auto"></div>
+
+        <div class="grid grid-cols-2 gap-2 pt-2 border-t border-slate-200">
+          <button type="button" data-action="delete-cancelled-invoices"
+            class="py-2.5 px-3 rounded-xl border border-amber-300 bg-amber-50 text-amber-800 text-xs font-extrabold cursor-pointer">
+            Hapus Yg Dibatalkan
+          </button>
+          <button type="button" data-action="delete-all-invoices"
+            class="py-2.5 px-3 rounded-xl border border-rose-300 bg-rose-50 text-rose-700 text-xs font-extrabold cursor-pointer">
+            Hapus Semua Invoice
+          </button>
+        </div>
+      </div>
     </section>
 
   </main>
@@ -946,13 +1160,24 @@
   </div>
 
   <!-- ===================================================================== -->
-  <!-- JAVASCRIPT LOGIC                                                      -->
+  <!-- KONFIGURASI FIREBASE CLOUD (OPSIONAL UNTUK SINKRONISASI ONLINE)       -->
   <!-- ===================================================================== -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-    import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-    import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+  <script>
+    const __firebase_config = JSON.stringify({
+      apiKey: "AIzaSyA3yWPf312q2hPn8jQU7WQ9pdOAA3NHM8I",
+      authDomain: "kasir-amanah-pos.firebaseapp.com",
+      projectId: "kasir-amanah-pos",
+      storageBucket: "kasir-amanah-pos.firebasestorage.app",
+      messagingSenderId: "234878771362",
+      appId: "1:234878771362:web:fae6c26a314ae3d084f7fb",
+      measurementId: "G-EMJ324XB7N"
+    });
+  </script>
 
+  <!-- ===================================================================== -->
+  <!-- JAVASCRIPT LOGIC (OFFLINE-FIRST + DYNAMIC CLOUD SYNC)                 -->
+  <!-- ===================================================================== -->
+  <script>
     (function () {
       'use strict';
 
@@ -961,15 +1186,51 @@
       const SESSION_USER_KEY = 'percetakan_amanah_logged_user';
       const appId = typeof __app_id !== 'undefined' ? __app_id : 'percetakan-amanah-pos';
 
-      // Cloud State
+      // Cloud State (dimuat secara dinamis agar aplikasi tetap berjalan penuh saat offline)
       let db = null;
       let auth = null;
+      let firestoreMod = null;
       let cloudUser = null;
       let unsubscribeRoom = null;
       let syncPushTimer = null;
       let isApplyingRemote = false;
       let cloudConnected = false;
       let lastSyncTimeStr = '-';
+
+      function registerOfflineServiceWorker() {
+        try {
+          if (!('serviceWorker' in navigator) || !window.location.protocol.startsWith('http')) return;
+          const swCode = `
+            const CACHE_NAME = 'percetakan-amanah-offline-v1';
+            self.addEventListener('install', (event) => {
+              self.skipWaiting();
+              event.waitUntil(
+                caches.open(CACHE_NAME).then((cache) => cache.addAll([self.location.href]).catch(() => {}))
+              );
+            });
+            self.addEventListener('activate', (event) => {
+              event.waitUntil(self.clients.claim());
+            });
+            self.addEventListener('fetch', (event) => {
+              if (event.request.method !== 'GET') return;
+              event.respondWith(
+                fetch(event.request)
+                  .then((response) => {
+                    if (response && response.ok) {
+                      const clone = response.clone();
+                      caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone)).catch(() => {});
+                    }
+                    return response;
+                  })
+                  .catch(() => caches.match(event.request, { ignoreSearch: true }))
+              );
+            });
+          `;
+          const swBlob = new Blob([swCode], { type: 'application/javascript' });
+          const swUrl = URL.createObjectURL(swBlob);
+          navigator.serviceWorker.register(swUrl).catch(() => {});
+        } catch (e) {}
+      }
 
       function getActiveRoomCode() {
         try {
@@ -1093,7 +1354,7 @@
             { id: 'f4', name: 'Rangka kayu', costType: 'PER_ITEM', price: 25000, agentPrice: 20000, stock: 30 }
           ],
           users: [
-            { id: 'u_admin', name: 'Administrator', role: 'Kasir', accessLevel: 'ADMIN', pin: '1234' },
+            { id: 'u_admin', name: 'Admin', role: 'Kasir', accessLevel: 'ADMIN', pin: '1234' },
             { id: 'u1', name: 'Arman', role: 'Kasir', accessLevel: 'USER', pin: '1234' },
             { id: 'u2', name: 'Siti Munaroh', role: 'Kasir', accessLevel: 'USER', pin: '1234' },
             { id: 'u3', name: 'Budi Santoso', role: 'Operator', accessLevel: 'USER', pin: '1234' }
@@ -1142,7 +1403,13 @@
       }
 
       function ensureAtLeastOneAdmin(userList) {
-        const normalized = userList.map(normalizeUser);
+        const normalized = userList.map(u => {
+          const norm = normalizeUser(u);
+          if ((norm.name || '').trim().toLowerCase() === 'administrator') {
+            norm.name = 'Admin';
+          }
+          return norm;
+        });
         if (!normalized.some(u => u.accessLevel === 'ADMIN') && normalized.length > 0) {
           normalized[0].accessLevel = 'ADMIN';
         }
@@ -1227,21 +1494,23 @@
       }
 
       function getRoomDocRef(roomCode) {
-        return doc(db, 'artifacts', appId, 'public', 'data', 'pos_rooms', roomCode);
+        if (!db || !firestoreMod) return null;
+        return firestoreMod.doc(db, 'artifacts', appId, 'public', 'data', 'pos_rooms', roomCode);
       }
 
       async function pushStateToCloud(immediate = false) {
-        if (!db || !cloudUser) return;
+        if (!db || !cloudUser || !firestoreMod) return;
         try {
           updateCloudBadgeUI('SYNCING', 'Menyimpan...');
           const docRef = getRoomDocRef(activeRoomCode);
+          if (!docRef) return;
           const payload = {
             roomCode: activeRoomCode,
             updatedAt: Date.now(),
             updatedBy: cloudUser.uid,
             storeStateJson: JSON.stringify(state)
           };
-          await setDoc(docRef, payload, { merge: true });
+          await firestoreMod.setDoc(docRef, payload, { merge: true });
           const now = new Date();
           lastSyncTimeStr = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
           updateCloudBadgeUI('ONLINE', 'Online');
@@ -1252,7 +1521,7 @@
       }
 
       function scheduleCloudPush() {
-        if (!db || !cloudUser) return;
+        if (!db || !cloudUser || !firestoreMod) return;
         if (syncPushTimer) clearTimeout(syncPushTimer);
         syncPushTimer = setTimeout(() => {
           pushStateToCloud(false);
@@ -1278,7 +1547,7 @@
       }
 
       function subscribeToRoom(roomCode) {
-        if (!db || !cloudUser) return;
+        if (!db || !cloudUser || !firestoreMod) return;
         if (unsubscribeRoom) {
           unsubscribeRoom();
           unsubscribeRoom = null;
@@ -1290,8 +1559,9 @@
 
         updateCloudBadgeUI('SYNCING', 'Memuat Cloud...');
         const docRef = getRoomDocRef(activeRoomCode);
+        if (!docRef) return;
 
-        unsubscribeRoom = onSnapshot(
+        unsubscribeRoom = firestoreMod.onSnapshot(
           docRef,
           (snap) => {
             const now = new Date();
@@ -1348,20 +1618,40 @@
 
       async function initFirebaseCloud() {
         try {
+          if (navigator.onLine === false) {
+            updateCloudBadgeUI('OFFLINE', 'Offline (Lokal)');
+            return;
+          }
           if (typeof __firebase_config === 'undefined' || !__firebase_config) {
             updateCloudBadgeUI('OFFLINE', 'Offline (Lokal)');
             return;
           }
-          const firebaseConfig = JSON.parse(__firebase_config);
-          const app = initializeApp(firebaseConfig);
-          auth = getAuth(app);
-          db = getFirestore(app);
+
+          const firebaseConfig = typeof __firebase_config === 'string'
+            ? JSON.parse(__firebase_config)
+            : __firebase_config;
+
+          if (!firebaseConfig || !firebaseConfig.apiKey || firebaseConfig.apiKey === 'ISI_API_KEY_ANDA') {
+            updateCloudBadgeUI('OFFLINE', 'Offline (Lokal)');
+            return;
+          }
+
+          const [appMod, authMod, fsMod] = await Promise.all([
+            import('https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js'),
+            import('https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js'),
+            import('https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js')
+          ]);
+
+          firestoreMod = fsMod;
+          const app = appMod.initializeApp(firebaseConfig);
+          auth = authMod.getAuth(app);
+          db = fsMod.getFirestore(app);
 
           if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-            const cred = await signInWithCustomToken(auth, __initial_auth_token);
+            const cred = await authMod.signInWithCustomToken(auth, __initial_auth_token);
             cloudUser = cred.user;
           } else {
-            const cred = await signInAnonymously(auth);
+            const cred = await authMod.signInAnonymously(auth);
             cloudUser = cred.user;
           }
 
@@ -1395,6 +1685,7 @@
         bahanSubTab: 'M2',
         activeNotaId: null,
         notaSettleMethod: 'Tunai',
+        settingsInvoiceSearch: '',
         modalCallback: null
       };
 
@@ -1574,8 +1865,7 @@
 
         if (userBadge) {
           if (currentUser) {
-            const levelLabel = isAdmin ? 'Administrator' : `User · ${currentUser.role}`;
-            userBadge.textContent = `${currentUser.name} (${levelLabel})`;
+            userBadge.textContent = currentUser.name;
             userBadge.className = isAdmin
               ? 'px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-400/20 text-amber-200 border border-amber-300/30'
               : 'px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-200';
@@ -1607,35 +1897,37 @@
 
       function renderLoginScreen() {
         const screen = document.getElementById('login-screen');
-        const selectEl = document.getElementById('login-user-select');
-        if (!screen || !selectEl) return;
-
-        const prevVal = selectEl.value;
-        selectEl.innerHTML = state.users.map(u => {
-          const levelText = u.accessLevel === 'ADMIN' ? 'Administrator' : `User Biasa (${u.role})`;
-          return `<option value="${escapeHtml(u.id)}">${escapeHtml(u.name)} — ${escapeHtml(levelText)}</option>`;
-        }).join('');
-        if (prevVal && state.users.some(u => u.id === prevVal)) {
-          selectEl.value = prevVal;
-        }
+        const userInput = document.getElementById('login-username-input');
+        if (!screen) return;
 
         const validUser = getCurrentUser();
         if (validUser) {
           screen.classList.add('hidden');
         } else {
           ui.loggedInUserId = '';
+          if (userInput && document.activeElement !== userInput) {
+            userInput.value = '';
+          }
           screen.classList.remove('hidden');
         }
       }
 
       function handleLoginSubmit() {
-        const selectEl = document.getElementById('login-user-select');
+        const userInput = document.getElementById('login-username-input');
         const pinInput = document.getElementById('login-pin-input');
-        if (!selectEl || !pinInput) return;
+        if (!userInput || !pinInput) return;
 
-        const user = state.users.find(u => u.id === selectEl.value);
+        const enteredName = String(userInput.value || '').trim();
+        if (!enteredName) {
+          showToast('Masukkan username terlebih dahulu', 'error');
+          userInput.focus();
+          return;
+        }
+
+        const user = state.users.find(u => (u.name || '').trim().toLowerCase() === enteredName.toLowerCase());
         if (!user) {
-          showToast('Pilih akun pengguna terlebih dahulu', 'error');
+          showToast('Username tidak ditemukan', 'error');
+          userInput.focus();
           return;
         }
 
@@ -1657,6 +1949,7 @@
 
         ui.loggedInUserId = user.id;
         try { sessionStorage.setItem(SESSION_USER_KEY, user.id); } catch (e) {}
+        userInput.value = '';
         pinInput.value = '';
         renderHeaderIdentity();
         renderLoginScreen();
@@ -1668,8 +1961,7 @@
           staffDisplay.textContent = user.name;
         }
 
-        const levelInfo = user.accessLevel === 'ADMIN' ? 'Administrator' : 'User Biasa';
-        showToast(`Masuk sebagai ${user.name} (${levelInfo})`, 'success');
+        showToast(`Masuk sebagai ${user.name}`, 'success');
       }
 
       function handleLogout() {
@@ -1677,6 +1969,10 @@
         try { sessionStorage.removeItem(SESSION_USER_KEY); } catch (e) {}
         ui.activePage = 'kasir';
         ui.prevPage = 'kasir';
+        const userInput = document.getElementById('login-username-input');
+        const pinInput = document.getElementById('login-pin-input');
+        if (userInput) userInput.value = '';
+        if (pinInput) pinInput.value = '';
         renderHeaderIdentity();
         renderLoginScreen();
         showToast('Anda telah keluar dari sesi', 'info');
@@ -1829,7 +2125,7 @@
         const staffDisplay = document.getElementById('kasir-staff-display');
         const loggedUser = getCurrentUser();
         if (staffDisplay) {
-          staffDisplay.textContent = loggedUser ? loggedUser.name : (state.users[0]?.name || 'Administrator');
+          staffDisplay.textContent = loggedUser ? loggedUser.name : (state.users[0]?.name || 'Admin');
         }
 
         renderPaymentMethodPills();
@@ -2050,7 +2346,7 @@
         const rawCustInput = (document.getElementById('kasir-customer-name').value || '').trim();
         const custName = rawCustInput || 'Umum';
         const loggedUser = getCurrentUser();
-        const cashierName = loggedUser ? loggedUser.name : (state.users[0]?.name || 'Administrator');
+        const cashierName = loggedUser ? loggedUser.name : (state.users[0]?.name || 'Admin');
 
         if (rawCustInput && rawCustInput.toLowerCase() !== 'umum') {
           if (ui.customerType === 'Agen') {
@@ -2076,7 +2372,6 @@
           }
         }
 
-        // Kurangi stok otomatis untuk semua item keranjang (Cetak M2, Satuan, ATK & Finishing)
         ui.cart.forEach(item => {
           adjustStockForItem(item, -1);
         });
@@ -2535,7 +2830,12 @@
           listEl.innerHTML = state.materialsM2.map((m, idx) => `
             <div class="pb-4 border-b border-slate-200 last:border-none space-y-2.5">
               <div class="flex items-center gap-2">
-                <span class="text-slate-400 font-bold select-none">≡</span>
+                <div class="flex flex-col gap-0.5 shrink-0">
+                  <button type="button" data-action="move-bahan" data-cat="M2" data-index="${idx}" data-dir="up" ${idx === 0 ? 'disabled' : ''}
+                    class="w-7 h-4 rounded bg-slate-100 hover:bg-slate-200 disabled:opacity-30 text-[10px] font-extrabold text-slate-700 flex items-center justify-center cursor-pointer" title="Geser naik">▲</button>
+                  <button type="button" data-action="move-bahan" data-cat="M2" data-index="${idx}" data-dir="down" ${idx === state.materialsM2.length - 1 ? 'disabled' : ''}
+                    class="w-7 h-4 rounded bg-slate-100 hover:bg-slate-200 disabled:opacity-30 text-[10px] font-extrabold text-slate-700 flex items-center justify-center cursor-pointer" title="Geser turun">▼</button>
+                </div>
                 <input type="text" data-bahan-cat="M2" data-index="${idx}" data-field="name" value="${escapeHtml(m.name)}"
                   class="bahan-edit-input app-input flex-1 rounded-xl px-3 py-2 text-sm font-bold" />
                 <input type="text" inputmode="numeric" data-bahan-cat="M2" data-index="${idx}" data-field="price" value="${formatRibuan(m.price)}"
@@ -2543,12 +2843,12 @@
                 <button type="button" data-action="delete-bahan" data-cat="M2" data-index="${idx}"
                   class="w-9 h-9 rounded-xl border border-slate-200 bg-white text-slate-600 hover:text-rose-600 font-bold cursor-pointer">×</button>
               </div>
-              <div class="flex items-center gap-2 pl-5 text-xs">
+              <div class="flex items-center gap-2 pl-9 text-xs">
                 <span class="muted-text">Minimal ditagih (m²)</span>
                 <input type="number" step="0.05" min="0" data-bahan-cat="M2" data-index="${idx}" data-field="minArea" value="${m.minArea}"
                   class="bahan-edit-input app-input w-20 rounded-xl px-2.5 py-1.5 text-xs font-bold" />
               </div>
-              <div class="flex items-center gap-2 pl-5 text-xs">
+              <div class="flex items-center gap-2 pl-9 text-xs">
                 <span class="muted-text">Harga agen</span>
                 <input type="text" inputmode="numeric" data-bahan-cat="M2" data-index="${idx}" data-field="agentPrice" value="${formatRibuan(m.agentPrice)}"
                   class="bahan-edit-input rupiah-input app-input w-28 rounded-xl px-2.5 py-1.5 text-xs font-bold font-mono-code" />
@@ -2564,7 +2864,12 @@
           listEl.innerHTML = state.materialsSatuan.map((s, idx) => `
             <div class="pb-4 border-b border-slate-200 last:border-none space-y-2.5">
               <div class="flex items-center gap-2">
-                <span class="text-slate-400 font-bold select-none">≡</span>
+                <div class="flex flex-col gap-0.5 shrink-0">
+                  <button type="button" data-action="move-bahan" data-cat="SATUAN" data-index="${idx}" data-dir="up" ${idx === 0 ? 'disabled' : ''}
+                    class="w-7 h-4 rounded bg-slate-100 hover:bg-slate-200 disabled:opacity-30 text-[10px] font-extrabold text-slate-700 flex items-center justify-center cursor-pointer" title="Geser naik">▲</button>
+                  <button type="button" data-action="move-bahan" data-cat="SATUAN" data-index="${idx}" data-dir="down" ${idx === state.materialsSatuan.length - 1 ? 'disabled' : ''}
+                    class="w-7 h-4 rounded bg-slate-100 hover:bg-slate-200 disabled:opacity-30 text-[10px] font-extrabold text-slate-700 flex items-center justify-center cursor-pointer" title="Geser turun">▼</button>
+                </div>
                 <input type="text" data-bahan-cat="SATUAN" data-index="${idx}" data-field="name" value="${escapeHtml(s.name)}"
                   class="bahan-edit-input app-input flex-1 rounded-xl px-3 py-2 text-sm font-bold" />
                 <input type="text" inputmode="numeric" data-bahan-cat="SATUAN" data-index="${idx}" data-field="price" value="${formatRibuan(s.price)}"
@@ -2572,7 +2877,7 @@
                 <button type="button" data-action="delete-bahan" data-cat="SATUAN" data-index="${idx}"
                   class="w-9 h-9 rounded-xl border border-slate-200 bg-white text-slate-600 hover:text-rose-600 font-bold cursor-pointer">×</button>
               </div>
-              <div class="flex items-center gap-2 pl-5 text-xs">
+              <div class="flex items-center gap-2 pl-9 text-xs">
                 <span class="muted-text">Satuan</span>
                 <input type="text" data-bahan-cat="SATUAN" data-index="${idx}" data-field="unit" value="${escapeHtml(s.unit)}"
                   class="bahan-edit-input app-input w-24 rounded-xl px-2.5 py-1.5 text-xs font-bold" />
@@ -2590,7 +2895,12 @@
           listEl.innerHTML = state.productsAtk.map((a, idx) => `
             <div class="pb-4 border-b border-slate-200 last:border-none space-y-2.5">
               <div class="flex items-center gap-2">
-                <span class="text-slate-400 font-bold select-none">≡</span>
+                <div class="flex flex-col gap-0.5 shrink-0">
+                  <button type="button" data-action="move-bahan" data-cat="ATK" data-index="${idx}" data-dir="up" ${idx === 0 ? 'disabled' : ''}
+                    class="w-7 h-4 rounded bg-slate-100 hover:bg-slate-200 disabled:opacity-30 text-[10px] font-extrabold text-slate-700 flex items-center justify-center cursor-pointer" title="Geser naik">▲</button>
+                  <button type="button" data-action="move-bahan" data-cat="ATK" data-index="${idx}" data-dir="down" ${idx === state.productsAtk.length - 1 ? 'disabled' : ''}
+                    class="w-7 h-4 rounded bg-slate-100 hover:bg-slate-200 disabled:opacity-30 text-[10px] font-extrabold text-slate-700 flex items-center justify-center cursor-pointer" title="Geser turun">▼</button>
+                </div>
                 <input type="text" data-bahan-cat="ATK" data-index="${idx}" data-field="name" value="${escapeHtml(a.name)}"
                   class="bahan-edit-input app-input flex-1 rounded-xl px-3 py-2 text-sm font-bold" />
                 <input type="text" inputmode="numeric" data-bahan-cat="ATK" data-index="${idx}" data-field="price" value="${formatRibuan(a.price)}"
@@ -2598,7 +2908,7 @@
                 <button type="button" data-action="delete-bahan" data-cat="ATK" data-index="${idx}"
                   class="w-9 h-9 rounded-xl border border-slate-200 bg-white text-slate-600 hover:text-rose-600 font-bold cursor-pointer">×</button>
               </div>
-              <div class="flex flex-wrap items-center gap-2 pl-5 text-xs">
+              <div class="flex flex-wrap items-center gap-2 pl-9 text-xs">
                 <span class="muted-text">Satuan</span>
                 <input type="text" data-bahan-cat="ATK" data-index="${idx}" data-field="unit" value="${escapeHtml(a.unit)}"
                   class="bahan-edit-input app-input w-20 rounded-xl px-2.5 py-1.5 text-xs font-bold" />
@@ -2619,7 +2929,12 @@
           listEl.innerHTML = state.finishings.map((f, idx) => `
             <div class="pb-4 border-b border-slate-200 last:border-none space-y-2.5">
               <div class="flex items-center gap-2">
-                <span class="text-slate-400 font-bold select-none">≡</span>
+                <div class="flex flex-col gap-0.5 shrink-0">
+                  <button type="button" data-action="move-bahan" data-cat="FINISHING" data-index="${idx}" data-dir="up" ${idx === 0 ? 'disabled' : ''}
+                    class="w-7 h-4 rounded bg-slate-100 hover:bg-slate-200 disabled:opacity-30 text-[10px] font-extrabold text-slate-700 flex items-center justify-center cursor-pointer" title="Geser naik">▲</button>
+                  <button type="button" data-action="move-bahan" data-cat="FINISHING" data-index="${idx}" data-dir="down" ${idx === state.finishings.length - 1 ? 'disabled' : ''}
+                    class="w-7 h-4 rounded bg-slate-100 hover:bg-slate-200 disabled:opacity-30 text-[10px] font-extrabold text-slate-700 flex items-center justify-center cursor-pointer" title="Geser turun">▼</button>
+                </div>
                 <input type="text" data-bahan-cat="FINISHING" data-index="${idx}" data-field="name" value="${escapeHtml(f.name)}"
                   class="bahan-edit-input app-input flex-1 rounded-xl px-3 py-2 text-sm font-bold" />
                 <input type="text" inputmode="numeric" data-bahan-cat="FINISHING" data-index="${idx}" data-field="price" value="${formatRibuan(f.price)}"
@@ -2627,7 +2942,7 @@
                 <button type="button" data-action="delete-bahan" data-cat="FINISHING" data-index="${idx}"
                   class="w-9 h-9 rounded-xl border border-slate-200 bg-white text-slate-600 hover:text-rose-600 font-bold cursor-pointer">×</button>
               </div>
-              <div class="flex flex-wrap items-center gap-2 pl-5 text-xs">
+              <div class="flex flex-wrap items-center gap-2 pl-9 text-xs">
                 <span class="muted-text">Hitung</span>
                 <select data-bahan-cat="FINISHING" data-index="${idx}" data-field="costType"
                   class="bahan-edit-input app-input rounded-xl px-2.5 py-1.5 text-xs font-bold">
@@ -2853,6 +3168,47 @@
             </div>
           </div>
         `}).join('');
+
+        renderSettingsInvoiceList();
+      }
+
+      function renderSettingsInvoiceList() {
+        const listEl = document.getElementById('settings-invoice-list');
+        const countEl = document.getElementById('settings-invoice-count');
+        if (!listEl) return;
+
+        if (countEl) {
+          countEl.textContent = `${state.orders.length} Invoice`;
+        }
+
+        const q = (ui.settingsInvoiceSearch || '').trim().toLowerCase();
+        const filtered = state.orders.filter(o =>
+          !q || (o.id || '').toLowerCase().includes(q) || (o.customerName || '').toLowerCase().includes(q)
+        );
+
+        if (filtered.length === 0) {
+          listEl.innerHTML = `<p class="py-6 text-center text-xs muted-text">Tidak ada invoice yang cocok.</p>`;
+          return;
+        }
+
+        listEl.innerHTML = filtered.map(o => {
+          const isCancelled = o.status === 'Dibatalkan';
+          return `
+            <div class="py-2.5 flex items-center justify-between gap-2">
+              <div class="min-w-0">
+                <div class="flex items-center gap-1.5 flex-wrap">
+                  <span class="text-xs font-extrabold font-mono-code ${isCancelled ? 'line-through text-slate-400' : ''}">${escapeHtml(o.id)}</span>
+                  <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${isCancelled ? 'bg-rose-100 text-rose-700' : 'bg-slate-100 text-slate-700'}">${escapeHtml(o.status)}</span>
+                </div>
+                <p class="text-[11px] muted-text truncate mt-0.5">${escapeHtml(o.customerName)} · ${escapeHtml(o.date)} · ${formatRp(o.total)}</p>
+              </div>
+              <button type="button" data-action="delete-single-invoice" data-id="${escapeHtml(o.id)}"
+                class="px-3 py-1.5 rounded-xl border border-rose-200 bg-rose-50 hover:bg-rose-100 text-rose-600 text-xs font-bold cursor-pointer shrink-0">
+                Hapus
+              </button>
+            </div>
+          `;
+        }).join('');
       }
 
       function openFormModal(title, bodyHtml, onSave) {
@@ -3091,7 +3447,7 @@
                   date: r[1] || getTodayISO(),
                   customerType: r[2] || 'Umum',
                   customerName: r[3] || 'Umum',
-                  cashierName: r[4] || 'Administrator',
+                  cashierName: r[4] || 'Admin',
                   status: r[6] || 'Antri',
                   paymentMethod: r[7] || 'Tunai',
                   items: [{ mode: 'SATUAN', name: r[5] || 'Item Impor Excel', dimText: '1 pcs', qty: 1, unitPrice: total, finishingNames: [], subtotal: total }],
@@ -3119,7 +3475,7 @@
                   date: r[1] || getTodayISO(),
                   customerType: 'Umum',
                   customerName: r[2] || 'Umum',
-                  cashierName: r[3] || 'Administrator',
+                  cashierName: r[3] || 'Admin',
                   status: 'Selesai',
                   paymentMethod: r[4] || 'Tunai',
                   items: [{ mode: 'SATUAN', name: 'Transaksi Impor Excel', dimText: '1 pcs', qty: 1, unitPrice: total, finishingNames: [], subtotal: total }],
@@ -3439,7 +3795,6 @@
               const newQty = Math.max(1, parseInt(document.getElementById('edit-inv-item-qty').value, 10) || 1);
               const newSub = parseRibuan(document.getElementById('edit-inv-item-sub').value);
 
-              // Kembalikan stok lama sebelum item diperbarui
               adjustStockForItem(item, 1);
 
               if (showFinishingOption) {
@@ -3463,7 +3818,6 @@
               item.qty = newQty;
               item.subtotal = newSub;
 
-              // Potong stok baru sesuai rincian item terbaru
               adjustStockForItem(item, -1);
 
               order.total = order.items.reduce((sum, it) => sum + (Number(it.subtotal) || 0), 0);
@@ -3858,6 +4212,21 @@
         } else if (action === 'set-bahan-tab') {
           ui.bahanSubTab = target.dataset.tab;
           renderBahanPage();
+        } else if (action === 'move-bahan') {
+          const cat = target.dataset.cat;
+          const idx = parseInt(target.dataset.index, 10);
+          const dir = target.dataset.dir;
+          const list = cat === 'M2'
+            ? state.materialsM2
+            : (cat === 'SATUAN' ? state.materialsSatuan : (cat === 'ATK' ? state.productsAtk : state.finishings));
+          const targetIdx = dir === 'up' ? idx - 1 : idx + 1;
+          if (list && idx >= 0 && targetIdx >= 0 && targetIdx < list.length) {
+            const temp = list[idx];
+            list[idx] = list[targetIdx];
+            list[targetIdx] = temp;
+            saveState();
+            renderBahanPage();
+          }
         } else if (action === 'add-new-bahan') {
           addNewBahanItem();
         } else if (action === 'delete-bahan') {
@@ -4175,6 +4544,72 @@
           } else {
             renderSettingsPage();
           }
+        } else if (action === 'delete-single-invoice') {
+          const invId = target.dataset.id;
+          const idx = state.orders.findIndex(o => o.id === invId);
+          if (idx === -1) return;
+          const ord = state.orders[idx];
+          openFormModal(
+            `Hapus Invoice ${ord.id}`,
+            `<p class="text-xs text-slate-600 leading-relaxed">
+              Apakah Anda yakin ingin menghapus permanen invoice <strong>${escapeHtml(ord.id)}</strong> atas nama <strong>${escapeHtml(ord.customerName)}</strong> (${formatRp(ord.total)})?
+              ${ord.status !== 'Dibatalkan' ? '<br/><span class="text-emerald-700 font-semibold">Stok bahan pada invoice ini akan otomatis dikembalikan.</span>' : ''}
+            </p>`,
+            () => {
+              const curIdx = state.orders.findIndex(o => o.id === invId);
+              if (curIdx !== -1) {
+                const targetOrd = state.orders[curIdx];
+                if (targetOrd.status !== 'Dibatalkan') {
+                  (targetOrd.items || []).forEach(it => adjustStockForItem(it, 1));
+                }
+                state.orders.splice(curIdx, 1);
+                saveState();
+                renderSettingsInvoiceList();
+                showToast(`Invoice ${invId} berhasil dihapus`, 'success');
+              }
+            }
+          );
+        } else if (action === 'delete-cancelled-invoices') {
+          const cancelledCount = state.orders.filter(o => o.status === 'Dibatalkan').length;
+          if (cancelledCount === 0) {
+            showToast('Tidak ada invoice berstatus Dibatalkan', 'info');
+            return;
+          }
+          openFormModal(
+            'Hapus Semua Invoice Dibatalkan',
+            `<p class="text-xs text-slate-600 leading-relaxed">
+              Terdapat <strong>${cancelledCount} invoice</strong> berstatus <strong>Dibatalkan</strong>. Hapus permanen seluruh invoice yang dibatalkan tersebut?
+            </p>`,
+            () => {
+              state.orders = state.orders.filter(o => o.status !== 'Dibatalkan');
+              saveState();
+              renderSettingsInvoiceList();
+              showToast(`${cancelledCount} invoice dibatalkan berhasil dihapus`, 'success');
+            }
+          );
+        } else if (action === 'delete-all-invoices') {
+          if (state.orders.length === 0) {
+            showToast('Daftar invoice sudah kosong', 'info');
+            return;
+          }
+          const totalCount = state.orders.length;
+          openFormModal(
+            'Hapus Semua Data Invoice',
+            `<p class="text-xs text-slate-600 leading-relaxed">
+              Seluruh <strong>${totalCount} data invoice</strong> akan dihapus permanen dari aplikasi dan laporan keuangan akan direset ke 0. Lanjutkan?
+            </p>`,
+            () => {
+              state.orders.forEach(ord => {
+                if (ord.status !== 'Dibatalkan') {
+                  (ord.items || []).forEach(it => adjustStockForItem(it, 1));
+                }
+              });
+              state.orders = [];
+              saveState();
+              renderSettingsInvoiceList();
+              showToast('Seluruh data invoice berhasil dihapus', 'success');
+            }
+          );
         } else if (action === 'close-form-modal') {
           closeFormModal();
         } else if (action === 'submit-form-modal') {
@@ -4207,6 +4642,9 @@
         } else if (el.dataset.action === 'search-order') {
           ui.orderSearch = el.value;
           renderOrderPage();
+        } else if (el.dataset.action === 'search-settings-invoice') {
+          ui.settingsInvoiceSearch = el.value;
+          renderSettingsInvoiceList();
         } else if (el.dataset.action === 'update-store-info') {
           state.settings.storeName = document.getElementById('setting-store-name').value || 'PERCETAKAN AMANAH';
           state.settings.storeSlogan = document.getElementById('setting-store-slogan').value || '';
@@ -4249,8 +4687,15 @@
       });
 
       document.addEventListener('keydown', function (e) {
-        if (e.key === 'Enter' && e.target && e.target.id === 'login-pin-input') {
+        if (e.key === 'Enter' && e.target && (e.target.id === 'login-pin-input' || e.target.id === 'login-username-input')) {
           e.preventDefault();
+          if (e.target.id === 'login-username-input') {
+            const pinEl = document.getElementById('login-pin-input');
+            if (pinEl && !pinEl.value) {
+              pinEl.focus();
+              return;
+            }
+          }
           handleLoginSubmit();
         }
       });
@@ -4334,6 +4779,7 @@
           renderHeaderIdentity();
           renderLoginScreen();
           navigateTo('kasir');
+          registerOfflineServiceWorker();
           initFirebaseCloud();
         } catch (err) {
           state = createDefaultState();
@@ -4346,7 +4792,7 @@
       }
 
       window.addEventListener('online', () => {
-        if (db && cloudUser) pushStateToCloud(false);
+        if (db && cloudUser && firestoreMod) pushStateToCloud(false);
         else initFirebaseCloud();
       });
 
